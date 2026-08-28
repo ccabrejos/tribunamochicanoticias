@@ -1,21 +1,18 @@
-[
-  {
-    "id": "11",
-    "numero": "Edición N.° 11",
-    "fecha": "Lunes 24 de agosto de 2026",
-    "fechaCorta": "24 Ago 2026",
-    "destacada": true,
-    "titularPrincipal": "Comisión de avanzada del Vaticano evalúa espacios para la histórica visita del Papa León XIV",
-    "descripcion": "La comisión del Vaticano recorre la región evaluando rutas e instalaciones para la histórica visita papal. Además: histórico decomiso de 40 kilos de PBC en Valle La Leche, apertura de Carsa en Lambayeque y análisis del impacto agrícola.",
-    "portadaImg": "/ediciones/portada-11.svg",
-    "pdfUrl": "/ediciones/edicion-11.pdf",
-    "tamano": "2.4 MB",
-    "paginas": 8,
-    "titulares": [
-      "Comisión del Vaticano evalúa rutas y seguridad para visita del Papa León XIV",
-      "Golpe al narcotráfico: incautan 40 kilos de PBC en el Valle La Leche",
-      "Apertura comercial: Carsa inaugura moderna sede en Lambayeque",
-      "Sector Agrario: Informe sobre recursos hídricos en época de siembra"
+{
+  "id": "11",
+  "numero": "Edición N.° 11",
+  "fecha": "Lunes 24 de agosto de 2026",
+  "fechaCorta": "24 Ago 2026",
+  "destacada": true,
+  "titularPrincipal": "Vaticano evalúa espacios para la visita del Papa León XIV",
+  "descripcion": "La comisión de avanzada del Vaticano evalúa espacios para la visita del Papa León XIV, decomiso de 40 kilos de PBC, apertura de Carsa en Lambayeque y más actualidad regional.",
+  "portadaImg": "/ediciones/edicion-11.jpg",
+  "pdfUrl": "/ediciones/edicion-11.pdf",
+  "tamano": "3.56 MB",
+  "paginas": 14,
+  "titulares": [
+    "Noticia destacada 1",
+    "Noticia destacada 2"
     ]
   },
   {
