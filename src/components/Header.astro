@@ -25,9 +25,9 @@
   <!-- Cabecera Principal (Masthead estilo periódico de prestigio) -->
   <div class="masthead">
     <div class="container masthead-inner">
-      <!-- Logo Isotipo Mochica -->
+      <!-- Logo Isotipo Mochica (formato JPG) -->
       <a href="/" class="logo-link" title="Tribuna Mochica - Inicio">
-        <img src="/logo.jpg" alt="Logotipo Tribuna Mochica" class="masthead-logo" width="90" height="90" />
+        <img src="/logo.jpg" alt="Logotipo Mochica Tribuna" class="masthead-logo" width="90" height="90" />
       </a>
 
       <!-- Bloque Central de Títulos -->
@@ -183,6 +183,8 @@
   .masthead-logo {
     width: 85px;
     height: 85px;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
   }
 
   .masthead-titles {
