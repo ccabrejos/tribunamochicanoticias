@@ -21,16 +21,16 @@
     "numero": "Edición N.° 10",
     "fecha": "Martes 11 de agosto de 2026",
     "fechaCorta": "11 Ago 2026",
-    "destacada": false,
-    "titularPrincipal": "Megainspección y clausura de locales clandestinos en José Leonardo Ortiz",
-    "descripcion": "Operativo multisectorial clausura bares clandestinos. Especial: Inteligencia Artificial en el periodismo regional.",
-    "portadaImg": "/ediciones/portada-10.svg",
+    "destacada": true,
+    "titularPrincipal": "Bares funcionan con licencias de otros rubros",
+    "descripcion": "Nueva edición con información local, sociedad, salud, medio ambiente e internacional: operativos en bares de JLO, inteligencia artificial y periodismo, aniversario de EsSalud Lambayeque, incendio forestal en Cañaris y otras noticias de interés.",
+    "portadaImg": "/ediciones/edicion-10.jpg",
     "pdfUrl": "/ediciones/edicion-10.pdf",
-    "tamano": "2.1 MB",
-    "paginas": 8,
+    "tamano": "3.13 MB",
+    "paginas": 12,
     "titulares": [
-      "Operativo conjunto frena la informalidad en bares de JLO",
-      "El impacto de la Inteligencia Artificial en la prensa regional"
+      "Hola",
+      "Hola 2"
     ]
   }
 ]
