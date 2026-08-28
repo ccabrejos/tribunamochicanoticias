@@ -1,12 +1,32 @@
 ---
-// Header.astro - Cabecera Editorial para Tribuna Mochica
+// Header.astro - Cabecera Editorial para Tribuna Mochica (Bordes Redondeados)
 ---
+
+<header class="site-header">
+  <!-- 1. Barra Superior con Fecha y Ubicación -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-location">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <span>Valle La Leche · Lambayeque, Perú</span>
+      </div>
+      <div class="top-bar-meta">
+        <span>Periódico Semanal de Información Regional</span>
+      </div>
+      <div class="top-bar-date">
+        <span>Edición Digital Semanal</span>
+      </div>
+    </div>
+  </div>
 
   <!-- 2. Cabecera Principal / Masthead Editorial -->
   <div class="masthead">
     <div class="container masthead-inner">
       
-      <!-- Logo Principal -->
+      <!-- Logo Principal con Bordes Redondeados -->
       <a href="/" class="masthead-brand" title="Tribuna Mochica - Inicio">
         <img 
           src="/logo.png" 
@@ -46,7 +66,7 @@
     <div class="rule-double"></div>
   </div>
 
-  <!-- 3. Menú de Botones Distribuidos (Even Width, sin barra contenedora) -->
+  <!-- 3. Menú de Botones con Redondeo Amplio (Igual a la Portada) -->
   <nav class="nav-buttons-wrap" aria-label="Navegación de secciones">
     <div class="container">
       <div class="nav-grid">
@@ -68,13 +88,15 @@
     </div>
   </nav>
 
-  <!-- 4. Hero Banner Editorial Directo -->
+  <!-- 4. Hero Banner en Tarjeta Redondeada (Mismo estilo que la Tarjeta de Portada) -->
   <section class="hero-section">
-    <div class="container hero-container">
-      <h2 class="hero-heading">Lee nuestro periódico desde cualquier lugar</h2>
-      <p class="hero-lead">
-        Visualiza en pantalla o descarga gratis los archivos PDF de cada edición semanal de <strong>Tribuna Mochica</strong> desde tu celular o computadora.
-      </p>
+    <div class="container">
+      <div class="hero-card">
+        <h2 class="hero-heading">Lee nuestro periódico desde cualquier lugar</h2>
+        <p class="hero-lead">
+          Visualiza en pantalla o descarga gratis los archivos PDF de cada edición semanal de <strong>Tribuna Mochica</strong> desde tu celular o computadora.
+        </p>
+      </div>
     </div>
   </section>
 </header>
@@ -119,6 +141,10 @@
     }
   }
 
+  .top-bar-date {
+    color: #E2DBD0;
+  }
+
   /* 2. Masthead */
   .masthead {
     padding: 1.25rem 0 0.85rem 0;
@@ -153,7 +179,7 @@
     width: 72px;
     height: 72px;
     object-fit: contain;
-    border-radius: var(--radius-xs);
+    border-radius: var(--radius-md);
   }
 
   @media (min-width: 768px) {
@@ -181,6 +207,7 @@
     width: 20px;
     height: 1px;
     background-color: var(--color-gold);
+    border-radius: 9999px;
   }
 
   .kicker-text {
@@ -219,7 +246,11 @@
     margin-top: 0.4rem;
     font-size: 0.85rem;
     color: var(--color-ink-muted);
-    display: flex;
+    background-color: var(--color-bg-subtle);
+    padding: 0.25rem 0.9rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border);
+    display: inline-flex;
     align-items: center;
     gap: 0.35rem;
   }
@@ -234,7 +265,7 @@
     color: var(--color-ink-black);
   }
 
-  /* 3. Menú de Botones (Sin barra contenedora, ancho parejo) */
+  /* 3. Botones con Redondeo Idéntico al de la Portada */
   .nav-buttons-wrap {
     padding: 0.75rem 0 0.5rem 0;
   }
@@ -242,7 +273,7 @@
   .nav-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
+    gap: 0.6rem;
     width: 100%;
   }
 
@@ -251,23 +282,24 @@
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    padding: 0.65rem 0.5rem;
+    padding: 0.7rem 0.6rem;
     font-size: 0.88rem;
     font-weight: 600;
     text-align: center;
     color: var(--color-ink-black);
     background-color: #FFFFFF;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-xs);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-lg); /* 24px: Mismo redondeo que la portada */
     text-decoration: none;
     transition: all 0.15s ease;
-    box-shadow: 0 1px 3px rgba(17, 16, 15, 0.04);
+    box-shadow: var(--shadow-sm);
   }
 
   .nav-btn:hover {
     background-color: var(--color-burgundy-subtle);
     color: var(--color-burgundy);
     border-color: var(--color-burgundy);
+    transform: translateY(-1px);
   }
 
   .nav-btn.active {
@@ -287,49 +319,53 @@
 
   @media (max-width: 520px) {
     .nav-grid {
-      gap: 0.35rem;
+      gap: 0.4rem;
     }
     .nav-btn {
       font-size: 0.75rem;
-      padding: 0.55rem 0.2rem;
+      padding: 0.6rem 0.25rem;
+      border-radius: var(--radius-md);
       flex-direction: column;
       gap: 0.2rem;
     }
   }
 
-  /* 4. Hero Section */
+  /* 4. Tarjeta del Hero Banner con Bordes Curvos */
   .hero-section {
-    padding: 1.5rem 0;
+    padding: 1.25rem 0 1.75rem 0;
+  }
+
+  .hero-card {
     background-color: var(--color-bg-subtle);
-    border-bottom: 1px solid var(--color-border);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-lg); /* 24px: Mismo radio curvo de la tarjeta de portada */
+    padding: 1.5rem 1.25rem;
     text-align: center;
-  }
-
-  @media (min-width: 640px) {
-    .hero-section {
-      padding: 2.25rem 0;
-    }
-  }
-
-  .hero-container {
-    max-width: 760px;
+    box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.4rem;
   }
 
+  @media (min-width: 768px) {
+    .hero-card {
+      padding: 2rem 2rem;
+    }
+  }
+
   .hero-heading {
-    font-size: clamp(1.4rem, 5vw, 2.1rem);
+    font-size: clamp(1.4rem, 4.5vw, 2.1rem);
     color: var(--color-ink-black);
     line-height: 1.2;
-    margin-top: 0.2rem;
+    margin-top: 0.1rem;
   }
 
   .hero-lead {
-    font-size: clamp(0.9rem, 2.8vw, 1.05rem);
+    font-size: clamp(0.9rem, 2.6vw, 1.05rem);
     color: var(--color-ink-body);
-    line-height: 1.5;
+    line-height: 1.55;
+    max-width: 680px;
     margin-top: 0.2rem;
   }
 </style>
