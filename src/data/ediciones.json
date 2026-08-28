@@ -15,24 +15,3 @@
     "Hola 2"
   ]
 }
-  },
-  {
-    "id": "08",
-    "numero": "Edición N.° 08",
-    "fecha": "Lunes 27 de julio de 2026",
-    "fechaCorta": "27 Jul 2026",
-    "destacada": false,
-    "titularPrincipal": "Especial Fiestas Patrias: Orgullo e identidad histórica en el Valle La Leche",
-    "descripcion": "Edición conmemorativa por el aniversario patrio. Crónicas históricas de nuestros pueblos, balance de la producción algodonera y guía turística del circuito arqueológico mochica.",
-    "portadaImg": "/ediciones/portada-08.svg",
-    "pdfUrl": "/ediciones/edicion-08.pdf",
-    "tamano": "2.3 MB",
-    "paginas": 8,
-    "titulares": [
-      "Crónica patria: El aporte de Lambayeque a la gesta independentista",
-      "Ruta Arqueológica: Pirámides de Túcume y Museo Huaca Rajada",
-      "Entrevista al Director sobre el rol de la prensa local independiente",
-      "Balance económico: Crecimiento agroexportador en el norte"
-    ]
-  }
-]
