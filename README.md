@@ -1,6 +1,6 @@
-# 📰 Tribuna Mochica - Sitio Web Oficial & Hemeroteca Digital
+# 📰 Tribuna Mochica - Noticias
 
-Sitio web oficial para el periódico **Tribuna Mochica** (*"La Voz del Valle La Leche"*), dirigido por **Juan César Cabrejos Becerra**.
+Sitio web oficial para el periódico digital **Tribuna Mochica** (*"La Voz del Valle La Leche"*), dirigido por **Juan César Cabrejos Becerra**.
 
 Este proyecto está desarrollado con **Astro**, diseñado para ser ultra rápido, ligero, 100% responsivo en teléfonos celulares y completamente dinámico para visualizar y descargar las ediciones semanales en PDF.
 
