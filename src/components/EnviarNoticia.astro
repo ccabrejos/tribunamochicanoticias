@@ -1,5 +1,5 @@
 ---
-// EnviarNoticia.astro - Sección simplificada de contacto directo (sin formulario)
+// EnviarNoticia.astro - Sección optimizada de contacto y periodismo ciudadano vía WhatsApp
 ---
 
 <section id="enviar-noticia" class="enviar-noticia-section">
@@ -7,51 +7,50 @@
     <div class="enviar-card">
       <div class="enviar-content">
         
+        <!-- Etiqueta superior -->
         <div class="badge-wrap">
-          <span class="badge badge-burgundy">PARTICIPACIÓN CIUDADANA</span>
+          <span class="badge badge-burgundy">PERIODISMO CIUDADANO</span>
         </div>
 
-        <h2 class="enviar-title">Envíanos tu noticia</h2>
+        <!-- Título principal -->
+        <h2 class="enviar-title">Haz que tu voz se escuche en el Valle</h2>
         
+        <!-- Subtítulo / Bajada -->
         <p class="enviar-desc">
-          ¿Tienes una denuncia comunitaria, un acontecimiento o una noticia de tu distrito o caserío en el Valle La Leche? Escríbenos directamente para incluirlo en nuestra próxima edición semanal.
+          ¿Ocurrió algo importante en tu distrito, caserío o comunidad? Envíanos tu denuncia, hecho noticioso o actividad comunitaria directamente por WhatsApp para evaluarlo e incluirlo en nuestra próxima edición semanal.
         </p>
 
-        <!-- Canales directos de contacto -->
+        <!-- Botón único y directo de WhatsApp -->
         <div class="contact-actions">
           <a 
-            href="https://wa.me/51948100794?text=Hola%20Tribuna%20Mochica,%20deseo%20enviar%20una%20noticia/denuncia%20para%20el%20peri%C3%B3dico:" 
+            href="https://wa.me/51948100794?text=Hola%20Tribuna%20Mochica,%20deseo%20compartir%20una%20noticia/denuncia%20para%20la%20pr%C3%B3xima%20edici%C3%B3n:" 
             target="_blank" 
             rel="noopener noreferrer"
             class="btn btn-whatsapp-direct"
+            aria-label="Escribir a la redacción por WhatsApp"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
             </svg>
             <span>Escribir al WhatsApp (+51 948 100 794)</span>
           </a>
-
-          <a 
-            href="mailto:central.mochica.de.prensa@gmail.com?subject=Noticia%20para%20Tribuna%20Mochica" 
-            class="btn btn-email-direct"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-            </svg>
-            <span>Enviar por Correo Electrónico</span>
-          </a>
         </div>
 
-        <!-- Notas de confianza -->
+        <!-- Indicadores de confianza y compromiso editorial -->
         <div class="enviar-pills">
           <div class="pill-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
             <span>Reserva de identidad garantizada</span>
           </div>
+          <div class="pill-divider" aria-hidden="true">•</div>
           <div class="pill-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
-            <span>Revisión para la edición de cada semana</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 14 14"></polyline>
+            </svg>
+            <span>Revisión para la edición semanal</span>
           </div>
         </div>
 
@@ -62,16 +61,29 @@
 
 <style>
   .enviar-noticia-section {
-    padding: 3rem 0;
+    padding: 3.5rem 0;
   }
 
   .enviar-card {
-    background: linear-gradient(135deg, #FFFFFF 0%, #FAF8F2 100%);
+    background: linear-gradient(180deg, #FFFFFF 0%, #FAF8F2 100%);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 4px 20px rgba(44, 30, 24, 0.05);
     padding: 2.5rem 1.5rem;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Línea superior decorativa institucional */
+  .enviar-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-burgundy) 0%, var(--color-gold) 100%);
   }
 
   @media (min-width: 768px) {
@@ -81,7 +93,7 @@
   }
 
   .enviar-content {
-    max-width: 680px;
+    max-width: 650px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -89,23 +101,24 @@
   }
 
   .badge-wrap {
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
   }
 
   .enviar-title {
     font-size: 1.85rem;
     color: var(--color-text-main);
     margin-bottom: 0.75rem;
+    line-height: 1.2;
   }
 
   @media (min-width: 768px) {
     .enviar-title {
-      font-size: 2.2rem;
+      font-size: 2.3rem;
     }
   }
 
   .enviar-desc {
-    font-size: 1rem;
+    font-size: 1.02rem;
     color: var(--color-text-body);
     line-height: 1.6;
     margin-bottom: 2rem;
@@ -113,56 +126,74 @@
 
   .contact-actions {
     display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
+    justify-content: center;
     width: 100%;
-    max-width: 480px;
-    margin-bottom: 2rem;
+    max-width: 440px;
+    margin-bottom: 2.25rem;
   }
 
   .btn-whatsapp-direct {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
+    gap: 0.65rem;
     background-color: #25D366;
     color: #FFFFFF;
     font-weight: 700;
-    font-size: 0.98rem;
-    padding: 0.9rem 1.5rem;
+    font-size: 1rem;
+    padding: 0.95rem 1.75rem;
     border-radius: var(--radius-full);
     text-decoration: none;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+    width: 100%;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
   }
 
   .btn-whatsapp-direct:hover {
     background-color: #1EBE5D;
     color: #FFFFFF;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(37, 211, 102, 0.35);
-  }
-
-  .btn-email-direct {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    background-color: #FFFFFF;
-    color: var(--color-burgundy);
-    border: 1.5px solid var(--color-burgundy);
-    font-weight: 600;
-    font-size: 0.95rem;
-    padding: 0.85rem 1.5rem;
-    border-radius: var(--radius-full);
-    text-decoration: none;
-    transition: all 0.2s ease;
-  }
-
-  .btn-email-direct:hover {
-    background-color: var(--color-burgundy-subtle);
-    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
   }
 
   .enviar-pills {
-    display: flex
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 1.5rem;
+    width: 100%;
+  }
+
+  .pill-divider {
+    display: none;
+    color: var(--color-border-dark);
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 640px) {
+    .enviar-pills {
+      flex-direction: row;
+      gap: 1.25rem;
+    }
+    .pill-divider {
+      display: block;
+    }
+  }
+
+  .pill-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .pill-item svg {
+    color: var(--color-burgundy);
+    flex-shrink: 0;
+  }
+</style>
