@@ -1,17 +1,36 @@
-{
-  "id": "11",
-  "numero": "Edición N.° 11",
-  "fecha": "Viernes 28 de agosto de 2026",
-  "fechaCorta": "28 Ago 2026",
-  "destacada": true,
-  "titularPrincipal": "Escribe aquí el titular principal",
-  "descripcion": "Breve resumen de las noticias de la semana.",
-  "portadaImg": "/ediciones/edicion-11.jpg",
-  "pdfUrl": "/ediciones/edicion-11.pdf",
-  "tamano": "3.56 MB",
-  "paginas": 14,
-  "titulares": [
-    "Hola",
-    "Hola 2"
-  ]
-}
+[
+  {
+    "id": "11",
+    "numero": "Edición N.° 11",
+    "fecha": "Viernes 28 de agosto de 2026",
+    "fechaCorta": "28 Ago 2026",
+    "destacada": true,
+    "titularPrincipal": "Escribe aquí el titular principal",
+    "descripcion": "Breve resumen de las noticias de la semana.",
+    "portadaImg": "/ediciones/edicion-11.jpg",
+    "pdfUrl": "/ediciones/edicion-11.pdf",
+    "tamano": "3.56 MB",
+    "paginas": 14,
+    "titulares": [
+      "Hola",
+      "Hola 2"
+    ]
+  },
+  {
+    "id": "10",
+    "numero": "Edición N.° 10",
+    "fecha": "Martes 11 de agosto de 2026",
+    "fechaCorta": "11 Ago 2026",
+    "destacada": false,
+    "titularPrincipal": "Megainspección y clausura de locales clandestinos en José Leonardo Ortiz",
+    "descripcion": "Operativo multisectorial clausura bares clandestinos. Especial: Inteligencia Artificial en el periodismo regional.",
+    "portadaImg": "/ediciones/portada-10.svg",
+    "pdfUrl": "/ediciones/edicion-10.pdf",
+    "tamano": "2.1 MB",
+    "paginas": 8,
+    "titulares": [
+      "Operativo conjunto frena la informalidad en bares de JLO",
+      "El impacto de la Inteligencia Artificial en la prensa regional"
+    ]
+  }
+]
