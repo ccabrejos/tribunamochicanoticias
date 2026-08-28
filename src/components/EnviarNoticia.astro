@@ -1,0 +1,320 @@
+---
+// EnviarNoticia.astro - Sección interactiva para que los lectores envíen denuncias y noticias
+---
+
+<section id="enviar-noticia" class="enviar-noticia-section">
+  <div class="container">
+    <div class="enviar-card">
+      <div class="enviar-grid">
+        
+        <!-- Columna Izquierda: Información y Vía Directa WhatsApp -->
+        <div class="enviar-info-col">
+          <span class="badge badge-gold">PARTICIPACIÓN CIUDADANA</span>
+          <h2 class="enviar-title">Envíanos tu noticia o denuncia comunitaria</h2>
+          
+          <p class="enviar-desc">
+            En <strong>Tribuna Mochica</strong> construimos el periódico junto a nuestros vecinos del Valle La Leche (Íllimo, Túcume, Mochumí, Pacora, Jayanca, Mórrope y Lambayeque).
+          </p>
+
+          <div class="benefits-list">
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </div>
+              <div class="benefit-text">
+                <strong>Reserva de Identidad:</strong> Tus datos se mantendrán en estricta reserva periodística si así lo solicitas.
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              </div>
+              <div class="benefit-text">
+                <strong>Revisión para la Edición Semanal:</strong> Los hechos verificados se publican en nuestra edición impresa y digital.
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón Directo a WhatsApp -->
+          <div class="direct-contact-box">
+            <span class="direct-label">¿Prefieres escribir directamente por WhatsApp?</span>
+            <a 
+              href="https://wa.me/51979313627?text=Hola%20Director%20Juan%20C%C3%A9sar%20Cabrejos,%20deseo%20enviar%20una%20noticia/denuncia%20para%20Tribuna%20Mochica:" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="btn btn-whatsapp"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              <span>Escribir al WhatsApp del Director</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Formulario Dinámico -->
+        <div class="enviar-form-col">
+          <form id="noticia-form" class="noticia-form">
+            <h3 class="form-title">Formulario de Envío de Información</h3>
+
+            <div class="form-group">
+              <label for="autor-nombre">Tu Nombre o Seudónimo (Opcional):</label>
+              <input 
+                type="text" 
+                id="autor-nombre" 
+                name="nombre" 
+                placeholder="Ej. Juan Pérez o Anónimo"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="autor-localidad">Distrito o Caserío del hecho: <span class="required">*</span></label>
+              <input 
+                type="text" 
+                id="autor-localidad" 
+                name="localidad" 
+                placeholder="Ej. Íllimo, Túcume, Mochumí, Pacora..."
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="noticia-titulo">Titular o Tema Principal: <span class="required">*</span></label>
+              <input 
+                type="text" 
+                id="noticia-titulo" 
+                name="titulo" 
+                placeholder="Ej. Problemas en canal de regadío / Aniversario comunal"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="noticia-detalle">Detalle del acontecimiento: <span class="required">*</span></label>
+              <textarea 
+                id="noticia-detalle" 
+                name="detalle" 
+                rows="4" 
+                placeholder="Cuéntanos qué ocurrió, cuándo, dónde y quiénes están involucrados..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                <span>Enviar al Equipo de Redacción</span>
+              </button>
+            </div>
+
+            <p class="form-disclaimer">
+              Al enviar, se abrirá WhatsApp con tu reporte listo para enviar, o tu aplicación de correo favorita.
+            </p>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Manejo accesible del formulario para enviar vía WhatsApp
+  const form = document.getElementById('noticia-form') as HTMLFormElement | null;
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nombre = (document.getElementById('autor-nombre') as HTMLInputElement)?.value.trim() || 'Vecino del Valle La Leche';
+    const localidad = (document.getElementById('autor-localidad') as HTMLInputElement)?.value.trim();
+    const titulo = (document.getElementById('noticia-titulo') as HTMLInputElement)?.value.trim();
+    const detalle = (document.getElementById('noticia-detalle') as HTMLTextAreaElement)?.value.trim();
+
+    if (!localidad || !titulo || !detalle) {
+      alert('Por favor completa los campos obligatorios (*).');
+      return;
+    }
+
+    const mensaje = `*REPORTE CIUDADANO PARA TRIBUNA MOCHICA*%0A%0A` +
+                    `*De:* ${encodeURIComponent(nombre)}%0A` +
+                    `*Lugar:* ${encodeURIComponent(localidad)}%0A` +
+                    `*Tema:* ${encodeURIComponent(titulo)}%0A%0A` +
+                    `*Detalle:*%0A${encodeURIComponent(detalle)}%0A%0A` +
+                    `_Enviado desde la web oficial de Tribuna Mochica._`;
+
+    // Redirigir a WhatsApp
+    const waUrl = `https://wa.me/51979313627?text=${mensaje}`;
+    window.open(waUrl, '_blank');
+  });
+</script>
+
+<style>
+  .enviar-noticia-section {
+    padding: 3.5rem 0;
+  }
+
+  .enviar-card {
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+
+  .enviar-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 860px) {
+    .enviar-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* Info Column */
+  .enviar-info-col {
+    padding: 2rem;
+    background: linear-gradient(180deg, #FFFFFF 0%, #FBF9F4 100%);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  @media (min-width: 860px) {
+    .enviar-info-col {
+      padding: 2.5rem;
+      border-bottom: none;
+      border-right: 1px solid var(--color-border);
+    }
+  }
+
+  .enviar-title {
+    font-size: 1.65rem;
+    margin: 0.6rem 0 0.8rem 0;
+    color: var(--color-text-main);
+  }
+
+  .enviar-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-body);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .benefits-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .benefit-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--color-burgundy-subtle);
+    color: var(--color-burgundy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .benefit-text {
+    font-size: 0.88rem;
+    color: var(--color-text-body);
+    line-height: 1.45;
+  }
+
+  .direct-contact-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .direct-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  /* Form Column */
+  .enviar-form-col {
+    padding: 2rem;
+    background-color: #FFFFFF;
+  }
+
+  @media (min-width: 860px) {
+    .enviar-form-col {
+      padding: 2.5rem;
+    }
+  }
+
+  .noticia-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .form-title {
+    font-size: 1.25rem;
+    color: var(--color-burgundy);
+    margin-bottom: 0.25rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .form-group label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+  }
+
+  .required {
+    color: var(--color-burgundy);
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--color-border-dark);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    color: var(--color-text-main);
+    background-color: var(--color-bg-page);
+    transition: all 0.2s ease;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-burgundy);
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(122, 12, 22, 0.12);
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.85rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .form-disclaimer {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    text-align: center;
+    line-height: 1.4;
+  }
+</style>

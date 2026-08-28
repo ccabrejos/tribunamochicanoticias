@@ -1,0 +1,411 @@
+---
+// PortadaDestacada.astro - Tarjeta de la última edición semanal con diseño prioritario
+export interface Props {
+  edicion: {
+    id: string;
+    numero: string;
+    fecha: string;
+    titularPrincipal: string;
+    descripcion: string;
+    portadaImg: string;
+    pdfUrl: string;
+    tamano?: string;
+    paginas?: number;
+    titulares?: string[];
+  };
+}
+
+const { edicion } = Astro.props;
+---
+
+<section id="portada" class="portada-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <span class="badge badge-burgundy">EDICIÓN ACTUAL</span>
+        <h2 class="section-title">Portada de la Semana</h2>
+      </div>
+      <div class="section-meta">
+        <span class="pulse-dot"></span>
+        <span class="section-meta-text">Publicación más reciente</span>
+      </div>
+    </div>
+
+    <!-- Tarjeta Principal de la Edición Destacada -->
+    <article class="featured-card">
+      <div class="featured-grid">
+        
+        <!-- Columna Izquierda: Vista de Portada Interactiva -->
+        <div class="featured-cover-col">
+          <div class="cover-wrapper">
+            <span class="ribbon-edition">ÚLTIMA EDICIÓN</span>
+            <img 
+              src={edicion.portadaImg} 
+              alt={`Portada de ${edicion.numero} - ${edicion.fecha}`}
+              class="featured-cover-img"
+              loading="eager"
+            />
+            <div class="cover-overlay">
+              <button 
+                type="button" 
+                class="btn-cover-preview"
+                data-open-modal
+                data-pdf={edicion.pdfUrl}
+                data-title={`${edicion.numero} (${edicion.fecha})`}
+                aria-label={`Ver ${edicion.numero} en pantalla completa`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                <span>Clic para ver en grande</span>
+              </button>
+            </div>
+          </div>
+          <div class="cover-footer-note">
+            <span>📄 Formato PDF Original ({edicion.paginas || 8} páginas · {edicion.tamano || '2.4 MB'})</span>
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Información Editorial y Acciones -->
+        <div class="featured-info-col">
+          <div class="edition-badges">
+            <span class="badge badge-burgundy">{edicion.numero}</span>
+            <span class="edition-date">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+              {edicion.fecha}
+            </span>
+          </div>
+
+          <h3 class="featured-headline">
+            {edicion.titularPrincipal}
+          </h3>
+
+          <p class="featured-description">
+            {edicion.descripcion}
+          </p>
+
+          <!-- Lista de titulares destacados -->
+          {edicion.titulares && (
+            <div class="inside-news-box">
+              <h4 class="inside-news-title">En esta edición semanal:</h4>
+              <ul class="inside-news-list">
+                {edicion.titulares.map((item) => (
+                  <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <!-- Botones de Acción (SIN AZUL) -->
+          <div class="featured-actions">
+            <!-- Botón 1: Leer en Visor Web -->
+            <button 
+              type="button" 
+              id="btn-leer-destacada"
+              class="btn btn-primary btn-action-main"
+              data-open-modal
+              data-pdf={edicion.pdfUrl}
+              data-title={`${edicion.numero} - ${edicion.fecha}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+              <span>Leer en Pantalla</span>
+            </button>
+
+            <!-- Botón 2: Descargar PDF -->
+            <a 
+              href={edicion.pdfUrl} 
+              download={`Tribuna-Mochica-${edicion.id}.pdf`}
+              class="btn btn-secondary btn-action-download"
+              title="Descargar archivo PDF completo"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+              <span>Descargar PDF</span>
+            </a>
+
+            <!-- Botón 3: Compartir Edición -->
+            <button 
+              type="button" 
+              class="btn btn-outline btn-action-share"
+              data-share-btn
+              data-share-title={`Tribuna Mochica - ${edicion.numero}`}
+              data-share-text={edicion.titularPrincipal}
+              data-share-url={`/edicion/${edicion.id}`}
+              title="Compartir enlace de esta edición"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg>
+              <span>Compartir</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .portada-section {
+    padding: 2.5rem 0;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .section-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+    color: var(--color-text-main);
+  }
+
+  .section-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-burgundy);
+    border-radius: 50%;
+    box-shadow: 0 0 0 rgba(122, 12, 22, 0.4);
+    animation: pulse 1.8s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(122, 12, 22, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(122, 12, 22, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(122, 12, 22, 0); }
+  }
+
+  /* Featured Card */
+  .featured-card {
+    background-color: var(--color-bg-card);
+    border: 2px solid var(--color-gold);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 860px) {
+    .featured-grid {
+      grid-template-columns: 360px 1fr;
+      padding: 2.25rem;
+      gap: 2.5rem;
+    }
+  }
+
+  /* Cover Column */
+  .featured-cover-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cover-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border);
+    background-color: #FFFFFF;
+    aspect-ratio: 400 / 550;
+  }
+
+  .ribbon-edition {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background-color: var(--color-burgundy);
+    color: #FFFFFF;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    z-index: 10;
+  }
+
+  .featured-cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .cover-wrapper:hover .featured-cover-img {
+    transform: scale(1.03);
+  }
+
+  .cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 22, 21, 0.4);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+    padding: 1rem;
+  }
+
+  .cover-wrapper:hover .cover-overlay {
+    opacity: 1;
+  }
+
+  .btn-cover-preview {
+    background-color: #FFFFFF;
+    color: var(--color-burgundy);
+    border: none;
+    padding: 0.65rem 1.1rem;
+    border-radius: var(--radius-full);
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+  }
+
+  .cover-footer-note {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+
+  /* Info Column */
+  .featured-info-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .edition-badges {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+  }
+
+  .edition-date {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+
+  .featured-headline {
+    font-size: 1.6rem;
+    color: var(--color-text-main);
+    line-height: 1.28;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .featured-headline {
+      font-size: 1.95rem;
+    }
+  }
+
+  .featured-description {
+    font-size: 1rem;
+    color: var(--color-text-body);
+    line-height: 1.6;
+    margin-bottom: 1.35rem;
+  }
+
+  /* Inside News Box */
+  .inside-news-box {
+    background-color: var(--color-bg-warm);
+    border-left: 3px solid var(--color-gold);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.75rem;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+  }
+
+  .inside-news-title {
+    font-size: 0.88rem;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    color: var(--color-burgundy);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.6rem;
+  }
+
+  .inside-news-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .inside-news-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--color-text-body);
+    line-height: 1.4;
+  }
+
+  .inside-news-list li svg {
+    color: var(--color-gold-dark);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* Actions */
+  .featured-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-action-main {
+    flex: 1 1 180px;
+  }
+
+  .btn-action-download {
+    flex: 1 1 170px;
+  }
+
+  .btn-action-share {
+    flex: 0 1 auto;
+  }
+</style>

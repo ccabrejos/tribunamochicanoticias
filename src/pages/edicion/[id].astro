@@ -1,0 +1,195 @@
+---
+// [id].astro - Página dedicada para cada edición semanal
+import Layout from '../../layouts/Layout.astro';
+import edicionesData from '../../data/ediciones.json';
+
+export function getStaticPaths() {
+  return edicionesData.map((ed) => ({
+    params: { id: ed.id },
+    props: { edicion: ed }
+  }));
+}
+
+const { edicion } = Astro.props;
+---
+
+<Layout 
+  title={`${edicion.numero}: ${edicion.titularPrincipal} | Tribuna Mochica`}
+  description={edicion.descripcion}
+>
+  <section class="detail-section">
+    <div class="container">
+      
+      <!-- Migas de pan / Volver -->
+      <nav class="breadcrumb" aria-label="Navegación">
+        <a href="/" class="back-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          <span>Volver al inicio</span>
+        </a>
+        <span class="crumb-separator">/</span>
+        <span class="crumb-current">{edicion.numero}</span>
+      </nav>
+
+      <!-- Encabezado de la Edición -->
+      <header class="edition-header">
+        <div class="header-badges">
+          <span class="badge badge-burgundy">{edicion.numero}</span>
+          <span class="badge badge-gold">{edicion.fecha}</span>
+        </div>
+        
+        <h1 class="edition-title">{edicion.titularPrincipal}</h1>
+        <p class="edition-lead">{edicion.descripcion}</p>
+
+        <!-- Botones de Acción -->
+        <div class="edition-actions">
+          <a 
+            href={edicion.pdfUrl} 
+            download={`Tribuna-Mochica-${edicion.id}.pdf`}
+            class="btn btn-primary"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+            <span>Descargar PDF Completo</span>
+          </a>
+
+          <a 
+            href={edicion.pdfUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="btn btn-secondary"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+            <span>Abrir en Pestaña Completa</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Visor Embebido Completo -->
+      <div class="embedded-viewer-box">
+        <div class="viewer-bar">
+          <span class="viewer-indicator">Visualizador Integrado de Edición</span>
+          <span class="viewer-hint">Usa el zoom o desplázate para leer cada página</span>
+        </div>
+        <iframe 
+          src={`${edicion.pdfUrl}#toolbar=1&navpanes=0`} 
+          title={`Lector de ${edicion.numero}`}
+          class="embedded-iframe"
+        ></iframe>
+      </div>
+
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .detail-section {
+    padding: 2rem 0 4rem 0;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--color-burgundy);
+    font-weight: 600;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  .crumb-separator {
+    color: var(--color-text-muted);
+  }
+
+  .crumb-current {
+    color: var(--color-text-muted);
+  }
+
+  .edition-header {
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .header-badges {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .edition-title {
+    font-size: 1.85rem;
+    color: var(--color-text-main);
+    line-height: 1.25;
+    margin-bottom: 0.85rem;
+  }
+
+  .edition-lead {
+    font-size: 1.05rem;
+    color: var(--color-text-body);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .edition-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .embedded-viewer-box {
+    background-color: var(--color-dark);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 2px solid var(--color-gold);
+  }
+
+  .viewer-bar {
+    background-color: var(--color-dark);
+    color: #FFFFFF;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--color-dark-surface);
+  }
+
+  .viewer-indicator {
+    font-weight: 700;
+    color: var(--color-gold-light);
+  }
+
+  .viewer-hint {
+    color: var(--color-text-light);
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .viewer-hint {
+      display: inline;
+    }
+  }
+
+  .embedded-iframe {
+    width: 100%;
+    height: 80vh;
+    border: none;
+    background-color: #FFFFFF;
+  }
+</style>

@@ -1,0 +1,78 @@
+[
+  {
+    "id": "11",
+    "numero": "Edición N.° 11",
+    "fecha": "Lunes 24 de agosto de 2026",
+    "fechaCorta": "24 Ago 2026",
+    "destacada": true,
+    "titularPrincipal": "Comisión de avanzada del Vaticano evalúa espacios para la histórica visita del Papa León XIV",
+    "descripcion": "La comisión del Vaticano recorre la región evaluando rutas e instalaciones para la histórica visita papal. Además: histórico decomiso de 40 kilos de PBC en Valle La Leche, apertura de Carsa en Lambayeque y análisis del impacto agrícola.",
+    "portadaImg": "/ediciones/portada-11.svg",
+    "pdfUrl": "/ediciones/edicion-11.pdf",
+    "tamano": "2.4 MB",
+    "paginas": 8,
+    "titulares": [
+      "Comisión del Vaticano evalúa rutas y seguridad para visita del Papa León XIV",
+      "Golpe al narcotráfico: incautan 40 kilos de PBC en el Valle La Leche",
+      "Apertura comercial: Carsa inaugura moderna sede en Lambayeque",
+      "Sector Agrario: Informe sobre recursos hídricos en época de siembra"
+    ]
+  },
+  {
+    "id": "10",
+    "numero": "Edición N.° 10",
+    "fecha": "Martes 11 de agosto de 2026",
+    "fechaCorta": "11 Ago 2026",
+    "destacada": false,
+    "titularPrincipal": "Megainspección y clausura de locales clandestinos en José Leonardo Ortiz",
+    "descripcion": "Operativo multisectorial clausura bares clandestinos. Especial: Inteligencia Artificial en el periodismo regional, 75° aniversario de EsSalud Lambayeque y alerta por control de incendios forestales en Cañaris.",
+    "portadaImg": "/ediciones/portada-10.svg",
+    "pdfUrl": "/ediciones/edicion-10.pdf",
+    "tamano": "2.1 MB",
+    "paginas": 8,
+    "titulares": [
+      "Operativo conjunto frena la informalidad en bares de JLO",
+      "El impacto de la Inteligencia Artificial en la prensa regional",
+      "EsSalud Lambayeque celebra 75 años al servicio de los asegurados",
+      "Comunidades de Cañaris se organizan ante riesgo de incendios"
+    ]
+  },
+  {
+    "id": "09",
+    "numero": "Edición N.° 09",
+    "fecha": "Viernes 7 de agosto de 2026",
+    "fechaCorta": "07 Ago 2026",
+    "destacada": false,
+    "titularPrincipal": "Lambayeque en alerta ante altas temperaturas y preparativos regionales",
+    "descripcion": "Reporte meteorológico especial por ola de calor en el norte. Detalle de los preparativos cívicos y religiosos, junto a la actualidad deportiva del histórico club Juan Aurich.",
+    "portadaImg": "/ediciones/portada-09.svg",
+    "pdfUrl": "/ediciones/edicion-09.pdf",
+    "tamano": "1.9 MB",
+    "paginas": 8,
+    "titulares": [
+      "Alerta climática: pronostican temperaturas récord en la costa norte",
+      "Juan Aurich afina plantel para la recta decisiva del torneo",
+      "Obras viales en el Valle La Leche muestran 80% de avance",
+      "Cultura Viva: Festividades tradicionales de Íllimo y Túcume"
+    ]
+  },
+  {
+    "id": "08",
+    "numero": "Edición N.° 08",
+    "fecha": "Lunes 27 de julio de 2026",
+    "fechaCorta": "27 Jul 2026",
+    "destacada": false,
+    "titularPrincipal": "Especial Fiestas Patrias: Orgullo e identidad histórica en el Valle La Leche",
+    "descripcion": "Edición conmemorativa por el aniversario patrio. Crónicas históricas de nuestros pueblos, balance de la producción algodonera y guía turística del circuito arqueológico mochica.",
+    "portadaImg": "/ediciones/portada-08.svg",
+    "pdfUrl": "/ediciones/edicion-08.pdf",
+    "tamano": "2.3 MB",
+    "paginas": 8,
+    "titulares": [
+      "Crónica patria: El aporte de Lambayeque a la gesta independentista",
+      "Ruta Arqueológica: Pirámides de Túcume y Museo Huaca Rajada",
+      "Entrevista al Director sobre el rol de la prensa local independiente",
+      "Balance económico: Crecimiento agroexportador en el norte"
+    ]
+  }
+]

@@ -1,0 +1,283 @@
+---
+// Footer.astro - Pie de página institucional y elegante (SIN AZUL - Fondo Ébano Cálido)
+---
+
+<footer class="site-footer">
+  <!-- Línea decorativa superior -->
+  <div class="divider-mochica"></div>
+
+  <div class="container footer-main">
+    <div class="footer-grid">
+      
+      <!-- Columna 1: Identidad y Dirección -->
+      <div class="footer-brand-col">
+        <div class="footer-logo-wrap">
+          <img src="/logo-mochica.svg" alt="Tribuna Mochica Logo" class="footer-logo" width="65" height="65" />
+          <div>
+            <h3 class="footer-title">TRIBUNA MOCHICA</h3>
+            <p class="footer-slogan">LA VOZ DEL VALLE LA LECHE</p>
+          </div>
+        </div>
+
+        <div class="footer-director-card">
+          <span class="f-dir-label">Fundador y Director:</span>
+          <strong class="f-dir-name">Juan César Cabrejos Becerra</strong>
+          <p class="f-dir-desc">Comprometidos con la verdad, el desarrollo regional y la identidad cultural de nuestros pueblos.</p>
+        </div>
+      </div>
+
+      <!-- Columna 2: Enlaces Rápidos -->
+      <div class="footer-links-col">
+        <h4 class="footer-heading">Navegación</h4>
+        <ul class="footer-links-list">
+          <li><a href="#portada">Portada de la Semana</a></li>
+          <li><a href="#ultimas-noticias">Hemeroteca & Ediciones</a></li>
+          <li><a href="#enviar-noticia">Envíanos tu Noticia</a></li>
+          <li><a href="/edicion/11">Última Edición N.° 11</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3: Cobertura Regional -->
+      <div class="footer-links-col">
+        <h4 class="footer-heading">Cobertura Regional</h4>
+        <ul class="footer-tags-list">
+          <li><span>Íllimo</span></li>
+          <li><span>Túcume</span></li>
+          <li><span>Mochumí</span></li>
+          <li><span>Pacora</span></li>
+          <li><span>Jayanca</span></li>
+          <li><span>Mórrope</span></li>
+          <li><span>Lambayeque</span></li>
+          <li><span>Chiclayo</span></li>
+        </ul>
+      </div>
+
+      <!-- Columna 4: Contacto y Redacción -->
+      <div class="footer-contact-col">
+        <h4 class="footer-heading">Contacto Editorial</h4>
+        <p class="contact-desc">Para correspondencia, avisos y suscripciones:</p>
+        
+        <div class="contact-links">
+          <a href="https://wa.me/51979313627" target="_blank" rel="noopener noreferrer" class="contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C29B38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <span>WhatsApp: +51 979 313 627</span>
+          </a>
+
+          <a href="mailto:redaccion@tribunamochica.pe" class="contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C29B38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+            <span>redaccion@tribunamochica.pe</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Barra Inferior de Derechos -->
+  <div class="footer-bottom">
+    <div class="container bottom-inner">
+      <p class="copyright">
+        © 2026 <strong>Tribuna Mochica</strong> · La Voz del Valle La Leche. Todos los derechos reservados.
+      </p>
+      <p class="credits">
+        Periódico Semanal · Lambayeque, Perú
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: var(--color-dark);
+    color: #E2DBD0;
+    margin-top: auto;
+  }
+
+  .footer-main {
+    padding: 3.5rem 1.25rem 2.5rem 1.25rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .footer-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .footer-grid {
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 2rem;
+    }
+  }
+
+  /* Brand Column */
+  .footer-brand-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .footer-logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer-logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .footer-title {
+    font-size: 1.4rem;
+    color: #FFFFFF;
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+
+  .footer-slogan {
+    font-size: 0.75rem;
+    color: var(--color-gold);
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .footer-director-card {
+    background-color: var(--color-dark-surface);
+    border-left: 3px solid var(--color-burgundy);
+    padding: 0.85rem 1rem;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .f-dir-label {
+    font-size: 0.75rem;
+    color: var(--color-gold-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .f-dir-name {
+    font-size: 0.95rem;
+    color: #FFFFFF;
+  }
+
+  .f-dir-desc {
+    font-size: 0.8rem;
+    color: var(--color-text-light);
+    line-height: 1.4;
+    margin-top: 0.25rem;
+  }
+
+  /* Links Column */
+  .footer-heading {
+    font-size: 0.95rem;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+  }
+
+  .footer-links-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .footer-links-list a {
+    color: #E2DBD0;
+    font-size: 0.88rem;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+  }
+
+  .footer-links-list a:hover {
+    color: var(--color-gold-light);
+    transform: translateX(3px);
+  }
+
+  /* Tags List */
+  .footer-tags-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .footer-tags-list span {
+    display: inline-block;
+    background-color: var(--color-dark-surface);
+    color: #FFFFFF;
+    font-size: 0.78rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-dark-muted);
+  }
+
+  /* Contact Column */
+  .contact-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    margin-bottom: 0.85rem;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #FFFFFF;
+    transition: color 0.2s ease;
+  }
+
+  .contact-item:hover {
+    color: var(--color-gold-light);
+  }
+
+  /* Bottom Bar */
+  .footer-bottom {
+    background-color: #120F0E;
+    border-top: 1px solid var(--color-dark-surface);
+    padding: 1.25rem 0;
+    font-size: 0.82rem;
+    color: var(--color-text-light);
+  }
+
+  .bottom-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  @media (min-width: 640px) {
+    .bottom-inner {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+  }
+
+  .copyright strong {
+    color: #FFFFFF;
+  }
+</style>

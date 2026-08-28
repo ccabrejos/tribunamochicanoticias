@@ -1,0 +1,319 @@
+---
+// VisorPdfModal.astro - Lector modal accesible y responsive de PDFs sin recarga
+---
+
+<div id="pdf-modal" class="pdf-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-backdrop" id="modal-backdrop"></div>
+
+  <div class="modal-dialog">
+    <!-- Barra superior del modal (SIN AZUL - Fondo Carbón Oscuro) -->
+    <div class="modal-header">
+      <div class="modal-title-wrap">
+        <span class="modal-badge">LECTOR DIGITAL</span>
+        <h3 id="modal-title" class="modal-title">Cargando edición...</h3>
+      </div>
+
+      <div class="modal-actions">
+        <!-- Botón Descargar -->
+        <a id="modal-download-btn" href="#" download class="btn-modal-action" title="Descargar PDF">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+          <span class="action-text">Descargar</span>
+        </a>
+
+        <!-- Botón Abrir en Pestaña Nueva -->
+        <a id="modal-external-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn-modal-action" title="Abrir en pestaña nueva">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+          <span class="action-text">Pestaña</span>
+        </a>
+
+        <!-- Botón Cerrar -->
+        <button type="button" id="modal-close-btn" class="btn-modal-close" aria-label="Cerrar lector de PDF">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenedor del PDF Embebido -->
+    <div class="modal-body">
+      <iframe id="pdf-iframe" src="" title="Lector de Periódico PDF" class="pdf-iframe" loading="lazy"></iframe>
+      
+      <!-- Fallback móvil para navegadores con bloqueo de iframe de pdf -->
+      <div id="pdf-mobile-fallback" class="mobile-fallback" style="display: none;">
+        <div class="fallback-content">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7A0C16" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <h4>Lectura optimizada para celular</h4>
+          <p>Para la mejor experiencia de lectura en tu dispositivo móvil, pulsa en abrir o descargar:</p>
+          <div class="fallback-btns">
+            <a id="fallback-open-btn" href="#" target="_blank" class="btn btn-primary">Abrir PDF Completo</a>
+            <a id="fallback-download-btn" href="#" download class="btn btn-secondary">Descargar Archivo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Control JavaScript del modal de lectura de PDF
+  const modal = document.getElementById('pdf-modal');
+  const backdrop = document.getElementById('modal-backdrop');
+  const closeBtn = document.getElementById('modal-close-btn');
+  const modalTitle = document.getElementById('modal-title');
+  const pdfIframe = document.getElementById('pdf-iframe') as HTMLIFrameElement | null;
+  const downloadBtn = document.getElementById('modal-download-btn') as HTMLAnchorElement | null;
+  const externalBtn = document.getElementById('modal-external-btn') as HTMLAnchorElement | null;
+  const fallbackOpenBtn = document.getElementById('fallback-open-btn') as HTMLAnchorElement | null;
+  const fallbackDownloadBtn = document.getElementById('fallback-download-btn') as HTMLAnchorElement | null;
+
+  function openPdfModal(pdfUrl: string, title: string) {
+    if (!modal || !pdfIframe) return;
+
+    if (modalTitle) modalTitle.textContent = title;
+    
+    // Cargar iframe con el parámetro para visor nativo
+    pdfIframe.src = `${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1`;
+    
+    if (downloadBtn) {
+      downloadBtn.href = pdfUrl;
+      downloadBtn.download = title.replace(/[^a-zA-Z0-9_-]/g, '_') + '.pdf';
+    }
+    if (externalBtn) externalBtn.href = pdfUrl;
+    if (fallbackOpenBtn) fallbackOpenBtn.href = pdfUrl;
+    if (fallbackDownloadBtn) {
+      fallbackDownloadBtn.href = pdfUrl;
+      fallbackDownloadBtn.download = title.replace(/[^a-zA-Z0-9_-]/g, '_') + '.pdf';
+    }
+
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePdfModal() {
+    if (!modal || !pdfIframe) return;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    pdfIframe.src = '';
+    document.body.style.overflow = '';
+  }
+
+  // Escuchar clics en todos los botones con data-open-modal
+  document.addEventListener('click', (e) => {
+    const target = (e.target as HTMLElement).closest('[data-open-modal]');
+    if (target) {
+      e.preventDefault();
+      const pdfUrl = target.getAttribute('data-pdf') || '';
+      const title = target.getAttribute('data-title') || 'Edición Semanal';
+      openPdfModal(pdfUrl, title);
+    }
+  });
+
+  // Cerrar modal
+  closeBtn?.addEventListener('click', closePdfModal);
+  backdrop?.addEventListener('click', closePdfModal);
+
+  // Cerrar con tecla Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('is-open')) {
+      closePdfModal();
+    }
+  });
+
+  // Web Share API para botones de compartir
+  document.addEventListener('click', async (e) => {
+    const shareBtn = (e.target as HTMLElement).closest('[data-share-btn]');
+    if (shareBtn) {
+      e.preventDefault();
+      const title = shareBtn.getAttribute('data-share-title') || 'Tribuna Mochica';
+      const text = shareBtn.getAttribute('data-share-text') || 'Lee la edición semanal de Tribuna Mochica';
+      const url = window.location.origin + (shareBtn.getAttribute('data-share-url') || '');
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title, text, url });
+        } catch (err) {
+          // Usuario canceló compartir
+        }
+      } else {
+        // Fallback copiar al portapapeles
+        navigator.clipboard.writeText(url);
+        alert('Enlace copiado al portapapeles: ' + url);
+      }
+    }
+  });
+</script>
+
+<style>
+  .pdf-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+  }
+
+  .pdf-modal.is-open {
+    display: flex;
+  }
+
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(26, 22, 21, 0.8);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .modal-dialog {
+    position: relative;
+    z-index: 101;
+    width: 100%;
+    max-width: 1050px;
+    height: 90vh;
+    background-color: var(--color-dark);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--color-gold-dark);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Header */
+  .modal-header {
+    background-color: var(--color-dark);
+    padding: 0.75rem 1.25rem;
+    border-bottom: 2px solid var(--color-gold);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .modal-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  .modal-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--color-gold);
+  }
+
+  .modal-title {
+    font-size: 1.1rem;
+    color: #FFFFFF;
+    font-family: var(--font-serif);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+  }
+
+  .modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .btn-modal-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.75rem;
+    background-color: var(--color-dark-surface);
+    color: #FFFFFF;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: 1px solid var(--color-dark-muted);
+  }
+
+  .btn-modal-action:hover {
+    background-color: var(--color-burgundy);
+    border-color: var(--color-burgundy-light);
+  }
+
+  .action-text {
+    display: none;
+  }
+
+  @media (min-width: 600px) {
+    .action-text {
+      display: inline;
+    }
+  }
+
+  .btn-modal-close {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    padding: 0.35rem;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn-modal-close:hover {
+    background-color: var(--color-burgundy);
+  }
+
+  /* Body */
+  .modal-body {
+    flex: 1;
+    background-color: #332D2C;
+    position: relative;
+    display: flex;
+  }
+
+  .pdf-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: #FFFFFF;
+  }
+
+  .mobile-fallback {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-bg-page);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .fallback-content {
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .fallback-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+</style>

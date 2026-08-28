@@ -1,0 +1,501 @@
+---
+// Hemeroteca.astro - Listado y buscador dinámico de ediciones publicadas
+export interface Props {
+  ediciones: Array<{
+    id: string;
+    numero: string;
+    fecha: string;
+    fechaCorta?: string;
+    destacada?: boolean;
+    titularPrincipal: string;
+    descripcion: string;
+    portadaImg: string;
+    pdfUrl: string;
+    tamano?: string;
+    paginas?: number;
+    titulares?: string[];
+  }>;
+}
+
+const { ediciones } = Astro.props;
+---
+
+<section id="ultimas-noticias" class="hemeroteca-section">
+  <div class="container">
+    
+    <!-- Encabezado de Sección con Filtro de Búsqueda -->
+    <div class="hemeroteca-header">
+      <div class="hemeroteca-titles">
+        <span class="badge badge-gold">HEMEROTECA DIGITAL</span>
+        <h2 class="hemeroteca-title">Últimas Noticias y Ediciones Semanales</h2>
+        <p class="hemeroteca-desc">
+          Explora el archivo completo de publicaciones. Puedes leer en pantalla o descargar el archivo PDF de cada semana.
+        </p>
+      </div>
+
+      <!-- Buscador en tiempo real -->
+      <div class="search-box">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input 
+            type="text" 
+            id="search-ediciones" 
+            placeholder="Buscar por titular, fecha o edición..."
+            aria-label="Buscar ediciones de Tribuna Mochica"
+          />
+          <button type="button" id="clear-search" class="clear-btn" aria-label="Limpiar búsqueda" style="display: none;">✕</button>
+        </div>
+        <span class="search-count" id="results-count">Mostrando {ediciones.length} ediciones</span>
+      </div>
+    </div>
+
+    <!-- Grid de Ediciones -->
+    <div class="ediciones-grid" id="ediciones-container">
+      {ediciones.map((ed) => (
+        <article 
+          class="edicion-card" 
+          data-id={ed.id}
+          data-title={ed.titularPrincipal.toLowerCase()}
+          data-number={ed.numero.toLowerCase()}
+          data-date={ed.fecha.toLowerCase()}
+          data-desc={ed.descripcion.toLowerCase()}
+        >
+          <!-- Portada miniatura -->
+          <div class="card-cover">
+            <img 
+              src={ed.portadaImg} 
+              alt={`Portada ${ed.numero}`}
+              class="card-img"
+              loading="lazy"
+            />
+            {ed.destacada && (
+              <span class="badge-featured">MÁS RECIENTE</span>
+            )}
+            <button 
+              type="button" 
+              class="card-quick-read"
+              data-open-modal
+              data-pdf={ed.pdfUrl}
+              data-title={`${ed.numero} (${ed.fecha})`}
+              title="Lectura rápida"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+              <span>Ver PDF</span>
+            </button>
+          </div>
+
+          <!-- Contenido y Metadatos -->
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-edition-num">{ed.numero}</span>
+              <span class="meta-dot">·</span>
+              <time class="card-date">{ed.fecha}</time>
+            </div>
+
+            <h3 class="card-headline">
+              <a 
+                href={`/edicion/${ed.id}`}
+                class="headline-link"
+                title={`Ver detalles de ${ed.numero}`}
+              >
+                {ed.titularPrincipal}
+              </a>
+            </h3>
+
+            <p class="card-excerpt">
+              {ed.descripcion}
+            </p>
+
+            <!-- Acciones de la Tarjeta (SIN AZUL) -->
+            <div class="card-actions">
+              <button 
+                type="button" 
+                class="btn btn-primary btn-sm"
+                data-open-modal
+                data-pdf={ed.pdfUrl}
+                data-title={`${ed.numero} (${ed.fecha})`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                <span>Leer Edición</span>
+              </button>
+
+              <a 
+                href={ed.pdfUrl} 
+                download={`Tribuna-Mochica-${ed.id}.pdf`}
+                class="btn btn-secondary btn-sm"
+                title="Descargar PDF"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+                <span>PDF</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- Mensaje cuando no hay resultados de búsqueda -->
+    <div id="no-results" class="no-results-state" style="display: none;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line><line x1="8" x2="14" y1="11" y2="11"></line></svg>
+      <h3>No se encontraron ediciones</h3>
+      <p>Intenta con otros términos como el número de edición (ej. "Edición 10") o temas de tu interés.</p>
+      <button type="button" id="reset-search-btn" class="btn btn-outline btn-sm">Ver todas las ediciones</button>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  // Script interactivo y dinámico para filtrar ediciones
+  const searchInput = document.getElementById('search-ediciones') as HTMLInputElement | null;
+  const clearBtn = document.getElementById('clear-search') as HTMLButtonElement | null;
+  const resetBtn = document.getElementById('reset-search-btn') as HTMLButtonElement | null;
+  const resultsCount = document.getElementById('results-count');
+  const cards = document.querySelectorAll('.edicion-card');
+  const noResults = document.getElementById('no-results');
+
+  function filterEditions() {
+    if (!searchInput) return;
+    const query = searchInput.value.toLowerCase().trim();
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      const htmlCard = card as HTMLElement;
+      const title = htmlCard.dataset.title || '';
+      const number = htmlCard.dataset.number || '';
+      const date = htmlCard.dataset.date || '';
+      const desc = htmlCard.dataset.desc || '';
+
+      const matches = title.includes(query) || number.includes(query) || date.includes(query) || desc.includes(query);
+
+      if (matches) {
+        htmlCard.style.display = 'flex';
+        visibleCount++;
+      } else {
+        htmlCard.style.display = 'none';
+      }
+    });
+
+    if (resultsCount) {
+      resultsCount.textContent = `Mostrando ${visibleCount} de ${cards.length} ediciones`;
+    }
+
+    if (clearBtn) {
+      clearBtn.style.display = query.length > 0 ? 'block' : 'none';
+    }
+
+    if (noResults) {
+      noResults.style.display = visibleCount === 0 ? 'flex' : 'none';
+    }
+  }
+
+  searchInput?.addEventListener('input', filterEditions);
+  
+  clearBtn?.addEventListener('click', () => {
+    if (searchInput) {
+      searchInput.value = '';
+      filterEditions();
+      searchInput.focus();
+    }
+  });
+
+  resetBtn?.addEventListener('click', () => {
+    if (searchInput) {
+      searchInput.value = '';
+      filterEditions();
+      searchInput.focus();
+    }
+  });
+</script>
+
+<style>
+  .hemeroteca-section {
+    padding: 3.5rem 0;
+    background-color: var(--color-bg-warm);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .hemeroteca-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2.25rem;
+  }
+
+  @media (min-width: 860px) {
+    .hemeroteca-header {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .hemeroteca-titles {
+      max-width: 580px;
+    }
+  }
+
+  .hemeroteca-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .hemeroteca-title {
+    font-size: 1.75rem;
+    color: var(--color-text-main);
+  }
+
+  .hemeroteca-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-body);
+  }
+
+  /* Search Box */
+  .search-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 300px;
+  }
+
+  .search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .search-input-wrapper input {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 2.6rem;
+    border: 1px solid var(--color-border-dark);
+    border-radius: var(--radius-full);
+    background-color: #FFFFFF;
+    font-size: 0.9rem;
+    color: var(--color-text-main);
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .search-input-wrapper input:focus {
+    outline: none;
+    border-color: var(--color-burgundy);
+    box-shadow: 0 0 0 3px rgba(122, 12, 22, 0.15);
+  }
+
+  .clear-btn {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 4px;
+  }
+
+  .clear-btn:hover {
+    color: var(--color-burgundy);
+  }
+
+  .search-count {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-align: right;
+  }
+
+  /* Grid of Editions */
+  .ediciones-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .ediciones-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .ediciones-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.75rem;
+    }
+  }
+
+  /* Edition Card */
+  .edicion-card {
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .edicion-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-gold);
+  }
+
+  @media (min-width: 480px) {
+    .edicion-card {
+      flex-direction: row;
+    }
+  }
+
+  .card-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 400 / 550;
+    background-color: #FAF8F2;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 480px) {
+    .card-cover {
+      width: 160px;
+    }
+  }
+
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .badge-featured {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background-color: var(--color-gold-dark);
+    color: #FFFFFF;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .card-quick-read {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(26, 22, 21, 0.85);
+    color: #FFFFFF;
+    border: none;
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .card-cover:hover .card-quick-read {
+    opacity: 1;
+  }
+
+  /* Card Body */
+  .card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-edition-num {
+    font-weight: 700;
+    color: var(--color-burgundy);
+  }
+
+  .meta-dot {
+    color: var(--color-text-light);
+  }
+
+  .card-date {
+    color: var(--color-text-muted);
+  }
+
+  .card-headline {
+    font-size: 1.15rem;
+    line-height: 1.35;
+    margin-bottom: 0.6rem;
+  }
+
+  .headline-link {
+    color: var(--color-text-main);
+    transition: color 0.2s ease;
+  }
+
+  .headline-link:hover {
+    color: var(--color-burgundy);
+  }
+
+  .card-excerpt {
+    font-size: 0.88rem;
+    color: var(--color-text-body);
+    line-height: 1.5;
+    margin-bottom: 1.15rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+  }
+
+  .card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+
+  .btn-sm {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.84rem;
+    min-height: 38px;
+  }
+
+  /* No results */
+  .no-results-state {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background-color: #FFFFFF;
+    border: 1px dashed var(--color-border-dark);
+    border-radius: var(--radius-lg);
+    gap: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .no-results-state h3 {
+    font-size: 1.25rem;
+    color: var(--color-text-main);
+  }
+</style>
