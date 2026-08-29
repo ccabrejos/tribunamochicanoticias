@@ -1,0 +1,121 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import noticias from '../../data/noticias.json';
+
+export function getStaticPaths() {
+  return noticias.map((noticia) => ({
+    params: { id: noticia.id },
+    props: { noticia },
+  }));
+}
+
+const { noticia } = Astro.props;
+---
+
+<Layout title={`${noticia.titulo} | Tribuna Mochica`}>
+  <Header />
+  
+  <article class="container article-page">
+    <div class="article-header">
+      <a href="/" class="back-link">← Volver al inicio</a>
+      <span class="badge">{noticia.categoria}</span>
+      <h1 class="page-title">{noticia.titulo}</h1>
+      
+      <div class="meta-row">
+        <p class="author">Redacción: <strong>{noticia.autor}</strong></p>
+        <p class="date">{noticia.fecha}</p>
+      </div>
+    </div>
+
+    <figure class="featured-figure">
+      <img src={noticia.foto} alt={noticia.titulo} />
+      {noticia.pieDeFoto && <figcaption>{noticia.pieDeFoto}</figcaption>}
+    </figure>
+
+    <div class="article-body">
+      {noticia.contenido.split('\n\n').map((parrafo) => (
+        <p>{parrafo}</p>
+      ))}
+    </div>
+  </article>
+
+  <Footer />
+</Layout>
+
+<style>
+  .article-page {
+    padding: 1.5rem 1rem 3rem;
+    max-width: 760px;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--color-accent);
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-title {
+    font-size: 1.85rem;
+    line-height: 1.25;
+    margin-bottom: 1rem;
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--ink-secondary);
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.6rem 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .featured-figure {
+    margin-bottom: 1.5rem;
+  }
+
+  .featured-figure img {
+    width: 100%;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .featured-figure figcaption {
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin-top: 0.4rem;
+  }
+
+  .article-body {
+    font-size: 1.15rem;
+    line-height: 1.8;
+  }
+
+  .article-body p {
+    margin-bottom: 1.4rem;
+  }
+
+  @media (min-width: 768px) {
+    .page-title {
+      font-size: 2.5rem;
+    }
+  }
+</style>
