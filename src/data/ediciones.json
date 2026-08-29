@@ -40,49 +40,15 @@
     "fecha": "Viernes 7 de agosto de 2026",
     "fechaIso": "2026-08-07",
     "titular": "Preparativos para la visita del Papa León XIV",
-    "bajada": "Alerta por altas temperaturas, actualidad regional, economía, cultura, ecología y deportes en el Valle La Leche.",
+    "bajada": "Alerta por altas temperaturas, actualidad regional, economía, cultura, ecología y deportes.",
     "titularesSecundarios": [
-      "Comisión especial evalúa recorrido en la región Lambayeque",
-      "Avances de obras preventivas y defensas ribereñas"
+      "Noticia regional destacada",
+      "Avances de obras en el Valle La Leche"
     ],
     "paginas": 14,
     "peso": "4.73 MB",
     "archivoPdf": "/ediciones/edicion-09.pdf",
     "portadaImg": "/ediciones/edicion-09.jpg",
-    "destacada": false
-  },
-  {
-    "id": "8",
-    "numero": 8,
-    "fecha": "Viernes 31 de julio de 2026",
-    "fechaIso": "2026-07-31",
-    "titular": "Impulsan proyectos agrícolas y conservación en el Valle",
-    "bajada": "Productores del valle coordinan mejoras en la infraestructura de riego, balance por Fiestas Patrias e informe especial sobre la identidad cultural norteña.",
-    "titularesSecundarios": [
-      "Comités de regantes inspeccionan canales en Íllimo y Túcume",
-      "Celebraciones tradicionales y turismo en Mochumí"
-    ],
-    "paginas": 12,
-    "peso": "3.40 MB",
-    "archivoPdf": "/ediciones/edicion-08.pdf",
-    "portadaImg": "/ediciones/edicion-08.jpg",
-    "destacada": false
-  },
-  {
-    "id": "7",
-    "numero": 7,
-    "fecha": "Viernes 24 de julio de 2026",
-    "fechaIso": "2026-07-24",
-    "titular": "Obras viales y prevención ante temporada de invierno",
-    "bajada": "Autoridades locales e instituciones civiles coordinan planes de contingencia, apoyo al agro local y actividades comunitarias en Lambayeque.",
-    "titularesSecundarios": [
-      "Mantenimiento de caminos rurales en distritos del Valle La Leche",
-      "Feria artesanal y gastronómica en Lambayeque"
-    ],
-    "paginas": 12,
-    "peso": "3.25 MB",
-    "archivoPdf": "/ediciones/edicion-07.pdf",
-    "portadaImg": "/ediciones/edicion-07.jpg",
     "destacada": false
   }
 ]
