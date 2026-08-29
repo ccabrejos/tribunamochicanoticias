@@ -50,13 +50,13 @@
     "archivoPdf": "/ediciones/edicion-09.pdf",
     "portadaImg": "/ediciones/edicion-09.jpg",
     "destacada": false
-  }
-   {
+  },
+  {
     "id": "8",
     "numero": 8,
     "fecha": "Miércoles 29 de julio de 2026",
     "fechaIso": "2026-07-29",
-    "titular": "Prevención frente al fenómeno El Niño ",
+    "titular": "Prevención frente al fenómeno El Niño",
     "bajada": "Información nacional, política, prevención frente al fenómeno El Niño y actualidad cultural de la región Lambayeque.",
     "titularesSecundarios": [
       "Información nacional",
