@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import PdfModal from '../components/PdfModal.astro';
 import '../styles/global.css';
 
+---
 export interface Props {
   title?: string;
   description?: string;
@@ -14,10 +15,12 @@ export interface Props {
 const {
   title = "Tribuna Mochica | La Voz del Valle La Leche · Edición Digital",
   description = "Lee y descarga semanalmente el periódico Tribuna Mochica. Dirigido por Juan César Cabrejos Becerra. Noticias de Lambayeque, Valle La Leche, Íllimo, Túcume, Mochumí y la región.",
-  image = "/ediciones/edicion-11.jpg"
+  image = "/logo.jpg"
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://tribunamochica.vercel.app');
+const siteURL = Astro.site || 'https://tribunamochica.vercel.app';
+const canonicalURL = new URL(Astro.url.pathname, siteURL);
+const imageURL = new URL(image, siteURL).href;
 ---
 <!DOCTYPE html>
 <html lang="es">
@@ -25,27 +28,23 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://tribunam
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <!-- Favicon -->
   <link rel="icon" type="image/jpg" href="/favicon.png" />
-  <meta name="generator" content={Astro.generator} />
-
-  <!-- Título y Metadatos SEO -->
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonicalURL} />
 
-  <!-- Open Graph / Redes Sociales / WhatsApp / Facebook -->
+  <!-- Open Graph / WhatsApp / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content={canonicalURL} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-  <meta property="og:image" content={image} />
+  <meta property="og:image" content={imageURL} />
 
   <!-- Twitter Card -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:title" content={title} />
   <meta property="twitter:description" content={description} />
-  <meta property="twitter:image" content={image} />
+  <meta property="twitter:image" content={imageURL} />
 
   <!-- Fuentes Google: Playfair Display & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
