@@ -1,22 +1,16 @@
 ---
-// index.astro - Página Principal de Tribuna Mochica
 import Layout from '../layouts/Layout.astro';
-import PortadaDestacada from '../components/PortadaDestacada.astro';
-import Hemeroteca from '../components/Hemeroteca.astro';
-import EnviarNoticia from '../components/EnviarNoticia.astro';
-import edicionesData from '../data/ediciones.json';
-
-// Encontrar la edición destacada (la más reciente)
-const edicionDestacada = edicionesData.find(e => e.destacada) || edicionesData[0];
+import Header from '../components/Header.astro';
+import UltimasNoticias from '../components/UltimasNoticias.astro';
+import UltimasEdiciones from '../components/UltimasEdiciones.astro';
+import Footer from '../components/Footer.astro';
 ---
 
-<Layout>
-  <!-- 1. Portada Destacada con Visor y Descarga -->
-  <PortadaDestacada edicion={edicionDestacada} />
-
-  <!-- 2. Hemeroteca de Ediciones y Últimas Noticias -->
-  <Hemeroteca ediciones={edicionesData} />
-
-  <!-- 3. Envíanos tu Noticia (Formulario y WhatsApp) -->
-  <EnviarNoticia />
+<Layout title="Tribuna Mochica | Periódico Digital">
+  <Header />
+  <main class="container">
+    <UltimasNoticias />
+    <UltimasEdiciones />
+  </main>
+  <Footer />
 </Layout>
