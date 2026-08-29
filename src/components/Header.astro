@@ -1,0 +1,366 @@
+---
+import config from '../data/config.json';
+const pathname = new URL(Astro.request.url).pathname;
+---
+
+<header class="site-header">
+  <!-- Barra superior con fecha y ubicación -->
+  <div class="top-bar">
+    <div class="container top-bar-content">
+      <div class="top-bar-left">
+        <span class="live-date" id="headerDate">Sábado, 29 de Agosto de 2026</span>
+        <span class="divider">•</span>
+        <span class="location">{config.ubicacion}</span>
+      </div>
+      <div class="top-bar-right">
+        <span class="edition-type">Edición Digital & Impresa</span>
+        <span class="divider">•</span>
+        <a href="https://wa.me/51974000000?text=Hola%20Tribuna%20Mochica,%20deseo%20enviar%20una%20noticia" target="_blank" rel="noopener" class="top-whatsapp">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+          Envía tu noticia
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cabecera principal con Logotipo, Título y Director -->
+  <div class="masthead">
+    <div class="container masthead-content">
+      <!-- Botón menú móvil -->
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú de navegación">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+
+      <!-- Logotipo e Identidad -->
+      <a href="/" class="brand-link">
+        <img src="/images/logo.jpg" alt="Logo Tribuna Mochica" class="brand-logo" width="85" height="85" />
+        <div class="brand-text">
+          <h1 class="newspaper-title">TRIBUNA MOCHICA</h1>
+          <p class="newspaper-slogan">LA VOZ DEL VALLE LA LECHE</p>
+          <div class="director-badge">
+            <span class="director-label">Director:</span>
+            <strong class="director-name">{config.director}</strong>
+          </div>
+        </div>
+      </a>
+
+      <!-- Acceso rápido a Edición Actual en Desktop -->
+      <div class="header-action-desktop">
+        <a href="/#edicion-actual" class="btn btn-primary btn-sm">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Edición Semanal PDF
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de Navegación Principal -->
+  <nav class="main-nav" id="mainNav">
+    <div class="container nav-container">
+      <ul class="nav-links">
+        <li>
+          <a href="/" class={pathname === '/' ? 'active' : ''}>
+            Inicio
+          </a>
+        </li>
+        <li>
+          <a href="/noticias" class={pathname.startsWith('/noticias') ? 'active' : ''}>
+            Últimas Noticias
+          </a>
+        </li>
+        <li>
+          <a href="/#edicion-actual" class="nav-highlight">
+            Edición Actual (PDF)
+          </a>
+        </li>
+        <li>
+          <a href="/ediciones" class={pathname.startsWith('/ediciones') ? 'active' : ''}>
+            Ediciones Pasadas
+          </a>
+        </li>
+        <li>
+          <a href="/contacto" class={pathname === '/contacto' ? 'active' : ''}>
+            Contacto Editorial
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    background-color: var(--color-papel);
+    border-bottom: 3px double var(--color-vino);
+    position: relative;
+    z-index: 100;
+  }
+
+  /* Top bar */
+  .top-bar {
+    background-color: var(--color-vino);
+    color: #FFFFFF;
+    font-size: 0.85rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--color-ocre);
+  }
+
+  .top-bar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .top-bar-left, .top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .divider {
+    color: var(--color-ocre);
+    opacity: 0.8;
+  }
+
+  .top-whatsapp {
+    color: #FFF !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .top-whatsapp:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+  }
+
+  /* Masthead */
+  .masthead {
+    padding: 1.25rem 0 1rem 0;
+    background-color: var(--color-papel);
+  }
+
+  .masthead-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand-link {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    color: var(--color-vino);
+    text-decoration: none;
+  }
+
+  .brand-logo {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 3px solid var(--color-ocre);
+    box-shadow: 0 3px 8px rgba(120, 29, 34, 0.2);
+    object-fit: cover;
+    background-color: #FFF;
+    flex-shrink: 0;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .newspaper-title {
+    font-family: var(--font-masthead);
+    font-size: 1.9rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    color: var(--color-vino);
+    line-height: 1;
+    margin: 0;
+  }
+
+  .newspaper-slogan {
+    font-family: var(--font-titulares);
+    font-size: 0.95rem;
+    font-style: italic;
+    color: var(--color-ocre);
+    letter-spacing: 0.5px;
+    margin: 0.2rem 0;
+    font-weight: 600;
+  }
+
+  .director-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+    color: var(--color-tinta-suave);
+    margin-top: 0.15rem;
+  }
+
+  .director-badge strong {
+    color: var(--color-tinta);
+  }
+
+  .header-action-desktop {
+    display: none;
+  }
+
+  .btn-sm {
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  /* Hamburger Menu */
+  .mobile-menu-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: 1px solid var(--color-borde);
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    order: -1;
+  }
+
+  .hamburger-bar {
+    width: 100%;
+    height: 3px;
+    background-color: var(--color-vino);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  /* Navigation */
+  .main-nav {
+    background-color: var(--color-vino);
+    border-top: 2px solid var(--color-ocre);
+    display: none;
+  }
+
+  .main-nav.is-open {
+    display: block;
+  }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0;
+  }
+
+  .nav-links li a {
+    display: block;
+    padding: 0.85rem 1.25rem;
+    color: #FFFFFF !important;
+    font-family: var(--font-cuerpo);
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-links li a:hover,
+  .nav-links li a.active {
+    background-color: var(--color-vino-oscuro);
+    color: var(--color-ocre-brillante) !important;
+  }
+
+  .nav-links li a.nav-highlight {
+    color: var(--color-ocre-brillante) !important;
+    font-weight: 700;
+  }
+
+  /* Desktop Styles */
+  @media (min-width: 860px) {
+    .brand-logo {
+      width: 90px;
+      height: 90px;
+    }
+
+    .newspaper-title {
+      font-size: 2.6rem;
+      letter-spacing: 2.5px;
+    }
+
+    .newspaper-slogan {
+      font-size: 1.15rem;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+    }
+
+    .header-action-desktop {
+      display: block;
+    }
+
+    .main-nav {
+      display: block !important;
+    }
+
+    .nav-links {
+      flex-direction: row;
+      justify-content: flex-start;
+      padding: 0;
+    }
+
+    .nav-links li a {
+      padding: 0.75rem 1.25rem;
+      border-bottom: none;
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 0.98rem;
+    }
+
+    .nav-links li:last-child a {
+      border-right: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .top-bar-right {
+      display: none;
+    }
+
+    .newspaper-title {
+      font-size: 1.45rem;
+    }
+
+    .brand-logo {
+      width: 58px;
+      height: 58px;
+    }
+  }
+</style>
+
+<script>
+  // Script para menú móvil y fecha actual
+  const menuBtn = document.getElementById('mobileMenuBtn');
+  const mainNav = document.getElementById('mainNav');
+
+  if (menuBtn && mainNav) {
+    menuBtn.addEventListener('click', () => {
+      mainNav.classList.toggle('is-open');
+    });
+  }
+
+  // Formato de fecha en español
+  const dateEl = document.getElementById('headerDate');
+  if (dateEl) {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const today = new Date();
+    const formatted = today.toLocaleDateString('es-PE', options);
+    // Capitalizar primera letra
+    dateEl.textContent = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+  }
+</script>

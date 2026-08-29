@@ -1,0 +1,485 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NewsCard from '../components/NewsCard.astro';
+import EditionCard from '../components/EditionCard.astro';
+import noticias from '../data/noticias.json';
+import ediciones from '../data/ediciones.json';
+import config from '../data/config.json';
+
+const edicionActual = ediciones[0];
+const edicionesPasadas = ediciones.slice(1);
+const noticiaPrincipal = noticias[0];
+const otrasNoticias = noticias.slice(1);
+---
+
+<BaseLayout 
+  title={`${config.siteName} — ${config.siteTagline} | Director: ${config.director}`}
+  description="Edición digital del semanario Tribuna Mochica. Descarga las ediciones semanales en PDF y entérate de las últimas noticias del Valle La Leche y Lambayeque."
+>
+  <!-- SECCIÓN 1: EDICIÓN ACTUAL (DESTACADA) -->
+  <section class="section-edicion-actual" id="edicion-actual">
+    <div class="container">
+      <div class="section-badge-wrapper">
+        <span class="badge-tag">Semanario Impreso & Digital</span>
+        <h2 class="hero-section-title">EDICIÓN ACTUAL</h2>
+      </div>
+
+      <div class="hero-edicion-card">
+        <div class="edicion-cover-col">
+          <div class="cover-frame">
+            <img src={edicionActual.portadaUrl} alt={`Portada ${edicionActual.titulo}`} class="cover-image" width="380" height="520" />
+            <div class="cover-ribbon">N° {edicionActual.numero}</div>
+          </div>
+        </div>
+
+        <div class="edicion-info-col">
+          <div class="edicion-meta-top">
+            <span class="meta-date">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              {edicionActual.fechaLegible}
+            </span>
+            <span class="meta-status">Disponible para descarga gratuita</span>
+          </div>
+
+          <h1 class="hero-edicion-headline">{edicionActual.titulo}</h1>
+          <p class="hero-edicion-desc">{edicionActual.resumen}</p>
+
+          <!-- Titulares Principales en el PDF -->
+          <div class="hero-headlines-box">
+            <h4 class="headlines-box-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              Titulares de esta semana:
+            </h4>
+            <ul class="headlines-list">
+              {edicionActual.titulares.map((titular) => (
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  <span>{titular}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Botones de Acción -->
+          <div class="hero-action-buttons">
+            <a href={`/ediciones/${edicionActual.numero}`} class="btn btn-primary btn-lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+              Leer PDF en Línea
+            </a>
+
+            <a href={edicionActual.pdfUrl} download={`Tribuna-Mochica-Edicion-${edicionActual.numero}.pdf`} class="btn btn-secondary btn-lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Descargar PDF
+            </a>
+
+            <a href={`https://api.whatsapp.com/send?text=${encodeURIComponent('Lee la Edición N° ' + edicionActual.numero + ' de Tribuna Mochica: https://tribunamochica.pe/ediciones/' + edicionActual.numero)}`} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+              Compartir
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2: ÚLTIMAS NOTICIAS -->
+  <section class="section-noticias" id="ultimas-noticias">
+    <div class="container">
+      <div class="section-header">
+        <h2>Últimas Noticias</h2>
+        <a href="/noticias" class="view-all-link">
+          Ver todas las noticias
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </a>
+      </div>
+
+      <div class="news-grid">
+        <!-- Noticia Principal (Destacada) -->
+        <div class="grid-col-featured">
+          <NewsCard
+            slug={noticiaPrincipal.slug}
+            titulo={noticiaPrincipal.titulo}
+            bajada={noticiaPrincipal.bajada}
+            autor={noticiaPrincipal.autor}
+            categoria={noticiaPrincipal.categoria}
+            fechaFormateada={noticiaPrincipal.fechaFormateada}
+            imagen={noticiaPrincipal.imagen}
+            tiempoLectura={noticiaPrincipal.tiempoLectura}
+            destacado={true}
+          />
+        </div>
+
+        <!-- Otras Noticias -->
+        {otrasNoticias.map((item) => (
+          <div class="grid-col-item">
+            <NewsCard
+              slug={item.slug}
+              titulo={item.titulo}
+              bajada={item.bajada}
+              autor={item.autor}
+              categoria={item.categoria}
+              fechaFormateada={item.fechaFormateada}
+              imagen={item.imagen}
+              tiempoLectura={item.tiempoLectura}
+              destacado={false}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3: EDICIONES PASADAS -->
+  <section class="section-ediciones-pasadas" id="ediciones-pasadas">
+    <div class="container">
+      <div class="section-header">
+        <h2>Ediciones Pasadas (PDF)</h2>
+        <a href="/ediciones" class="view-all-link">
+          Ver hemeroteca completa
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </a>
+      </div>
+
+      <div class="ediciones-grid">
+        {edicionesPasadas.map((ed) => (
+          <EditionCard
+            numero={ed.numero}
+            titulo={ed.titulo}
+            fechaLegible={ed.fechaLegible}
+            pdfUrl={ed.pdfUrl}
+            portadaUrl={ed.portadaUrl}
+            resumen={ed.resumen}
+            titulares={ed.titulares}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4: BANNER DE PARTICIPACIÓN CIUDADANA -->
+  <section class="section-participacion">
+    <div class="container">
+      <div class="participacion-card">
+        <div class="participacion-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <div class="participacion-text">
+          <h3 class="participacion-title">¿Tienes una noticia, reporte vecinal o comunicado?</h3>
+          <p class="participacion-desc">
+            Tribuna Mochica es la voz de todos los pueblos del Valle La Leche. Escríbenos directamente a la redacción y comparte tu información con nosotros.
+          </p>
+        </div>
+        <div class="participacion-cta">
+          <a href="https://wa.me/51974000000?text=Hola%20Tribuna%20Mochica,%20deseo%20enviar%20una%20noticia" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+            Escribir a Redacción
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Sección 1: Hero Edición Actual */
+  .section-edicion-actual {
+    padding: 2rem 0 3rem 0;
+    background: linear-gradient(180deg, rgba(120, 29, 34, 0.04) 0%, transparent 100%);
+  }
+
+  .section-badge-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .badge-tag {
+    background-color: var(--color-vino);
+    color: #FFFFFF;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.25rem 0.65rem;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .hero-section-title {
+    font-size: 1.25rem;
+    color: var(--color-ocre);
+    font-family: var(--font-titulares);
+    margin: 0;
+  }
+
+  .hero-edicion-card {
+    background-color: var(--color-papel-card);
+    border: 2px solid var(--color-vino);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--sombra-hover);
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .edicion-cover-col {
+    display: flex;
+    justify-content: center;
+  }
+
+  .cover-frame {
+    position: relative;
+    max-width: 320px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(120, 29, 34, 0.2);
+    border: 1px solid var(--color-borde);
+  }
+
+  .cover-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+
+  .cover-ribbon {
+    position: absolute;
+    top: 14px;
+    right: -32px;
+    background-color: var(--color-ocre);
+    color: var(--color-tinta);
+    font-weight: 900;
+    font-size: 0.85rem;
+    padding: 0.35rem 2.5rem;
+    transform: rotate(45deg);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  }
+
+  .edicion-info-col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .edicion-meta-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .meta-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--color-vino);
+    font-weight: 700;
+  }
+
+  .meta-status {
+    background-color: var(--color-ocre-fondo);
+    color: var(--color-vino);
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: 1px solid var(--color-ocre);
+  }
+
+  .hero-edicion-headline {
+    font-size: 1.7rem;
+    line-height: 1.25;
+    margin-bottom: 0.85rem;
+    color: var(--color-vino);
+  }
+
+  .hero-edicion-desc {
+    font-size: 1.05rem;
+    color: var(--color-tinta-suave);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-headlines-box {
+    background-color: var(--color-papel-oscuro);
+    padding: 1.1rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--color-vino);
+    margin-bottom: 1.5rem;
+  }
+
+  .headlines-box-title {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    color: var(--color-vino);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  .headlines-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .headlines-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    color: var(--color-tinta);
+    margin-bottom: 0.45rem;
+    line-height: 1.4;
+  }
+
+  .headlines-list li svg {
+    color: var(--color-ocre);
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .hero-action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .btn-lg {
+    padding: 0.9rem 1.4rem;
+    font-size: 1.05rem;
+  }
+
+  /* Desktop Hero */
+  @media (min-width: 860px) {
+    .hero-edicion-card {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      padding: 2.25rem;
+      gap: 2.5rem;
+    }
+
+    .hero-edicion-headline {
+      font-size: 2.2rem;
+    }
+
+    .hero-action-buttons {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+
+  /* Sección 2: Noticias */
+  .section-noticias {
+    padding: 2.5rem 0;
+  }
+
+  .view-all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--color-vino);
+  }
+
+  .view-all-link:hover {
+    color: var(--color-vino-oscuro);
+    text-decoration: underline;
+  }
+
+  .news-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .news-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-col-featured {
+      grid-column: span 2;
+    }
+  }
+
+  /* Sección 3: Ediciones Pasadas */
+  .section-ediciones-pasadas {
+    padding: 2.5rem 0;
+    background-color: var(--color-papel-oscuro);
+    margin-top: 2rem;
+    border-top: 1px solid var(--color-borde);
+    border-bottom: 1px solid var(--color-borde);
+  }
+
+  .ediciones-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .ediciones-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Sección 4: Participación */
+  .section-participacion {
+    padding: 3rem 0 1rem 0;
+  }
+
+  .participacion-card {
+    background-color: var(--color-papel-card);
+    border: 2px dashed var(--color-ocre);
+    border-radius: 10px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.25rem;
+  }
+
+  .participacion-icon {
+    color: var(--color-vino);
+    background-color: var(--color-ocre-fondo);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--color-ocre);
+  }
+
+  .participacion-title {
+    font-size: 1.35rem;
+    color: var(--color-vino);
+    margin-bottom: 0.5rem;
+  }
+
+  .participacion-desc {
+    font-size: 0.98rem;
+    color: var(--color-tinta-suave);
+    max-width: 650px;
+  }
+
+  @media (min-width: 768px) {
+    .participacion-card {
+      flex-direction: row;
+      text-align: left;
+      justify-content: space-between;
+      padding: 2rem 2.5rem;
+    }
+
+    .participacion-cta {
+      flex-shrink: 0;
+    }
+  }
+</style>

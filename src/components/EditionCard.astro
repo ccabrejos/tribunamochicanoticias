@@ -1,0 +1,184 @@
+---
+interface Props {
+  numero: number;
+  titulo: string;
+  fechaLegible: string;
+  pdfUrl: string;
+  portadaUrl: string;
+  resumen: string;
+  titulares?: string[];
+  destacado?: boolean;
+}
+
+const { numero, titulo, fechaLegible, pdfUrl, portadaUrl, resumen, titulares = [], destacado = false } = Astro.props;
+---
+
+<div class={`newspaper-card edition-card ${destacado ? 'edition-featured' : ''}`}>
+  <div class="edition-cover-wrapper">
+    <img src={portadaUrl} alt={`Portada Edición N° ${numero}`} class="edition-cover-img" loading="lazy" width="400" height="550" />
+    <span class="badge-edition">Edición N° {numero}</span>
+  </div>
+
+  <div class="edition-details">
+    <div class="edition-date-tag">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+      {fechaLegible}
+    </div>
+
+    <h3 class="edition-title">{titulo}</h3>
+    <p class="edition-summary">{resumen}</p>
+
+    {titulares.length > 0 && (
+      <div class="edition-headlines">
+        <strong class="headlines-label">Titulares de la edición:</strong>
+        <ul>
+          {titulares.slice(0, 3).map(item => (
+            <li>• {item}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    <div class="edition-actions">
+      <!-- Botón Leer en Visor Web -->
+      <a href={`/ediciones/${numero}`} class="btn btn-primary btn-read">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        Leer Edición
+      </a>
+
+      <!-- Botón Descargar PDF -->
+      <a href={pdfUrl} download={`Tribuna-Mochica-Edicion-${numero}.pdf`} class="btn btn-outline btn-download" title="Descargar archivo PDF completo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        PDF
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .edition-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1.25rem;
+  }
+
+  .edition-cover-wrapper {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background-color: var(--color-papel-oscuro);
+    border: 1px solid var(--color-borde);
+  }
+
+  .edition-cover-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+
+  .badge-edition {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--color-vino);
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 4px;
+    border: 1px solid var(--color-ocre);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  .edition-details {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .edition-date-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--color-vino);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+
+  .edition-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+  }
+
+  .edition-summary {
+    font-size: 0.92rem;
+    color: var(--color-tinta-suave);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .edition-headlines {
+    background-color: var(--color-papel-oscuro);
+    padding: 0.75rem 0.9rem;
+    border-radius: 6px;
+    margin-bottom: 1.25rem;
+    border-left: 3px solid var(--color-ocre);
+  }
+
+  .headlines-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-vino);
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+
+  .edition-headlines ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .edition-headlines li {
+    font-size: 0.85rem;
+    color: var(--color-tinta);
+    margin-bottom: 0.25rem;
+    line-height: 1.35;
+  }
+
+  .edition-actions {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: auto;
+  }
+
+  .btn-read {
+    flex-grow: 1;
+  }
+
+  .btn-download {
+    padding: 0.75rem 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .edition-card.edition-featured {
+      flex-direction: row;
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    .edition-featured .edition-cover-wrapper {
+      max-width: 240px;
+      flex-shrink: 0;
+    }
+
+    .edition-featured .edition-title {
+      font-size: 1.6rem;
+    }
+  }
+</style>

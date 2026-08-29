@@ -1,0 +1,54 @@
+[
+  {
+    "numero": 124,
+    "slug": "edicion-124",
+    "titulo": "Edición N° 124 — Avances en defensas ribereñas del Río La Leche",
+    "fecha": "2026-08-25",
+    "fechaLegible": "Semana del 25 al 31 de Agosto de 2026",
+    "pdfUrl": "/ediciones/edicion-124.pdf",
+    "portadaUrl": "/ediciones/edicion-124.jpg",
+    "destacado": true,
+    "paginas": 8,
+    "resumen": "Reporte especial sobre las obras de descolmatación e inspección técnica a lo largo del cauce del Río La Leche para proteger los valles agrícolas de Íllimo y Pacora.",
+    "titulares": [
+      "Defensas ribereñas: balance técnico de los puntos críticos",
+      "Asociación de agricultores fortalece cadena productiva del maíz y loche",
+      "Crónica: Historia viva de las huacas y comunidades del Valle La Leche",
+      "Editorial: La necesidad de inversión vial sostenible en los distritos norteños"
+    ]
+  },
+  {
+    "numero": 123,
+    "slug": "edicion-123",
+    "titulo": "Edición N° 123 — Productores impulsan protección del Loche Lambayecano",
+    "fecha": "2026-08-18",
+    "fechaLegible": "Semana del 18 al 24 de Agosto de 2026",
+    "pdfUrl": "/ediciones/edicion-123.pdf",
+    "portadaUrl": "/ediciones/edicion-123.jpg",
+    "destacado": false,
+    "paginas": 8,
+    "resumen": "La identidad gastronómica y el valor de nuestra tierra. Agricultores de Íllimo y Túcume se organizan para salvaguardar el zapallo loche tradicional.",
+    "titulares": [
+      "Alianza campesina por la denominación de origen del Loche",
+      "Túcume prepara festividad costumbrista en honor a la Virgen Purísima",
+      "Informe educativo: El legado de los maestros artesanos en Ferreñafe"
+    ]
+  },
+  {
+    "numero": 122,
+    "slug": "edicion-122",
+    "titulo": "Edición N° 122 — Santuario Histórico Bosque de Pómac y nuevos hallazgos",
+    "fecha": "2026-08-11",
+    "fechaLegible": "Semana del 11 al 17 de Agosto de 2026",
+    "pdfUrl": "/ediciones/edicion-122.pdf",
+    "portadaUrl": "/ediciones/edicion-122.jpg",
+    "destacado": false,
+    "paginas": 8,
+    "resumen": "Investigadores y conservadores detallan los trabajos de preservación en las pirámides de adobe y la biodiversidad del bosque seco más grande de América del Sur.",
+    "titulares": [
+      "Nueva fase de investigación en el complejo arqueológico de Pómac",
+      "Pueblos del valle solicitan mejoras urgentes en centros de salud",
+      "Especial de fin de semana: Tradiciones culinarias de la abuela mochica"
+    ]
+  }
+]

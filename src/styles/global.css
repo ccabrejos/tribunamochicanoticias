@@ -1,0 +1,243 @@
+/* TRIBUNA MOCHICA - ESTILOS GLOBALES */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400&family=Source+Sans+3:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Paleta Oficial Tribuna Mochica - Cero Azul */
+  --color-papel: #F9F6EE;
+  --color-papel-card: #FFFFFF;
+  --color-papel-oscuro: #F1ECE0;
+  --color-vino: #781D22;
+  --color-vino-oscuro: #541115;
+  --color-vino-claro: #96282E;
+  --color-ocre: #C6923C;
+  --color-ocre-brillante: #D8A54E;
+  --color-ocre-fondo: #F6EEDF;
+  --color-tinta: #1C1815;
+  --color-tinta-suave: #4F4741;
+  --color-borde: #D8CEBC;
+  --color-borde-fuerte: #781D22;
+  
+  /* Fuentes */
+  --font-masthead: 'Cinzel', 'Georgia', serif;
+  --font-titulares: 'Playfair Display', 'Georgia', serif;
+  --font-cuerpo: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Sombras y elevaciones */
+  --sombra-suave: 0 3px 12px rgba(28, 24, 21, 0.07);
+  --sombra-card: 0 4px 16px rgba(120, 29, 34, 0.08);
+  --sombra-hover: 0 8px 24px rgba(120, 29, 34, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-cuerpo);
+  background-color: var(--color-papel);
+  color: var(--color-tinta);
+  font-size: 16px;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-papel);
+  background-image: radial-gradient(#E8DFC8 0.75px, transparent 0.75px);
+  background-size: 24px 24px;
+}
+
+a {
+  color: var(--color-vino);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-vino-oscuro);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Tipografía Periodística */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-titulares);
+  color: var(--color-vino);
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+p {
+  color: var(--color-tinta);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+/* Contenedores y Cuadrícula */
+.container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 1.5rem;
+  }
+}
+
+/* Líneas dobles estilo periódico clásico */
+.border-double-top {
+  border-top: 3px double var(--color-vino);
+}
+
+.border-double-bottom {
+  border-bottom: 3px double var(--color-vino);
+}
+
+.border-single-gold {
+  border-bottom: 2px solid var(--color-ocre);
+}
+
+/* Botones Accesibles y Grandes para Móviles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.4rem;
+  font-family: var(--font-cuerpo);
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  text-align: center;
+  min-height: 46px;
+}
+
+.btn-primary {
+  background-color: var(--color-vino);
+  color: #FFFFFF !important;
+  box-shadow: 0 3px 8px rgba(120, 29, 34, 0.3);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-vino-oscuro);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(120, 29, 34, 0.4);
+}
+
+.btn-secondary {
+  background-color: var(--color-ocre);
+  color: var(--color-tinta) !important;
+  box-shadow: 0 3px 8px rgba(198, 146, 60, 0.25);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-ocre-brillante);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-vino) !important;
+  border: 2px solid var(--color-vino);
+}
+
+.btn-outline:hover {
+  background-color: var(--color-vino);
+  color: #FFFFFF !important;
+}
+
+.btn-whatsapp {
+  background-color: #25D366;
+  color: #FFFFFF !important;
+  font-weight: bold;
+}
+
+.btn-whatsapp:hover {
+  background-color: #1EBE5D;
+}
+
+/* Insignias y Etiquetas */
+.badge-category {
+  display: inline-block;
+  background-color: var(--color-vino);
+  color: #FFFFFF;
+  font-family: var(--font-cuerpo);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+}
+
+.badge-ocre {
+  background-color: var(--color-ocre-fondo);
+  color: var(--color-vino);
+  border: 1px solid var(--color-ocre);
+}
+
+/* Tarjeta Periódico */
+.newspaper-card {
+  background-color: var(--color-papel-card);
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  box-shadow: var(--sombra-card);
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+.newspaper-card:hover {
+  box-shadow: var(--sombra-hover);
+  border-color: var(--color-ocre);
+  transform: translateY(-2px);
+}
+
+/* Encabezados de Sección */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--color-vino);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.section-header h2::after {
+  content: "";
+  position: absolute;
+  bottom: -0.65rem;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: var(--color-ocre);
+}
+
+@media (min-width: 768px) {
+  .section-header h2 {
+    font-size: 1.85rem;
+  }
+}
