@@ -71,110 +71,11 @@
 </footer>
 
 <style>
-  .site-footer {
-    background-color: var(--color-dark);
-    color: #E2DBD0;
-    margin-top: auto;
-  }
-
-  .divider-mochica {
-    height: 3px;
-    background: linear-gradient(90deg, #7A1C1C 0%, #C29B38 50%, #7A1C1C 100%);
-    width: 100%;
-  }
-
-  .footer-main {
-    padding: 3rem 1.25rem 2.25rem 1.25rem;
-  }
-
-  .footer-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-  }
-
-  @media (min-width: 640px) {
-    .footer-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .footer-grid {
-      grid-template-columns: 2fr 1fr 1.5fr;
-      gap: 2.5rem;
-    }
-  }
-
-  /* Brand Column */
-  .footer-brand-col {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .footer-logo-wrap {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .footer-logo {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    border-radius: 4px;
-  }
-
-  .footer-title {
-    font-size: 1.35rem;
-    color: #FFFFFF;
-    letter-spacing: 0.05em;
-    margin: 0;
-    font-family: var(--font-serif);
-  }
-
-  .footer-slogan {
-    font-size: 0.75rem;
-    color: var(--color-gold);
-    letter-spacing: 0.15em;
-    font-weight: 600;
-    margin-top: 2px;
-  }
-
-  /* Información del Director sin fondo ni bordes pesados */
-  .footer-director-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding-top: 0.25rem;
-  }
-
-  .f-dir-label {
-    font-size: 0.75rem;
-    color: var(--color-gold-light);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 600;
-  }
-
-  .f-dir-name {
-    font-size: 0.98rem;
-    color: #FFFFFF;
-  }
-
-  .f-dir-desc {
-    font-size: 0.82rem;
-    color: var(--color-text-light);
-    line-height: 1.45;
-    margin-top: 0.2rem;
-  }
-
-  /* Links Column */
+  /* Links Column (Navegación) */
   .footer-heading {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-family: var(--font-sans);
-    font-weight: 700;
+    font-weight: 800; /* Más negrita para el título */
     color: var(--color-gold);
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -185,77 +86,50 @@
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.8rem; /* Un poco más de espacio entre enlaces */
     padding: 0;
     margin: 0;
   }
 
   .footer-links-list a {
-    color: #E2DBD0;
-    font-size: 0.88rem;
+    color: #FFFFFF; /* Blanco puro para máximo contraste */
+    font-size: 0.95rem; /* Letra un poco más grande */
+    font-weight: 600; /* NEGRITA para que se lea bien */
     text-decoration: none;
     transition: color 0.2s ease, transform 0.2s ease;
     display: inline-block;
   }
 
   .footer-links-list a:hover {
-    color: var(--color-gold-light);
+    color: var(--color-gold-light); /* Dorado al pasar el mouse */
     transform: translateX(3px);
   }
 
-  /* Contact Column */
+  /* Contact Column (Contacto Editorial) */
   .contact-desc {
-    font-size: 0.85rem;
-    color: var(--color-text-light);
+    font-size: 0.9rem;
+    color: #E2DBD0; /* Gris claro legible */
+    font-weight: 600; /* Negrita */
     margin-bottom: 0.85rem;
   }
 
   .contact-links {
     display: flex;
     flex-direction: column;
-    gap: 0.65rem;
+    gap: 0.8rem;
   }
 
   .contact-item {
     display: flex;
     align-items: center;
     gap: 0.55rem;
-    font-size: 0.85rem;
-    color: #FFFFFF;
+    font-size: 0.95rem; /* Letra un poco más grande */
+    color: #FFFFFF; /* Blanco puro */
+    font-weight: 600; /* NEGRITA */
     text-decoration: none;
     transition: color 0.2s ease;
   }
 
   .contact-item:hover {
-    color: var(--color-gold-light);
+    color: var(--color-gold-light); /* Dorado al pasar el mouse */
   }
-
-  /* Bottom Bar */
-  .footer-bottom {
-    background-color: #120F0E;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 1.25rem 0;
-    font-size: 0.82rem;
-    color: var(--color-text-light);
-  }
-
-  .bottom-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    align-items: center;
-    text-align: center;
-  }
-
-  @media (min-width: 640px) {
-    .bottom-inner {
-      flex-direction: row;
-      justify-content: space-between;
-      text-align: left;
-    }
-  }
-
-  .copyright strong {
-    color: #FFFFFF;
-  }
-</style>
