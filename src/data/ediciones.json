@@ -33,5 +33,23 @@
     "archivoPdf": "/ediciones/edicion-10.pdf",
     "portadaImg": "/ediciones/edicion-10.jpg",
     "destacada": false
+  },
+  {
+    "id": "9",
+    "numero": 9,
+    "fecha": "Viernes 7 de agosto de 2026",
+    "fechaIso": "2026-08-7",
+    "titular": "Preparativos para la visita del Papa León XIV",
+    "bajada": "Alerta por altas temperaturas, actualidad regional, economía, cultura, ecología y deportes.",
+    "titularesSecundarios": [
+      "Noticia regional destacada",
+      "Avances de obras en el Valle La Leche"
+    ],
+    "paginas": 14,
+    "peso": "4.73 MB",
+    "archivoPdf": "/ediciones/edicion-09.pdf",
+    "portadaImg": "/ediciones/edicion-09.jpg",
+    "destacada": false
   }
+]
 ]
