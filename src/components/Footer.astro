@@ -1,0 +1,89 @@
+<footer id="contacto" class="newspaper-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h3>TRIBUNA MOCHICA</h3>
+        <p class="slogan">Periódico digital independiente editado semanalmente en Moche, Trujillo — Perú.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contacto y Redacción</h4>
+        <p>¿Deseas enviar una nota, aviso o comunicado?</p>
+        <p class="contact-highlight">Director y Redactor: José Cabrejos</p>
+        <a href="https://wa.me/51949123456" target="_blank" rel="noopener noreferrer" class="whatsapp-btn">
+          💬 Enviar noticia por WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <div class="bottom-credits">
+      <p>© {new Date().getFullYear()} Tribuna Mochica. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .newspaper-footer {
+    background-color: var(--ink-primary);
+    color: #F7F4ED;
+    padding: 2rem 0 1rem;
+    margin-top: 3rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    border-bottom: 1px solid #3A3630;
+    padding-bottom: 1.5rem;
+  }
+
+  .footer-col h3 {
+    color: #FFFFFF;
+    font-size: 1.4rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .footer-col h4 {
+    color: #FFFFFF;
+    font-size: 1.05rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .slogan {
+    font-size: 0.88rem;
+    color: #B8B2A6;
+  }
+
+  .contact-highlight {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    margin: 0.3rem 0 0.8rem;
+    color: #E2DDD5;
+  }
+
+  .whatsapp-btn {
+    display: inline-block;
+    background-color: #25D366;
+    color: #FFFFFF;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.5rem 0.85rem;
+    border-radius: 3px;
+  }
+
+  .bottom-credits {
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: #8C867A;
+    padding-top: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+</style>

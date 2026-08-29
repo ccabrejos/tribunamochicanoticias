@@ -1,0 +1,20 @@
+[
+  {
+    "id": "11",
+    "numero": 11,
+    "titulo": "Edición Semanal Nº 11",
+    "fecha": "Semana del 22 al 28 de Agosto, 2026",
+    "portada": "/ediciones/edicion-11.jpg",
+    "pdf": "/ediciones/edicion-11.pdf",
+    "resumen": "Edición completa: análisis de la semana, crónicas locales, entrevistas y actualidad comunitaria de Moche."
+  },
+  {
+    "id": "10",
+    "numero": 10,
+    "titulo": "Edición Semanal Nº 10",
+    "fecha": "Semana del 15 al 21 de Agosto, 2026",
+    "portada": "/ediciones/edicion-10.jpg",
+    "pdf": "/ediciones/edicion-10.pdf",
+    "resumen": "Edición especial con reportajes culturales y balance ciudadano del mes."
+  }
+]

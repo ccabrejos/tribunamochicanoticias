@@ -1,0 +1,24 @@
+[
+  {
+    "id": "1",
+    "titulo": "Avanzan las obras de restauración en el centro histórico de Moche",
+    "fecha": "29 de Agosto, 2026",
+    "autor": "José Cabrejos",
+    "categoria": "Comunidad",
+    "foto": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1200&q=80",
+    "pieDeFoto": "Labores de conservación en las fachadas tradicionales.",
+    "resumen": "Se iniciaron las labores de mantenimiento y puesta en valor del patrimonio arquitectónico local con respaldo de los vecinos y artesanos.",
+    "contenido": "Las autoridades locales y comités vecinales dieron inicio esta semana a las obras de restauración del patrimonio arquitectónico del distrito. El proyecto contempla la recuperación de fachadas históricas, mejoramiento de la iluminación pública y señalética cultural para visitantes.\n\nVecinos y artesanos de la zona destacaron la importancia de estas iniciativas que permiten mantener viva la memoria y tradición de nuestra localidad. Se espera que la primera etapa concluya antes de las festividades patronales."
+  },
+  {
+    "id": "2",
+    "titulo": "Productores locales promueven feria gastronómica y artesanal en la campiña",
+    "fecha": "27 de Agosto, 2026",
+    "autor": "Redacción Tribuna Mochica",
+    "categoria": "Cultura",
+    "foto": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80",
+    "pieDeFoto": "Platos típicos y artesanías mochicas en exhibición.",
+    "resumen": "Este fin de semana se desarrollará una muestra abierta al público con lo mejor de la cocina tradicional y el trabajo en cerámica.",
+    "contenido": "La campiña de Moche será el escenario de una nueva edición de la feria de tradición y sabor. Participarán más de 30 expositores locales con platos emblemáticos, dulces típicos y artesanía hecha a mano.\n\nLa entrada será libre para toda la familia y contará con presentaciones de danzas folclóricas durante ambas jornadas."
+  }
+]

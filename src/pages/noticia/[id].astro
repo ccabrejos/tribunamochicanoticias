@@ -1,0 +1,114 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import noticias from '../../data/noticias.json';
+
+export async function getStaticPaths() {
+  return noticias.map((noticia) => ({
+    params: { id: String(noticia.id) },
+    props: { noticia },
+  }));
+}
+
+const { noticia } = Astro.props;
+const parrafos = noticia.contenido ? noticia.contenido.split('\n\n') : [];
+---
+
+<Layout title={`${noticia.titulo} | Tribuna Mochica`} description={noticia.resumen}>
+  <Header />
+  
+  <article class="container single-article">
+    <div class="article-meta-box">
+      <a href="/" class="back-link">← Volver al periódico</a>
+      <span class="category-badge">{noticia.categoria}</span>
+      <h1 class="headline">{noticia.titulo}</h1>
+      
+      <div class="credits-bar">
+        <span>Redacción: <strong>{noticia.autor}</strong></span>
+        <span>{noticia.fecha}</span>
+      </div>
+    </div>
+
+    {noticia.foto && (
+      <figure class="article-figure">
+        <img src={noticia.foto} alt={noticia.titulo} />
+        {noticia.pieDeFoto && <figcaption>{noticia.pieDeFoto}</figcaption>}
+      </figure>
+    )}
+
+    <div class="article-text">
+      {parrafos.map((p) => (
+        <p>{p}</p>
+      ))}
+    </div>
+  </article>
+
+  <Footer />
+</Layout>
+
+<style>
+  .single-article {
+    max-width: 720px;
+    padding-top: 1.25rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .headline {
+    font-size: 1.7rem;
+    line-height: 1.2;
+    margin: 0.5rem 0 0.75rem;
+  }
+
+  .credits-bar {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: var(--ink-secondary);
+    border-top: 1px solid var(--border-rule);
+    border-bottom: 1px solid var(--border-rule);
+    padding: 0.5rem 0;
+    margin-bottom: 1.25rem;
+  }
+
+  .article-figure {
+    margin-bottom: 1.5rem;
+  }
+
+  .article-figure img {
+    width: 100%;
+    border: 1px solid var(--border-rule);
+  }
+
+  .article-figure figcaption {
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--ink-muted);
+    margin-top: 0.35rem;
+  }
+
+  .article-text {
+    font-size: 1.08rem;
+    line-height: 1.8;
+  }
+
+  .article-text p {
+    margin-bottom: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .headline {
+      font-size: 2.3rem;
+    }
+  }
+</style>
