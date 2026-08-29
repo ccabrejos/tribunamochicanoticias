@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <circle cx="50" cy="50" r="48" fill="#781D22" stroke="#C6923C" stroke-width="4"/>
-  <circle cx="50" cy="50" r="40" fill="#FBF8F1" stroke="#781D22" stroke-width="2"/>
-  <text x="50" y="58" font-family="Georgia, serif" font-size="34" font-weight="bold" fill="#781D22" text-anchor="middle">TM</text>
-  <path d="M 30 72 L 70 72" stroke="#C6923C" stroke-width="3" stroke-linecap="round"/>
-</svg>
