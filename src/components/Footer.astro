@@ -1,9 +1,9 @@
 ---
-// Footer.astro - Pie de página institucional
+// Footer.astro - Pie de página institucional y de alta legibilidad
 ---
 
 <footer class="site-footer">
-  <!-- Línea decorativa superior -->
+  <!-- Línea decorativa superior con colores Borgoña y Dorado Mochica -->
   <div class="divider-mochica"></div>
 
   <div class="container footer-main">
@@ -38,17 +38,22 @@
 
       <!-- Columna 3: Contacto Editorial -->
       <div class="footer-contact-col">
-        <h4 class="footer-heading">Contacto Editorial</h4>
+        <h4 class="footer-heading">CONTACTO EDITORIAL</h4>
         <p class="contact-desc">Para avisos y publicidad:</p>
         
         <div class="contact-links">
           <a href="https://wa.me/51948100794" target="_blank" rel="noopener noreferrer" class="contact-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C29B38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C29B38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="contact-icon">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
             <span>WhatsApp: +51 948 100 794</span>
           </a>
 
           <a href="mailto:central.mochica.de.prensa@gmail.com" class="contact-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C29B38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C29B38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="contact-icon">
+              <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </svg>
             <span>central.mochica.de.prensa@gmail.com</span>
           </a>
         </div>
@@ -61,7 +66,7 @@
   <div class="footer-bottom">
     <div class="container bottom-inner">
       <p class="copyright">
-        © 2026 <strong>Tribuna Mochica</strong> Todos los derechos reservados.
+        © 2026 <strong>Tribuna Mochica</strong> · Todos los derechos reservados.
       </p>
       <p class="credits">
         Periódico Semanal · Lambayeque, Perú
@@ -71,15 +76,18 @@
 </footer>
 
 <style>
- .site-footer {
-    background-color: var(--color-dark);
-    color: #E2DBD0;
+  /* Contenedor principal con fondo oscuro sólido y contraste garantizado */
+  .site-footer {
+    background-color: #141210 !important;
+    color: #E2DBD0 !important;
     margin-top: auto;
+    width: 100%;
   }
 
+  /* Línea decorativa superior */
   .divider-mochica {
     height: 3px;
-    background: linear-gradient(90deg, #7A1C1C 0%, #C29B38 50%, #7A1C1C 100%);
+    background: linear-gradient(90deg, #7A0C16 0%, #C29B38 50%, #7A0C16 100%);
     width: 100%;
   }
 
@@ -106,7 +114,7 @@
     }
   }
 
-  /* Brand Column */
+  /* Columna 1: Marca e Identidad */
   .footer-brand-col {
     display: flex;
     flex-direction: column;
@@ -120,29 +128,33 @@
   }
 
   .footer-logo {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    border-radius: 4px;
+    width: 65px;
+    height: 65px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(194, 155, 56, 0.4);
+    background-color: #FFFFFF;
   }
 
   .footer-title {
     font-size: 1.35rem;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
     letter-spacing: 0.05em;
     margin: 0;
-    font-family: var(--font-serif);
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 700;
   }
 
   .footer-slogan {
     font-size: 0.75rem;
-    color: var(--color-gold);
+    color: #C29B38 !important;
     letter-spacing: 0.15em;
     font-weight: 600;
-    margin-top: 2px;
+    margin-top: 3px;
+    text-transform: uppercase;
   }
 
-  /* Información del Director sin fondo ni bordes pesados */
+  /* Información del Director */
   .footer-director-info {
     display: flex;
     flex-direction: column;
@@ -152,91 +164,96 @@
 
   .f-dir-label {
     font-size: 0.75rem;
-    color: var(--color-gold-light);
+    color: #D4A017 !important;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     font-weight: 600;
   }
 
   .f-dir-name {
-    font-size: 0.98rem;
-    color: #FFFFFF;
+    font-size: 1rem;
+    color: #FFFFFF !important;
+    font-weight: 700;
   }
 
   .f-dir-desc {
-    font-size: 0.82rem;
-    color: var(--color-text-light);
-    line-height: 1.45;
+    font-size: 0.85rem;
+    color: #D8D1C7 !important;
+    line-height: 1.5;
     margin-top: 0.2rem;
   }
 
-  /* Links Column */
+  /* Columna 2: Navegación */
   .footer-heading {
     font-size: 0.9rem;
-    font-family: var(--font-sans);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-weight: 700;
-    color: var(--color-gold);
+    color: #C29B38 !important;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-@@ -185,77 +86,50 @@
+    margin-bottom: 0.85rem;
+  }
+
+  .footer-links-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.65rem;
     padding: 0;
     margin: 0;
   }
 
   .footer-links-list a {
-    color: #E2DBD0;
-    font-size: 0.88rem;
-
+    color: #E2DBD0 !important;
+    font-size: 0.9rem;
     text-decoration: none;
     transition: color 0.2s ease, transform 0.2s ease;
     display: inline-block;
   }
 
   .footer-links-list a:hover {
-    color: var(--color-gold-light);
-    transform: translateX(3px);
+    color: #D4A017 !important;
+    transform: translateX(4px);
   }
 
-  /* Contact Column */
+  /* Columna 3: Contacto Editorial */
   .contact-desc {
     font-size: 0.85rem;
-    color: var(--color-text-light);
-
+    color: #D8D1C7 !important;
     margin-bottom: 0.85rem;
   }
 
   .contact-links {
     display: flex;
     flex-direction: column;
-    gap: 0.65rem;
+    gap: 0.75rem;
   }
 
   .contact-item {
     display: flex;
     align-items: center;
-    gap: 0.55rem;
-    font-size: 0.85rem;
-    color: #FFFFFF;
-
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: #FFFFFF !important;
     text-decoration: none;
     transition: color 0.2s ease;
   }
 
-  .contact-item:hover {
-    color: var(--color-gold-light);
+  .contact-icon {
+    flex-shrink: 0;
   }
 
-  /* Bottom Bar */
+  .contact-item:hover {
+    color: #D4A017 !important;
+  }
+
+  /* Barra Inferior de Derechos */
   .footer-bottom {
-    background-color: #120F0E;
+    background-color: #0D0B0A !important;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding: 1.25rem 0;
     font-size: 0.82rem;
-    color: var(--color-text-light);
+    color: #B8B0A5 !important;
   }
 
   .bottom-inner {
@@ -256,6 +273,10 @@
   }
 
   .copyright strong {
-    color: #FFFFFF;
+    color: #FFFFFF !important;
+  }
+
+  .credits {
+    color: #B8B0A5 !important;
   }
 </style>
