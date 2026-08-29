@@ -1,220 +1,114 @@
-/* ==========================================================================
-   TRIBUNA MOCHICA - ESTILOS GLOBALES (Diseño Editorial Premium)
-   Paleta: Borgoña (#7A0C16), Dorado Mochica (#C29B38), Crema (#F6F4EE)
-   ========================================================================== */
-
 :root {
-  /* Colores con propósito editorial */
-  --color-burgundy: #7A0C16;
-  --color-burgundy-dark: #5C0810;
-  --color-gold: #C29B38;
-  --color-gold-dark: #967420;
+  /* Paleta Papel Prensa Premium */
+  --bg-paper: #F9F6F0;
+  --bg-card: #FFFFFF;
+  --bg-muted: #EFEAE0;
   
-  /* Fondos cálidos (papel periódico de calidad) */
-  --color-bg-page: #F6F4EE;
-  --color-bg-card: #FFFFFF;
-  --color-bg-warm: #FAF8F2;
-
-  /* Bordes sutiles, sin sombras pesadas */
-  --color-border: #E2DBD0;
-  --color-border-dark: #C8BFB0;
-
-  /* Tipografía elegante y legible */
-  --color-text-main: #1C1917;
-  --color-text-body: #44403C;
-  --color-text-muted: #78716C;
-
-  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --ink-primary: #1A1816;
+  --ink-secondary: #4A463F;
+  --ink-muted: #756F64;
+  
+  --color-accent: #7A121D; /* Granate editorial */
+  --color-gold: #9E7422;   /* Detalle dorado sobrio */
+  
+  --border-subtle: #DDD5C7;
+  --border-strong: #1A1816;
+  
+  --font-serif-title: 'Playfair Display', Georgia, serif;
+  --font-serif-body: 'Lora', Georgia, serif;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  
-  /* Sombras muy sutiles (estilo editorial, no "app") */
-  --shadow-sm: 0 1px 3px rgba(26, 22, 21, 0.04);
-  --shadow-md: 0 4px 12px rgba(26, 22, 21, 0.06);
-  
-  /* Bordes ligeramente redondeados (aspecto serio, no genérico) */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-full: 9999px;
 }
 
-*, *::before, *::after {
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html {
-  font-family: var(--font-sans);
-  background-color: var(--color-bg-page);
-  color: var(--color-text-body);
-  scroll-behavior: smooth;
+body {
+  background-color: var(--bg-paper);
+  color: var(--ink-primary);
+  font-family: var(--font-serif-body);
+  font-size: 1.05rem;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
 
-body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  line-height: 1.65; /* Más aire para lectura cómoda en móvil */
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-main { flex: 1; }
-
-img, svg { display: block; max-width: 100%; }
-
-a { color: inherit; text-decoration: none; }
-
-/* Tipografía Editorial */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-serif);
-  color: var(--color-text-main);
-  line-height: 1.2;
-  font-weight: 700;
-  letter-spacing: -0.02em; /* Toque profesional en títulos */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
-/* Contenedor centrado y legible */
 .container {
   width: 100%;
-  max-width: 1000px; /* Ancho óptimo de lectura (no demasiado ancho) */
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
-/* Botones con presencia pero elegancia */
+/* Títulos con estética de prensa */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif-title);
+  color: var(--ink-primary);
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+/* Filetes y divisores de periódico */
+.rule-single {
+  height: 1px;
+  background-color: var(--border-subtle);
+  border: none;
+  margin: 1.5rem 0;
+}
+
+.rule-double {
+  height: 4px;
+  border-top: 1px solid var(--border-strong);
+  border-bottom: 1px solid var(--border-strong);
+  border-left: none;
+  border-right: none;
+  margin: 1.5rem 0;
+}
+
+/* Botones editoriales */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.85rem 1.5rem;
-  font-size: 0.95rem;
+  padding: 0.65rem 1.15rem;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
   font-weight: 600;
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
+  border-radius: 2px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease-in-out;
   text-align: center;
-  min-height: 48px; /* Excelente para dedos en móvil */
 }
 
 .btn-primary {
-  background-color: var(--color-burgundy);
+  background-color: var(--color-accent);
   color: #FFFFFF;
+  border: 1px solid var(--color-accent);
 }
+
 .btn-primary:hover {
-  background-color: var(--color-burgundy-dark);
-  transform: translateY(-1px);
+  background-color: #5E0D16;
 }
 
-.btn-secondary {
-  background-color: var(--color-bg-warm);
-  color: var(--color-text-main);
-  border-color: var(--color-border);
-}
-.btn-secondary:hover {
-  border-color: var(--color-burgundy);
-  color: var(--color-burgundy);
+.btn-outline {
+  background-color: transparent;
+  color: var(--ink-primary);
+  border: 1px solid var(--ink-primary);
 }
 
-/* Badges elegantes */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.3rem 0.75rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  border-radius: var(--radius-sm);
-}
-.badge-burgundy {
-  background-color: var(--color-burgundy);
+.btn-outline:hover {
+  background-color: var(--ink-primary);
   color: #FFFFFF;
 }
-
-/* ==========================================================================
-   MOBILE FIRST: Grillas y Tarjetas
-   ========================================================================== */
-
-.grid-ediciones, .hemeroteca-grid {
-  display: grid;
-  grid-template-columns: 1fr; /* 1 columna en móvil por defecto */
-  gap: 1.5rem;
-  width: 100%;
-}
-
-@media (min-width: 640px) {
-  .grid-ediciones, .hemeroteca-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablet */
-  }
-}
-
-.card-edicion, .tarjeta-noticia {
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card-edicion:hover, .tarjeta-noticia:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--color-gold); /* Detalle dorado sutil al pasar el mouse */
-}
-
-.card-image-container {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  background-color: var(--color-bg-warm);
-}
-
-.card-content {
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.card-title {
-  font-size: 1.2rem;
-  font-family: var(--font-serif);
-  color: var(--color-text-main);
-  line-height: 1.3;
-  margin-bottom: 0.5rem;
-}
-
-.card-description {
-  font-size: 0.92rem;
-  color: var(--color-text-body);
-  margin-bottom: 1rem;
-  flex-grow: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-footer {
-  margin-top: auto;
-  padding-top: 1rem;
-  border-top: 1px solid var(--color-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-/* Scrollbar elegante */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--color-bg-page); }
-::-webkit-scrollbar-thumb { background: var(--color-border-dark); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-burgundy); }
