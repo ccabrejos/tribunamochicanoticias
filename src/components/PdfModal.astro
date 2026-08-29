@@ -1,0 +1,190 @@
+---
+// Modal Universal para Lectura de PDFs
+---
+<div id="pdf-modal" class="pdf-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-backdrop" id="modal-backdrop"></div>
+  
+  <div class="modal-dialog">
+    <!-- Barra Superior del Lector -->
+    <div class="modal-header">
+      <div class="modal-title-wrap">
+        <span class="modal-badge">LECTOR DIGITAL</span>
+        <h3 id="modal-title" class="modal-title">Edición Digital</h3>
+      </div>
+
+      <div class="modal-actions">
+        <!-- Botón Descargar -->
+        <a id="modal-download-btn" href="#" download="Tribuna-Mochica.pdf" class="btn-modal-action" title="Descargar PDF">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span class="action-text">Descargar</span>
+        </a>
+
+        <!-- Botón Abrir en Pestaña Nueva -->
+        <a id="modal-external-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn-modal-action" title="Abrir en pestaña nueva">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" x2="21" y1="14" y2="3"></line>
+          </svg>
+          <span class="action-text">Pestaña</span>
+        </a>
+
+        <!-- Botón Cerrar -->
+        <button type="button" id="modal-close-btn" class="btn-modal-close" aria-label="Cerrar lector de PDF">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenedor del PDF -->
+    <div class="modal-body">
+      <iframe id="pdf-iframe" src="" title="Lector de Periódico PDF" class="pdf-iframe" loading="lazy"></iframe>
+
+      <!-- Fallback móvil para visualización directa -->
+      <div id="pdf-mobile-fallback" class="mobile-fallback" style="display: none;">
+        <div class="fallback-content">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7A0C16" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <h4>Lectura optimizada para celular</h4>
+          <p>Para la mejor experiencia de lectura en tu dispositivo móvil, pulsa en abrir o descargar:</p>
+          <div class="fallback-btns">
+            <a id="fallback-open-btn" href="#" target="_blank" class="btn btn-primary">Abrir PDF Completo</a>
+            <a id="fallback-download-btn" href="#" download class="btn btn-secondary">Descargar Archivo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Feedback -->
+<div id="toast-notice" class="toast-notice" role="status" aria-live="polite">
+  ¡Enlace copiado al portapapeles!
+</div>
+
+<script>
+  // Control del modal y compartir
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('pdf-modal');
+    const modalBackdrop = document.getElementById('modal-backdrop');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    const modalTitle = document.getElementById('modal-title');
+    const pdfIframe = document.getElementById('pdf-iframe');
+    const modalDownloadBtn = document.getElementById('modal-download-btn');
+    const modalExternalBtn = document.getElementById('modal-external-btn');
+    const mobileFallback = document.getElementById('pdf-mobile-fallback');
+    const fallbackOpenBtn = document.getElementById('fallback-open-btn');
+    const fallbackDownloadBtn = document.getElementById('fallback-download-btn');
+    const toast = document.getElementById('toast-notice');
+
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
+
+    function openModal(pdfUrl, title) {
+      if (!modal) return;
+      if (modalTitle) modalTitle.textContent = title || 'Lector Digital';
+      
+      if (modalDownloadBtn) {
+        modalDownloadBtn.href = pdfUrl;
+        const cleanName = (title || 'Tribuna-Mochica').replace(/[^a-zA-Z0-9_-]/g, '_') + '.pdf';
+        modalDownloadBtn.download = cleanName;
+      }
+      if (modalExternalBtn) modalExternalBtn.href = pdfUrl;
+
+      if (isMobile) {
+        if (pdfIframe) pdfIframe.style.display = 'none';
+        if (mobileFallback) mobileFallback.style.display = 'flex';
+        if (fallbackOpenBtn) fallbackOpenBtn.href = pdfUrl;
+        if (fallbackDownloadBtn) fallbackDownloadBtn.href = pdfUrl;
+      } else {
+        if (pdfIframe) {
+          pdfIframe.src = pdfUrl + '#toolbar=1&navpanes=0&scrollbar=1';
+          pdfIframe.style.display = 'block';
+        }
+        if (mobileFallback) mobileFallback.style.display = 'none';
+      }
+
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      if (pdfIframe) pdfIframe.src = '';
+      document.body.style.overflow = '';
+    }
+
+    // Event listeners para abrir modal
+    document.querySelectorAll('[data-open-modal]').forEach((trigger) => {
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pdf = trigger.getAttribute('data-pdf') || '/ediciones/edicion-11.pdf';
+        const title = trigger.getAttribute('data-title') || 'Tribuna Mochica';
+        openModal(pdf, title);
+      });
+    });
+
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+
+    // Tecla Escape para cerrar modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && modal.classList.contains('is-open')) {
+        closeModal();
+      }
+    });
+
+    // Compartir con Web Share API o copiar enlace
+    function showToast(message) {
+      if (!toast) return;
+      toast.textContent = message || '¡Enlace copiado al portapapeles!';
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    document.querySelectorAll('[data-share-btn]').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const shareTitle = btn.getAttribute('data-share-title') || document.title;
+        const shareText = btn.getAttribute('data-share-text') || 'Lee la edición digital de Tribuna Mochica';
+        const sharePath = btn.getAttribute('data-share-url') || window.location.pathname;
+        const fullUrl = new URL(sharePath, window.location.origin).href;
+
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: shareTitle,
+              text: shareText,
+              url: fullUrl
+            });
+          } catch (err) {
+            // Usuario canceló o no soportado
+          }
+        } else {
+          try {
+            await navigator.clipboard.writeText(fullUrl);
+            showToast('¡Enlace copiado al portapapeles!');
+          } catch (err) {
+            showToast('Copia este enlace: ' + fullUrl);
+          }
+        }
+      });
+    });
+  });
+</script>

@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeroBanner from '../components/HeroBanner.astro';
+import PortadaSemana from '../components/PortadaSemana.astro';
+import Hemeroteca from '../components/Hemeroteca.astro';
+import EnviarNoticia from '../components/EnviarNoticia.astro';
+import edicionesData from '../data/ediciones.json';
+
+// La primera edición del archivo JSON es la más reciente
+const edicionDestacada = edicionesData[0];
+const todasLasEdiciones = edicionesData;
+---
+<Layout
+  title="Tribuna Mochica | La Voz del Valle La Leche · Edición Digital"
+  description="Lee y descarga semanalmente el periódico Tribuna Mochica. Dirigido por Juan César Cabrejos Becerra. Noticias de Lambayeque, Valle La Leche, Íllimo, Túcume, Mochumí y la región."
+  image={edicionDestacada.portadaImg}
+>
+  <main id="contenido-principal">
+    <!-- Hero Informativo -->
+    <HeroBanner />
+
+    <!-- Portada de la Semana (Última Edición) -->
+    <PortadaSemana edicion={edicionDestacada} />
+
+    <!-- Hemeroteca de Ediciones Pasadas y Buscador -->
+    <Hemeroteca ediciones={todasLasEdiciones} />
+
+    <!-- Envíanos tu Noticia (Periodismo Ciudadano) -->
+    <EnviarNoticia />
+  </main>
+</Layout>

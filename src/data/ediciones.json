@@ -1,0 +1,37 @@
+[
+  {
+    "id": "11",
+    "numero": 11,
+    "fecha": "Viernes 28 de agosto de 2026",
+    "fechaIso": "2026-08-28",
+    "titular": "Decomisan 40KG de PBC en Mocce",
+    "bajada": "La comisión de avanzada del Vaticano evalúa espacios para la visita del Papa León XIV, decomiso de 40 kilos de PBC, apertura de Carsa en Lambayeque y más actualidad regional.",
+    "titularesSecundarios": [
+      "Juan Aurich ganó 2 - 1 al Carlos Stein y se puso tercero en la liga 3",
+      "Nuevas alternativas para visita del Papa"
+    ],
+    "paginas": 14,
+    "peso": "3.56 MB",
+    "archivoPdf": "/ediciones/edicion-11.pdf",
+    "portadaImg": "/ediciones/edicion-11.jpg",
+    "destacada": true
+  },
+  {
+    "id": "10",
+    "numero": 10,
+    "fecha": "Martes 11 de agosto de 2026",
+    "fechaIso": "2026-08-11",
+    "titular": "Bares funcionan con licencias de otros rubros",
+    "bajada": "Nueva edición con información local, sociedad, salud, medio ambiente e internacional: operativos en bares de JLO, inteligencia artificial y periodismo, aniversario de EsSalud Lambayeque, incendio forestal en Cañaris y otras noticias de interés.",
+    "titularesSecundarios": [
+      "Operativos de fiscalización en bares de José Leonardo Ortiz",
+      "Inteligencia Artificial y su impacto en el periodismo regional",
+      "Aniversario de EsSalud Lambayeque y balance asistencial"
+    ],
+    "paginas": 12,
+    "peso": "3.10 MB",
+    "archivoPdf": "/ediciones/edicion-10.pdf",
+    "portadaImg": "/ediciones/edicion-10.jpg",
+    "destacada": false
+  }
+]

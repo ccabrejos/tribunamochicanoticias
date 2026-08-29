@@ -1,0 +1,219 @@
+---
+export interface EdicionItem {
+  id: string;
+  numero: number;
+  fecha: string;
+  titular: string;
+  bajada: string;
+  archivoPdf: string;
+  portadaImg: string;
+  destacada?: boolean;
+}
+
+export interface Props {
+  ediciones: EdicionItem[];
+}
+
+const { ediciones } = Astro.props;
+---
+<section id="ultimas-noticias" class="hemeroteca-section">
+  <div class="container">
+    <!-- Encabezado de Sección con Filtro de Búsqueda -->
+    <div class="hemeroteca-header">
+      <div class="hemeroteca-titles">
+        <h2 class="hemeroteca-title">Ediciones pasadas</h2>
+        <p class="hemeroteca-desc">
+          Explora el archivo completo de publicaciones.
+        </p>
+      </div>
+
+      <!-- Buscador en tiempo real -->
+      <div class="search-box">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="text"
+            id="search-ediciones"
+            placeholder="Buscar por titular, fecha o edición..."
+            aria-label="Buscar ediciones de Tribuna Mochica"
+          />
+          <button type="button" id="clear-search" class="clear-btn" aria-label="Limpiar búsqueda" style="display: none;">✕</button>
+        </div>
+        <span class="search-count" id="results-count">Mostrando {ediciones.length} ediciones</span>
+      </div>
+    </div>
+
+    <!-- Grid de Ediciones -->
+    <div class="ediciones-grid" id="ediciones-container">
+      {ediciones.map((item, index) => (
+        <article
+          class="edicion-card"
+          data-id={item.id}
+          data-title={item.titular.toLowerCase()}
+          data-number={`edición n.° ${item.numero} edicion ${item.numero}`}
+          data-date={item.fecha.toLowerCase()}
+          data-desc={item.bajada.toLowerCase()}
+        >
+          <!-- Portada miniatura -->
+          <div class="card-cover">
+            <img
+              src={item.portadaImg}
+              onerror="this.onerror=null; this.src='/ediciones/portada-placeholder.svg';"
+              alt={`Portada Edición N.° ${item.numero}`}
+              class="card-img"
+              loading="lazy"
+            />
+            {index === 0 && <span class="badge-featured">MÁS RECIENTE</span>}
+            
+            <button
+              type="button"
+              class="card-quick-read"
+              data-open-modal
+              data-pdf={item.archivoPdf}
+              data-title={`Edición N.° ${item.numero} (${item.fecha})`}
+              title="Lectura rápida"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span>Ver PDF</span>
+            </button>
+          </div>
+
+          <!-- Contenido y Metadatos -->
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-edition-num">Edición N.° {item.numero}</span>
+              <span class="meta-dot">·</span>
+              <time class="card-date">{item.fecha}</time>
+            </div>
+
+            <h3 class="card-headline">
+              <a href={`/edicion/${item.id}`} class="headline-link" title={`Ver detalles de Edición N.° ${item.numero}`}>
+                {item.titular}
+              </a>
+            </h3>
+
+            <p class="card-excerpt">
+              {item.bajada}
+            </p>
+
+            <!-- Acciones de la Tarjeta -->
+            <div class="card-actions">
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                data-open-modal
+                data-pdf={item.archivoPdf}
+                data-title={`Edición N.° ${item.numero} (${item.fecha})`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                </svg>
+                <span>Leer Edición</span>
+              </button>
+
+              <a
+                href={item.archivoPdf}
+                download={`Tribuna-Mochica-${item.numero}.pdf`}
+                class="btn btn-secondary btn-sm"
+                title="Descargar PDF"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>PDF</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      ))}
+
+      <!-- Mensaje cuando no hay resultados de búsqueda -->
+      <div id="no-results" class="no-results-state" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <line x1="8" y1="11" x2="14" y2="11"></line>
+        </svg>
+        <h3>No se encontraron ediciones</h3>
+        <p>Intenta con otros términos como el número de edición (ej. "Edición 10") o temas de tu interés.</p>
+        <button type="button" id="reset-search-btn" class="btn btn-outline btn-sm">Ver todas las ediciones</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Lógica del buscador en tiempo real
+  const searchInput = document.getElementById('search-ediciones');
+  const clearBtn = document.getElementById('clear-search');
+  const resultsCount = document.getElementById('results-count');
+  const noResults = document.getElementById('no-results');
+  const resetBtn = document.getElementById('reset-search-btn');
+  const cards = document.querySelectorAll('.edicion-card');
+
+  function filterEditions() {
+    if (!searchInput) return;
+    const query = searchInput.value.toLowerCase().trim();
+    let visibleCount = 0;
+
+    if (clearBtn) {
+      clearBtn.style.display = query.length > 0 ? 'flex' : 'none';
+    }
+
+    cards.forEach((card) => {
+      const title = card.getAttribute('data-title') || '';
+      const number = card.getAttribute('data-number') || '';
+      const date = card.getAttribute('data-date') || '';
+      const desc = card.getAttribute('data-desc') || '';
+
+      const match = title.includes(query) || number.includes(query) || date.includes(query) || desc.includes(query);
+
+      if (match) {
+        card.style.display = 'flex';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (resultsCount) {
+      resultsCount.textContent = `Mostrando ${visibleCount} de ${cards.length} ediciones`;
+    }
+
+    if (noResults) {
+      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', filterEditions);
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
+        filterEditions();
+      }
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (searchInput) {
+        searchInput.value = '';
+        filterEditions();
+      }
+    });
+  }
+</script>
