@@ -1,5 +1,22 @@
 [
   {
+    "id": "12",
+    "numero": 12,
+    "fecha": "Jueves 04 de setiembre de 2026",
+    "fechaIso": "2026-09-04",
+    "titular": "Instalarán 40 torres de iluminación led",
+    "bajada": "Gobernador de Lambayeque anunció que se habilitarán 4 rutas hacia la zona de 300 hectáreas.",
+    "titularesSecundarios": [
+      "En HNAAA 100 operaciones urológicas",
+      "Refuerzan Huaca de la Cruz - Illimo"
+    ],
+    "paginas": 21,
+    "peso": "7.14 MB",
+    "archivoPdf": "/ediciones/edicion-12.pdf",
+    "portadaImg": "/ediciones/edicion-12.jpg",
+    "destacada": true
+  },
+   {
     "id": "11",
     "numero": 11,
     "fecha": "Viernes 28 de agosto de 2026",
@@ -14,7 +31,7 @@
     "peso": "3.55 MB",
     "archivoPdf": "/ediciones/edicion-11.pdf",
     "portadaImg": "/ediciones/edicion-11.jpg",
-    "destacada": true
+    "destacada": false
   },
   {
     "id": "10",
