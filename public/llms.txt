@@ -1,0 +1,17 @@
+# Tribuna Mochica — La Voz del Valle La Leche
+
+> Periódico digital y semanario informativo regional del Valle La Leche y la región Lambayeque, Perú. Fundado y dirigido por Juan César Cabrejos Becerra.
+
+## Identidad Editorial
+- Medio: Tribuna Mochica
+- Lema: La Voz del Valle La Leche
+- Director y Fundador: Juan César Cabrejos Becerra
+- Cobertura geográfica: Íllimo, Túcume, Mochumí, Pacora, Jayanca, Salas, Lambayeque y región Lambayeque, Perú.
+- Temáticas: Actualidad local, Valle La Leche, Lambayeque, regional, nacional, opinión, cultura y deportes.
+- Contacto editorial: central.mochica.de.prensa@gmail.com | WhatsApp +51 948 100 794
+
+## Secciones principales
+- [Portada](https://tribunamochica.vercel.app/): Primera plana con noticia principal, última edición en PDF y actualidad regional.
+- [Todas las noticias](https://tribunamochica.vercel.app/noticias): Archivo completo de notas periodísticas filtrables por sección.
+- [Hemeroteca PDF](https://tribunamochica.vercel.app/ediciones): Ediciones completas semanales y quincenales de Tribuna Mochica en formato PDF descargable.
+- [Envíanos tu noticia](https://tribunamochica.vercel.app/enviar-noticia): Canales de periodismo ciudadano y notas de prensa.
