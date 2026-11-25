@@ -1,0 +1,133 @@
+---
+import { CATEGORIAS, formatFechaHoyEs } from '../lib/data';
+
+interface Props {
+  activePath?: string;
+}
+
+const { activePath = '/' } = Astro.props;
+const fechaHoy = formatFechaHoyEs();
+const currentCat = Astro.url.searchParams.get('categoria') || '';
+---
+<header class="bg-white border-b border-line">
+  <!-- Franja superior minimalista -->
+  <div class="border-b border-line/80 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-9 flex items-center justify-between text-xs text-subtle">
+      <div class="flex items-center gap-2 truncate">
+        <span class="font-medium text-ink">{fechaHoy}</span>
+        <span class="hidden sm:inline text-line">|</span>
+        <span class="hidden sm:inline">Valle La Leche · Lambayeque, Perú</span>
+      </div>
+      <div class="flex items-center gap-4 shrink-0">
+        <a
+          href="/enviar-noticia"
+          class="hidden sm:inline hover:text-burgundy transition-colors font-medium"
+        >
+          Envíanos tu noticia
+        </a>
+        <a
+          href="/redaccion"
+          class="inline-flex items-center gap-1.5 text-ink hover:text-burgundy font-semibold transition-colors"
+          title="Acceso exclusivo para publicación del Director"
+        >
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span>Redacción</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cabecera editorial (Masthead) -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <div class="flex flex-col items-center text-center">
+      <a href="/" class="group inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+        <img
+          src="/logo.jpg"
+          onerror="this.onerror=null; this.src='/logo-mochica.svg';"
+          alt="Tribuna Mochica"
+          class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border border-line"
+          width="56"
+          height="56"
+        />
+        <div class="text-center sm:text-left">
+          <p class="text-[11px] uppercase tracking-[0.22em] text-burgundy font-semibold mb-0.5">
+            La Voz del Valle La Leche
+          </p>
+          <h1 class="font-serif text-3xl sm:text-5xl font-black tracking-tight text-ink leading-none group-hover:text-burgundy transition-colors">
+            TRIBUNA MOCHICA
+          </h1>
+        </div>
+      </a>
+      <p class="mt-3 text-xs sm:text-sm text-subtle tracking-wide">
+        Director: <span class="text-ink font-medium">Juan César Cabrejos Becerra</span> · Periodismo regional y semanario digital
+      </p>
+    </div>
+  </div>
+
+  <!-- Doble línea clásica de periódico + navegación de secciones -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="double-rule"></div>
+  </div>
+
+  <nav aria-label="Secciones del diario" class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between gap-4 overflow-x-auto no-scrollbar py-3">
+        <ul class="flex items-center gap-1 sm:gap-2 text-sm whitespace-nowrap">
+          <li>
+            <a
+              href="/"
+              class={`px-3 py-1.5 rounded-full transition-colors ${
+                activePath === '/'
+                  ? 'bg-ink text-white font-semibold'
+                  : 'text-muted hover:text-ink hover:bg-surface font-medium'
+              }`}
+            >
+              Portada
+            </a>
+          </li>
+          <li>
+            <a
+              href="/noticias"
+              class={`px-3 py-1.5 rounded-full transition-colors ${
+                activePath.startsWith('/noticias') && !currentCat
+                  ? 'bg-ink text-white font-semibold'
+                  : 'text-muted hover:text-ink hover:bg-surface font-medium'
+              }`}
+            >
+              Últimas noticias
+            </a>
+          </li>
+          {CATEGORIAS.slice(0, 5).map((cat) => (
+            <li>
+              <a
+                href={`/noticias?categoria=${encodeURIComponent(cat)}`}
+                class={`px-3 py-1.5 rounded-full transition-colors ${
+                  currentCat === cat
+                    ? 'bg-burgundy text-white font-semibold'
+                    : 'text-muted hover:text-ink hover:bg-surface font-medium'
+                }`}
+              >
+                {cat}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a
+              href="/ediciones"
+              class={`px-3 py-1.5 rounded-full transition-colors ${
+                activePath.startsWith('/edicion')
+                  ? 'bg-burgundy text-white font-semibold'
+                  : 'text-burgundy hover:bg-burgundy-soft font-semibold'
+              }`}
+            >
+              Ediciones PDF
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>

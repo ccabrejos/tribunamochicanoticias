@@ -1,0 +1,103 @@
+---
+// Lector Modal de PDF limpio y adaptable a escritorio y móvil
+---
+<div
+  id="pdf-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 p-2 sm:p-6"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="pdf-modal-title"
+>
+  <div class="bg-white w-full max-w-5xl h-[92vh] rounded-lg shadow-2xl flex flex-col overflow-hidden border border-line">
+    <div class="flex items-center justify-between gap-3 px-4 sm:px-6 py-3.5 border-b border-line bg-white">
+      <div class="min-w-0">
+        <p class="text-[11px] uppercase tracking-[0.16em] text-burgundy font-semibold">Lectura de edición PDF</p>
+        <h3 id="pdf-modal-title" class="font-serif text-base sm:text-lg font-bold text-ink truncate">
+          Tribuna Mochica
+        </h3>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <a
+          id="pdf-modal-open"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold border border-line rounded-md text-ink hover:bg-surface transition-colors"
+        >
+          Abrir aparte ↗
+        </a>
+        <a
+          id="pdf-modal-download"
+          href="#"
+          download
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-burgundy text-white hover:bg-burgundy-dark transition-colors"
+        >
+          Descargar PDF
+        </a>
+        <button
+          id="pdf-modal-close"
+          type="button"
+          class="w-8 h-8 rounded-md border border-line flex items-center justify-center text-ink hover:bg-surface transition-colors"
+          aria-label="Cerrar lector"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+
+    <div class="flex-1 bg-surface relative">
+      <iframe
+        id="pdf-modal-frame"
+        src=""
+        title="Visor de periódico PDF"
+        class="w-full h-full border-0"
+      ></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById('pdf-modal');
+  const frame = document.getElementById('pdf-modal-frame') as HTMLIFrameElement | null;
+  const titleEl = document.getElementById('pdf-modal-title');
+  const downloadEl = document.getElementById('pdf-modal-download') as HTMLAnchorElement | null;
+  const openEl = document.getElementById('pdf-modal-open') as HTMLAnchorElement | null;
+  const closeBtn = document.getElementById('pdf-modal-close');
+
+  function openPdfModal(pdfUrl: string, title: string) {
+    if (!modal || !frame) return;
+    frame.src = pdfUrl;
+    if (titleEl) titleEl.textContent = title || 'Edición PDF';
+    if (downloadEl) downloadEl.href = pdfUrl;
+    if (openEl) openEl.href = pdfUrl;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePdfModal() {
+    if (!modal || !frame) return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    frame.src = '';
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('click', (e) => {
+    const target = (e.target as HTMLElement)?.closest('[data-open-pdf]') as HTMLElement | null;
+    if (target) {
+      e.preventDefault();
+      const pdfUrl = target.getAttribute('data-pdf') || '';
+      const title = target.getAttribute('data-title') || 'Edición PDF';
+      if (pdfUrl) openPdfModal(pdfUrl, title);
+    }
+  });
+
+  closeBtn?.addEventListener('click', closePdfModal);
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closePdfModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closePdfModal();
+  });
+</script>

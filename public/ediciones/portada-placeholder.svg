@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 850" width="600" height="850">
+  <rect width="600" height="850" fill="#F4F1EA"/>
+  <rect x="20" y="20" width="560" height="810" fill="#FFFFFF" stroke="#E5E0D8" stroke-width="2"/>
+  
+  <!-- Header -->
+  <text x="300" y="65" font-family="'Inter', sans-serif" font-size="14" font-weight="bold" fill="#C29B38" text-anchor="middle" letter-spacing="4">PERIÓDICO DIGITAL SEMANAL</text>
+  <line x1="40" y1="80" x2="560" y2="80" stroke="#7A0C16" stroke-width="3"/>
+  <text x="300" y="130" font-family="'Playfair Display', serif" font-size="44" font-weight="900" fill="#1A1A1A" text-anchor="middle">TRIBUNA MOCHICA</text>
+  <text x="300" y="160" font-family="'Inter', sans-serif" font-size="16" font-weight="bold" fill="#7A0C16" text-anchor="middle" letter-spacing="3">LA VOZ DEL VALLE LA LECHE</text>
+  <line x1="40" y1="175" x2="560" y2="175" stroke="#1A1A1A" stroke-width="1.5"/>
+  <line x1="40" y1="180" x2="560" y2="180" stroke="#1A1A1A" stroke-width="0.75"/>
+  
+  <!-- Date bar -->
+  <rect x="40" y="190" width="520" height="30" fill="#F8F6F2"/>
+  <text x="55" y="210" font-family="'Inter', sans-serif" font-size="12" font-weight="bold" fill="#666666">LAMBAYEQUE - EDICIÓN DIGITAL</text>
+  <text x="545" y="210" font-family="'Inter', sans-serif" font-size="12" font-weight="bold" fill="#7A0C16" text-anchor="end">VALLE LA LECHE</text>
+
+  <!-- Main Headline Banner -->
+  <rect x="40" y="240" width="520" height="320" fill="#7A0C16" rx="8"/>
+  <circle cx="300" cy="360" r="60" fill="#FFFFFF" fill-opacity="0.15"/>
+  <text x="300" y="375" font-family="'Playfair Display', serif" font-size="52" font-weight="bold" fill="#FFFFFF" text-anchor="middle">NOTICIA</text>
+  <text x="300" y="420" font-family="'Inter', sans-serif" font-size="18" fill="#FDF8EE" text-anchor="middle">PORTADA SEMANAL</text>
+
+  <rect x="40" y="580" width="520" height="220" fill="#FFFFFF" stroke="#E5E0D8" rx="8"/>
+  <text x="65" y="620" font-family="'Playfair Display', serif" font-size="24" font-weight="bold" fill="#1A1A1A">Actualidad y Reportajes</text>
+  <text x="65" y="655" font-family="'Inter', sans-serif" font-size="14" fill="#666666">Lea la edición completa en alta definición en PDF.</text>
+</svg>

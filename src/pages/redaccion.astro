@@ -1,0 +1,1096 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { CATEGORIAS } from '../lib/data';
+import { isSupabaseConfigured } from '../lib/supabase';
+---
+<Layout
+  title="Redacción · Panel del Director | Tribuna Mochica"
+  description="Acceso privado de publicación para Tribuna Mochica."
+  hideChrome={true}
+>
+  <div class="min-h-screen bg-surface text-ink">
+    <!-- Barra superior del panel -->
+    <header class="bg-white border-b-2 border-ink sticky top-0 z-30">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <img
+            src="/logo.jpg"
+            onerror="this.onerror=null; this.src='/logo-mochica.svg';"
+            alt="Tribuna Mochica"
+            class="w-11 h-11 rounded-full object-cover border border-line"
+          />
+          <div>
+            <p class="text-xs uppercase tracking-[0.16em] text-burgundy font-bold">Panel de Redacción</p>
+            <h1 class="font-serif text-xl sm:text-2xl font-black text-ink leading-tight">TRIBUNA MOCHICA</h1>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-4 py-2.5 text-sm sm:text-base font-semibold border border-line bg-white text-ink hover:border-ink transition-colors rounded-lg"
+          >
+            Ver periódico ↗
+          </a>
+          <button
+            id="btn-logout"
+            type="button"
+            class="hidden px-4 py-2.5 text-sm sm:text-base font-semibold border border-burgundy text-burgundy hover:bg-burgundy hover:text-white transition-colors rounded-lg"
+          >
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      {!isSupabaseConfigured ? (
+        <div class="bg-white border-2 border-burgundy rounded-xl p-8 max-w-2xl mx-auto text-center shadow-sm">
+          <p class="text-sm uppercase tracking-widest text-burgundy font-bold mb-2">Configuración pendiente</p>
+          <h2 class="font-serif text-3xl font-black text-ink">Falta conectar Supabase</h2>
+          <p class="mt-4 text-lg text-muted leading-relaxed">
+            Para activar el inicio de sesión y la publicación desde este panel, agrega las variables
+            <code class="px-1.5 py-0.5 bg-surface border border-line rounded text-sm font-mono">PUBLIC_SUPABASE_URL</code> y
+            <code class="px-1.5 py-0.5 bg-surface border border-line rounded text-sm font-mono">PUBLIC_SUPABASE_ANON_KEY</code>
+            en Vercel siguiendo el archivo <strong>GUIA-CONFIGURACION.md</strong>.
+          </p>
+          <a
+            href="/"
+            class="mt-6 inline-block px-6 py-3 bg-ink text-white text-base font-semibold rounded-lg hover:bg-burgundy transition-colors"
+          >
+            ← Volver a la portada
+          </a>
+        </div>
+      ) : (
+        <>
+          <!-- ESTADO DE CARGA INICIAL -->
+          <div id="view-loading" class="py-20 text-center">
+            <p class="text-xl text-muted font-medium">Cargando panel de redacción...</p>
+          </div>
+
+          <!-- VISTA 1: LOGIN SENCILLO -->
+          <section id="view-login" class="hidden max-w-lg mx-auto bg-white border border-line rounded-xl p-6 sm:p-10 shadow-sm">
+            <div class="text-center mb-8">
+              <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-1">Acceso Privado</p>
+              <h2 class="font-serif text-3xl font-black text-ink">Ingresar a Redacción</h2>
+              <p class="mt-2 text-base text-muted">
+                Escriba su correo y contraseña para publicar noticias o ediciones PDF.
+              </p>
+            </div>
+
+            <form id="login-form" class="space-y-5">
+              <div>
+                <label for="login-email" class="block text-base font-bold text-ink mb-2">
+                  Correo electrónico
+                </label>
+                <input
+                  id="login-email"
+                  type="email"
+                  required
+                  autocomplete="username"
+                  placeholder="ejemplo@gmail.com"
+                  class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none bg-white"
+                />
+              </div>
+
+              <div>
+                <label for="login-password" class="block text-base font-bold text-ink mb-2">
+                  Contraseña
+                </label>
+                <div class="relative">
+                  <input
+                    id="login-password"
+                    type="password"
+                    required
+                    autocomplete="current-password"
+                    placeholder="Escriba su contraseña"
+                    class="w-full px-4 py-4 pr-28 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none bg-white"
+                  />
+                  <button
+                    id="toggle-password"
+                    type="button"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 text-sm font-bold text-burgundy bg-burgundy-soft rounded-md hover:bg-burgundy hover:text-white transition-colors"
+                  >
+                    Mostrar
+                  </button>
+                </div>
+              </div>
+
+              <div id="login-error" class="hidden p-4 rounded-lg bg-burgundy-soft border border-burgundy text-burgundy text-base font-medium"></div>
+
+              <button
+                id="btn-login-submit"
+                type="submit"
+                class="w-full py-4 px-6 bg-burgundy text-white text-xl font-bold rounded-lg hover:bg-burgundy-dark transition-colors"
+              >
+                Entrar a Redacción
+              </button>
+            </form>
+          </section>
+
+          <!-- MENSAJE DE ÉXITO / AVISO GLOBAL -->
+          <div id="toast-banner" class="hidden mb-6 p-5 rounded-xl border-2 text-lg font-semibold flex items-center justify-between gap-4">
+            <span id="toast-message"></span>
+            <button id="toast-close" type="button" class="text-sm font-bold underline shrink-0">Cerrar</button>
+          </div>
+
+          <!-- VISTA 2: MENÚ PRINCIPAL DEL DIRECTOR -->
+          <section id="view-dashboard" class="hidden space-y-10">
+            <div>
+              <h2 class="font-serif text-3xl sm:text-4xl font-black text-ink">
+                Hola, Director. ¿Qué desea publicar hoy?
+              </h2>
+              <p class="mt-2 text-lg text-muted">
+                Elija una de las dos opciones grandes para empezar. Todo se publica al instante en el periódico.
+              </p>
+
+              <!-- 2 BOTONES GIGANTES -->
+              <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <button
+                  id="btn-open-new-noticia"
+                  type="button"
+                  class="text-left p-7 sm:p-8 bg-white border-2 border-ink hover:border-burgundy hover:bg-burgundy-soft/40 rounded-xl transition-all shadow-sm group"
+                >
+                  <span class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-burgundy text-white text-2xl font-bold mb-4">
+                    ✎
+                  </span>
+                  <h3 class="font-serif text-2xl sm:text-3xl font-black text-ink group-hover:text-burgundy transition-colors">
+                    Publicar una noticia
+                  </h3>
+                  <p class="mt-2 text-base sm:text-lg text-muted leading-relaxed">
+                    Escribir una nota nueva con su foto para que aparezca en la portada del diario.
+                  </p>
+                  <span class="mt-5 inline-block text-base font-bold text-burgundy">
+                    Empezar noticia nueva →
+                  </span>
+                </button>
+
+                <button
+                  id="btn-open-new-edicion"
+                  type="button"
+                  class="text-left p-7 sm:p-8 bg-white border-2 border-ink hover:border-burgundy hover:bg-burgundy-soft/40 rounded-xl transition-all shadow-sm group"
+                >
+                  <span class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-ink text-white text-2xl font-bold mb-4">
+                    PDF
+                  </span>
+                  <h3 class="font-serif text-2xl sm:text-3xl font-black text-ink group-hover:text-burgundy transition-colors">
+                    Subir edición en PDF
+                  </h3>
+                  <p class="mt-2 text-base sm:text-lg text-muted leading-relaxed">
+                    Subir el periódico semanal o quincenal completo en PDF junto con su imagen de portada.
+                  </p>
+                  <span class="mt-5 inline-block text-base font-bold text-burgundy">
+                    Subir nueva edición PDF →
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <!-- LISTADO DE PUBLICACIONES EXISTENTES (EDITAR O BORRAR) -->
+            <div class="bg-white border border-line rounded-xl p-5 sm:p-8">
+              <div class="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4 mb-6">
+                <h3 class="font-serif text-2xl font-black text-ink">Lo que ya está publicado</h3>
+                <div class="flex gap-2">
+                  <button
+                    id="tab-noticias"
+                    type="button"
+                    class="px-5 py-2.5 text-base font-bold rounded-lg bg-ink text-white transition-colors"
+                  >
+                    Noticias (<span id="count-noticias">0</span>)
+                  </button>
+                  <button
+                    id="tab-ediciones"
+                    type="button"
+                    class="px-5 py-2.5 text-base font-bold rounded-lg border border-line text-ink hover:border-ink transition-colors"
+                  >
+                    Ediciones PDF (<span id="count-ediciones">0</span>)
+                  </button>
+                </div>
+              </div>
+
+              <div id="list-noticias" class="space-y-4"></div>
+              <div id="list-ediciones" class="hidden space-y-4"></div>
+            </div>
+          </section>
+
+          <!-- VISTA 3: FORMULARIO DE NOTICIA -->
+          <section id="view-form-noticia" class="hidden bg-white border border-line rounded-xl p-6 sm:p-10 shadow-sm">
+            <button
+              type="button"
+              data-back-dashboard
+              class="inline-flex items-center gap-2 px-4 py-2.5 text-base font-bold border border-line rounded-lg text-ink hover:border-ink mb-6"
+            >
+              ← Volver al menú principal
+            </button>
+
+            <h2 id="noticia-form-title" class="font-serif text-3xl font-black text-ink mb-2">
+              Publicar una noticia nueva
+            </h2>
+            <p class="text-base text-muted mb-8">
+              Complete los campos y presione el botón rojo al final.
+            </p>
+
+            <form id="form-noticia" class="space-y-6">
+              <input type="hidden" id="noticia-id" value="" />
+              <input type="hidden" id="noticia-imagen-actual" value="" />
+
+              <div>
+                <label for="noticia-titular" class="block text-lg font-bold text-ink mb-2">
+                  1. Titular de la noticia *
+                </label>
+                <input
+                  id="noticia-titular"
+                  type="text"
+                  required
+                  placeholder="Ejemplo: Inauguran nueva obra de agua potable en Íllimo"
+                  class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none"
+                />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label for="noticia-categoria" class="block text-lg font-bold text-ink mb-2">
+                    2. Sección *
+                  </label>
+                  <select
+                    id="noticia-categoria"
+                    class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none bg-white"
+                  >
+                    {CATEGORIAS.map((cat) => (
+                      <option value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label for="noticia-autor" class="block text-lg font-bold text-ink mb-2">
+                    3. Autor
+                  </label>
+                  <input
+                    id="noticia-autor"
+                    type="text"
+                    value="Juan César Cabrejos Becerra"
+                    class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="noticia-bajada" class="block text-lg font-bold text-ink mb-2">
+                  4. Resumen corto (aparece debajo del titular) *
+                </label>
+                <textarea
+                  id="noticia-bajada"
+                  rows="2"
+                  required
+                  placeholder="Escriba en 1 o 2 frases de qué trata la noticia..."
+                  class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none"
+                ></textarea>
+              </div>
+
+              <div>
+                <label for="noticia-contenido" class="block text-lg font-bold text-ink mb-2">
+                  5. Texto completo de la noticia *
+                </label>
+                <p class="text-sm text-subtle mb-2">
+                  Escriba normalmente. Para separar un párrafo de otro, presione la tecla Enter.
+                </p>
+                <textarea
+                  id="noticia-contenido"
+                  rows="9"
+                  required
+                  placeholder="Escriba o pegue aquí toda la noticia..."
+                  class="w-full px-4 py-4 text-lg leading-relaxed border-2 border-line rounded-lg focus:border-ink focus:outline-none"
+                ></textarea>
+              </div>
+
+              <div>
+                <label for="noticia-foto" class="block text-lg font-bold text-ink mb-2">
+                  6. Foto de la noticia (JPG o PNG)
+                </label>
+                <div class="p-6 border-2 border-dashed border-line rounded-xl bg-surface text-center">
+                  <input
+                    id="noticia-foto"
+                    type="file"
+                    accept="image/*"
+                    class="block w-full text-base text-muted file:mr-4 file:py-3 file:px-5 file:rounded-lg file:border-0 file:text-base file:font-bold file:bg-ink file:text-white hover:file:bg-burgundy cursor-pointer"
+                  />
+                  <div id="noticia-foto-preview-wrap" class="hidden mt-4">
+                    <img id="noticia-foto-preview" src="" alt="Vista previa" class="max-h-56 mx-auto rounded-lg border border-line object-cover" />
+                  </div>
+                </div>
+              </div>
+
+              <label class="flex items-center gap-3 p-4 border-2 border-line rounded-xl bg-surface cursor-pointer">
+                <input id="noticia-destacada" type="checkbox" checked class="w-6 h-6 accent-burgundy" />
+                <span class="text-lg font-semibold text-ink">
+                  Mostrar como noticia principal en la portada
+                </span>
+              </label>
+
+              <div id="noticia-status" class="hidden p-4 rounded-lg text-base font-semibold"></div>
+
+              <div class="flex flex-wrap items-center gap-4 pt-2">
+                <button
+                  id="btn-submit-noticia"
+                  type="submit"
+                  class="flex-1 min-w-[240px] py-4 px-8 bg-burgundy text-white text-xl font-bold rounded-xl hover:bg-burgundy-dark transition-colors"
+                >
+                  Publicar noticia ahora
+                </button>
+                <button
+                  type="button"
+                  data-back-dashboard
+                  class="py-4 px-6 border-2 border-line text-ink text-lg font-bold rounded-xl hover:border-ink transition-colors"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <!-- VISTA 4: FORMULARIO DE EDICIÓN PDF -->
+          <section id="view-form-edicion" class="hidden bg-white border border-line rounded-xl p-6 sm:p-10 shadow-sm">
+            <button
+              type="button"
+              data-back-dashboard
+              class="inline-flex items-center gap-2 px-4 py-2.5 text-base font-bold border border-line rounded-lg text-ink hover:border-ink mb-6"
+            >
+              ← Volver al menú principal
+            </button>
+
+            <h2 id="edicion-form-title" class="font-serif text-3xl font-black text-ink mb-2">
+              Subir nueva edición en PDF
+            </h2>
+            <p class="text-base text-muted mb-8">
+              Seleccione el archivo PDF completo del periódico y su imagen de portada.
+            </p>
+
+            <form id="form-edicion" class="space-y-6">
+              <input type="hidden" id="edicion-id" value="" />
+              <input type="hidden" id="edicion-pdf-actual" value="" />
+              <input type="hidden" id="edicion-portada-actual" value="" />
+              <input type="hidden" id="edicion-peso-actual" value="" />
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div>
+                  <label for="edicion-numero" class="block text-lg font-bold text-ink mb-2">
+                    1. N.° de edición *
+                  </label>
+                  <input
+                    id="edicion-numero"
+                    type="number"
+                    min="1"
+                    required
+                    placeholder="13"
+                    class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label for="edicion-fecha-iso" class="block text-lg font-bold text-ink mb-2">
+                    2. Fecha *
+                  </label>
+                  <input
+                    id="edicion-fecha-iso"
+                    type="date"
+                    required
+                    class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label for="edicion-paginas" class="block text-lg font-bold text-ink mb-2">
+                    3. Páginas
+                  </label>
+                  <input
+                    id="edicion-paginas"
+                    type="number"
+                    min="1"
+                    value="16"
+                    class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="edicion-titular" class="block text-lg font-bold text-ink mb-2">
+                  4. Titular principal de la portada *
+                </label>
+                <input
+                  id="edicion-titular"
+                  type="text"
+                  required
+                  placeholder="Ejemplo: Mejoran carreteras en el Valle La Leche"
+                  class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="edicion-bajada" class="block text-lg font-bold text-ink mb-2">
+                  5. Resumen de la edición
+                </label>
+                <textarea
+                  id="edicion-bajada"
+                  rows="2"
+                  placeholder="Breve resumen de los temas principales de esta edición..."
+                  class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none"
+                ></textarea>
+              </div>
+
+              <div>
+                <label for="edicion-secundarios" class="block text-lg font-bold text-ink mb-2">
+                  6. Otros titulares destacados (opcional, uno por línea)
+                </label>
+                <textarea
+                  id="edicion-secundarios"
+                  rows="3"
+                  placeholder="Ejemplo:&#10;Campaña médica gratuita en Túcume&#10;Resultados del campeonato regional"
+                  class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none"
+                ></textarea>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="p-6 border-2 border-dashed border-line rounded-xl bg-surface">
+                  <label for="edicion-pdf-file" class="block text-lg font-bold text-ink mb-2">
+                    7. Archivo PDF del periódico *
+                  </label>
+                  <p class="text-sm text-subtle mb-3">Soporta archivos grandes de hasta 50 MB.</p>
+                  <input
+                    id="edicion-pdf-file"
+                    type="file"
+                    accept="application/pdf,.pdf"
+                    class="block w-full text-base text-muted file:mr-4 file:py-3 file:px-4 file:rounded-lg file:border-0 file:text-base file:font-bold file:bg-burgundy file:text-white hover:file:bg-burgundy-dark cursor-pointer"
+                  />
+                  <p id="edicion-pdf-info" class="mt-3 text-sm font-semibold text-ink"></p>
+                </div>
+
+                <div class="p-6 border-2 border-dashed border-line rounded-xl bg-surface">
+                  <label for="edicion-portada-file" class="block text-lg font-bold text-ink mb-2">
+                    8. Imagen de portada (JPG o PNG)
+                  </label>
+                  <p class="text-sm text-subtle mb-3">Foto de la primera página para mostrar en la web.</p>
+                  <input
+                    id="edicion-portada-file"
+                    type="file"
+                    accept="image/*"
+                    class="block w-full text-base text-muted file:mr-4 file:py-3 file:px-4 file:rounded-lg file:border-0 file:text-base file:font-bold file:bg-ink file:text-white hover:file:bg-burgundy cursor-pointer"
+                  />
+                  <div id="edicion-portada-preview-wrap" class="hidden mt-4">
+                    <img id="edicion-portada-preview" src="" alt="Vista previa portada" class="max-h-48 mx-auto rounded-lg border border-line object-cover" />
+                  </div>
+                </div>
+              </div>
+
+              <div id="edicion-status" class="hidden p-4 rounded-lg text-base font-semibold"></div>
+
+              <div class="flex flex-wrap items-center gap-4 pt-2">
+                <button
+                  id="btn-submit-edicion"
+                  type="submit"
+                  class="flex-1 min-w-[240px] py-4 px-8 bg-burgundy text-white text-xl font-bold rounded-xl hover:bg-burgundy-dark transition-colors"
+                >
+                  Subir y publicar edición
+                </button>
+                <button
+                  type="button"
+                  data-back-dashboard
+                  class="py-4 px-6 border-2 border-line text-ink text-lg font-bold rounded-xl hover:border-ink transition-colors"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </section>
+        </>
+      )}
+    </main>
+  </div>
+</Layout>
+
+<script>
+  import { supabase, isSupabaseConfigured } from '../lib/supabase';
+
+  if (isSupabaseConfigured && supabase) {
+    const client = supabase;
+
+    // Vistas
+    const viewLoading = document.getElementById('view-loading');
+    const viewLogin = document.getElementById('view-login');
+    const viewDashboard = document.getElementById('view-dashboard');
+    const viewFormNoticia = document.getElementById('view-form-noticia');
+    const viewFormEdicion = document.getElementById('view-form-edicion');
+    const btnLogout = document.getElementById('btn-logout');
+
+    // Toast
+    const toastBanner = document.getElementById('toast-banner');
+    const toastMessage = document.getElementById('toast-message');
+    const toastClose = document.getElementById('toast-close');
+
+    let cachedNoticias: any[] = [];
+    let cachedEdiciones: any[] = [];
+
+    function showToast(msg: string, isError = false) {
+      if (!toastBanner || !toastMessage) return;
+      toastMessage.textContent = msg;
+      toastBanner.className = isError
+        ? 'mb-6 p-5 rounded-xl border-2 border-burgundy bg-burgundy-soft text-burgundy text-lg font-semibold flex items-center justify-between gap-4'
+        : 'mb-6 p-5 rounded-xl border-2 border-green-700 bg-green-50 text-green-900 text-lg font-semibold flex items-center justify-between gap-4';
+      toastBanner.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    toastClose?.addEventListener('click', () => toastBanner?.classList.add('hidden'));
+
+    function switchView(target: 'login' | 'dashboard' | 'noticia' | 'edicion') {
+      viewLoading?.classList.add('hidden');
+      viewLogin?.classList.toggle('hidden', target !== 'login');
+      viewDashboard?.classList.toggle('hidden', target !== 'dashboard');
+      viewFormNoticia?.classList.toggle('hidden', target !== 'noticia');
+      viewFormEdicion?.classList.toggle('hidden', target !== 'edicion');
+      btnLogout?.classList.toggle('hidden', target === 'login');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function slugify(text: string): string {
+      return text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '')
+        .slice(0, 70);
+    }
+
+    function formatFechaLarga(isoDate: string): string {
+      try {
+        const [y, m, d] = isoDate.split('-').map(Number);
+        const date = new Date(y, m - 1, d);
+        const formatted = new Intl.DateTimeFormat('es-PE', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        }).format(date);
+        return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+      } catch {
+        return isoDate;
+      }
+    }
+
+    function getTodayIso(): string {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    async function uploadFile(file: File, folder: string): Promise<string> {
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'bin';
+      const safeName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error } = await client.storage.from('tribuna-media').upload(safeName, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
+      if (error) throw new Error(`No se pudo subir el archivo: ${error.message}`);
+      const { data } = client.storage.from('tribuna-media').getPublicUrl(safeName);
+      return data.publicUrl;
+    }
+
+    // Mostrar/Ocultar contraseña
+    const togglePassBtn = document.getElementById('toggle-password');
+    const passInput = document.getElementById('login-password') as HTMLInputElement | null;
+    togglePassBtn?.addEventListener('click', () => {
+      if (!passInput) return;
+      const isHidden = passInput.type === 'password';
+      passInput.type = isHidden ? 'text' : 'password';
+      togglePassBtn.textContent = isHidden ? 'Ocultar' : 'Mostrar';
+    });
+
+    // Login
+    const loginForm = document.getElementById('login-form') as HTMLFormElement | null;
+    const loginError = document.getElementById('login-error');
+    const loginBtn = document.getElementById('btn-login-submit') as HTMLButtonElement | null;
+
+    loginForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!loginError || !loginBtn) return;
+      loginError.classList.add('hidden');
+      const email = (document.getElementById('login-email') as HTMLInputElement).value.trim();
+      const password = (document.getElementById('login-password') as HTMLInputElement).value;
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Ingresando...';
+
+      const { error } = await client.auth.signInWithPassword({ email, password });
+
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Entrar a Redacción';
+
+      if (error) {
+        loginError.textContent = 'Correo o contraseña incorrectos. Verifique e intente de nuevo.';
+        loginError.classList.remove('hidden');
+        return;
+      }
+
+      await loadDashboardData();
+      switchView('dashboard');
+    });
+
+    // Logout
+    btnLogout?.addEventListener('click', async () => {
+      await client.auth.signOut();
+      switchView('login');
+    });
+
+    // Cargar datos del panel
+    async function loadDashboardData() {
+      const [resNot, resEd] = await Promise.all([
+        client.from('noticias').select('*').order('fecha_iso', { ascending: false }).order('created_at', { ascending: false }),
+        client.from('ediciones').select('*').order('numero', { ascending: false }),
+      ]);
+
+      cachedNoticias = resNot.data || [];
+      cachedEdiciones = resEd.data || [];
+
+      const countNot = document.getElementById('count-noticias');
+      const countEd = document.getElementById('count-ediciones');
+      if (countNot) countNot.textContent = String(cachedNoticias.length);
+      if (countEd) countEd.textContent = String(cachedEdiciones.length);
+
+      renderNoticiasList();
+      renderEdicionesList();
+    }
+
+    function escapeHtml(str: string): string {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderNoticiasList() {
+      const container = document.getElementById('list-noticias');
+      if (!container) return;
+      if (cachedNoticias.length === 0) {
+        container.innerHTML = '<p class="text-base text-muted py-6 text-center">Todavía no hay noticias publicadas.</p>';
+        return;
+      }
+      container.innerHTML = cachedNoticias
+        .map(
+          (n) => `
+          <div class="p-4 border border-line rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-ink/40 transition-colors">
+            <div class="flex items-center gap-4 min-w-0">
+              <img src="${escapeHtml(n.imagen_url || '/noticias/ultima-noticia.jpg')}" alt="" class="w-20 h-16 object-cover rounded-lg border border-line shrink-0" />
+              <div class="min-w-0">
+                <p class="text-xs font-bold uppercase tracking-wider text-burgundy">
+                  ${escapeHtml(n.categoria)} ${n.destacada ? '· ★ Portada' : ''}
+                </p>
+                <h4 class="font-serif text-lg font-bold text-ink truncate">${escapeHtml(n.titular)}</h4>
+                <p class="text-sm text-subtle">${escapeHtml(n.fecha_texto)}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button type="button" data-edit-noticia="${escapeHtml(n.id)}" class="px-4 py-2.5 text-sm font-bold border border-ink rounded-lg text-ink hover:bg-ink hover:text-white transition-colors">
+                Editar
+              </button>
+              <button type="button" data-delete-noticia="${escapeHtml(n.id)}" class="px-4 py-2.5 text-sm font-bold border border-burgundy rounded-lg text-burgundy hover:bg-burgundy hover:text-white transition-colors">
+                Borrar
+              </button>
+            </div>
+          </div>
+        `
+        )
+        .join('');
+    }
+
+    function renderEdicionesList() {
+      const container = document.getElementById('list-ediciones');
+      if (!container) return;
+      if (cachedEdiciones.length === 0) {
+        container.innerHTML = '<p class="text-base text-muted py-6 text-center">Todavía no hay ediciones PDF publicadas.</p>';
+        return;
+      }
+      container.innerHTML = cachedEdiciones
+        .map(
+          (e) => `
+          <div class="p-4 border border-line rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-ink/40 transition-colors">
+            <div class="flex items-center gap-4 min-w-0">
+              <img src="${escapeHtml(e.portada_img_url || '/ediciones/portada-placeholder.svg')}" alt="" class="w-14 h-20 object-cover rounded-md border border-line shrink-0" />
+              <div class="min-w-0">
+                <p class="text-xs font-bold uppercase tracking-wider text-burgundy">Edición N.° ${e.numero}</p>
+                <h4 class="font-serif text-lg font-bold text-ink truncate">${escapeHtml(e.titular)}</h4>
+                <p class="text-sm text-subtle">${escapeHtml(e.fecha_texto)} ${e.peso ? `· ${escapeHtml(e.peso)}` : ''}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button type="button" data-edit-edicion="${escapeHtml(e.id)}" class="px-4 py-2.5 text-sm font-bold border border-ink rounded-lg text-ink hover:bg-ink hover:text-white transition-colors">
+                Editar
+              </button>
+              <button type="button" data-delete-edicion="${escapeHtml(e.id)}" class="px-4 py-2.5 text-sm font-bold border border-burgundy rounded-lg text-burgundy hover:bg-burgundy hover:text-white transition-colors">
+                Borrar
+              </button>
+            </div>
+          </div>
+        `
+        )
+        .join('');
+    }
+
+    // Pestañas del listado
+    const tabNot = document.getElementById('tab-noticias');
+    const tabEd = document.getElementById('tab-ediciones');
+    const listNot = document.getElementById('list-noticias');
+    const listEd = document.getElementById('list-ediciones');
+
+    tabNot?.addEventListener('click', () => {
+      listNot?.classList.remove('hidden');
+      listEd?.classList.add('hidden');
+      tabNot.className = 'px-5 py-2.5 text-base font-bold rounded-lg bg-ink text-white transition-colors';
+      if (tabEd) tabEd.className = 'px-5 py-2.5 text-base font-bold rounded-lg border border-line text-ink hover:border-ink transition-colors';
+    });
+
+    tabEd?.addEventListener('click', () => {
+      listEd?.classList.remove('hidden');
+      listNot?.classList.add('hidden');
+      tabEd.className = 'px-5 py-2.5 text-base font-bold rounded-lg bg-ink text-white transition-colors';
+      if (tabNot) tabNot.className = 'px-5 py-2.5 text-base font-bold rounded-lg border border-line text-ink hover:border-ink transition-colors';
+    });
+
+    // Botones volver
+    document.querySelectorAll('[data-back-dashboard]').forEach((btn) => {
+      btn.addEventListener('click', () => switchView('dashboard'));
+    });
+
+    // Abrir formulario nueva noticia
+    document.getElementById('btn-open-new-noticia')?.addEventListener('click', () => {
+      (document.getElementById('form-noticia') as HTMLFormElement).reset();
+      (document.getElementById('noticia-id') as HTMLInputElement).value = '';
+      (document.getElementById('noticia-imagen-actual') as HTMLInputElement).value = '';
+      (document.getElementById('noticia-autor') as HTMLInputElement).value = 'Juan César Cabrejos Becerra';
+      (document.getElementById('noticia-destacada') as HTMLInputElement).checked = true;
+      document.getElementById('noticia-foto-preview-wrap')?.classList.add('hidden');
+      document.getElementById('noticia-status')?.classList.add('hidden');
+      const title = document.getElementById('noticia-form-title');
+      const submitBtn = document.getElementById('btn-submit-noticia');
+      if (title) title.textContent = 'Publicar una noticia nueva';
+      if (submitBtn) submitBtn.textContent = 'Publicar noticia ahora';
+      switchView('noticia');
+    });
+
+    // Abrir formulario nueva edición
+    document.getElementById('btn-open-new-edicion')?.addEventListener('click', () => {
+      (document.getElementById('form-edicion') as HTMLFormElement).reset();
+      (document.getElementById('edicion-id') as HTMLInputElement).value = '';
+      (document.getElementById('edicion-pdf-actual') as HTMLInputElement).value = '';
+      (document.getElementById('edicion-portada-actual') as HTMLInputElement).value = '';
+      (document.getElementById('edicion-peso-actual') as HTMLInputElement).value = '';
+      const nextNum = cachedEdiciones.length > 0 ? Math.max(...cachedEdiciones.map((e) => Number(e.numero) || 0)) + 1 : 13;
+      (document.getElementById('edicion-numero') as HTMLInputElement).value = String(nextNum);
+      (document.getElementById('edicion-fecha-iso') as HTMLInputElement).value = getTodayIso();
+      (document.getElementById('edicion-paginas') as HTMLInputElement).value = '16';
+      const pdfInfo = document.getElementById('edicion-pdf-info');
+      if (pdfInfo) pdfInfo.textContent = '';
+      document.getElementById('edicion-portada-preview-wrap')?.classList.add('hidden');
+      document.getElementById('edicion-status')?.classList.add('hidden');
+      const title = document.getElementById('edicion-form-title');
+      const submitBtn = document.getElementById('btn-submit-edicion');
+      if (title) title.textContent = 'Subir nueva edición en PDF';
+      if (submitBtn) submitBtn.textContent = 'Subir y publicar edición';
+      switchView('edicion');
+    });
+
+    // Vistas previas de archivos
+    document.getElementById('noticia-foto')?.addEventListener('change', (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      const img = document.getElementById('noticia-foto-preview') as HTMLImageElement | null;
+      const wrap = document.getElementById('noticia-foto-preview-wrap');
+      if (file && img && wrap) {
+        img.src = URL.createObjectURL(file);
+        wrap.classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('edicion-portada-file')?.addEventListener('change', (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      const img = document.getElementById('edicion-portada-preview') as HTMLImageElement | null;
+      const wrap = document.getElementById('edicion-portada-preview-wrap');
+      if (file && img && wrap) {
+        img.src = URL.createObjectURL(file);
+        wrap.classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('edicion-pdf-file')?.addEventListener('change', (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      const info = document.getElementById('edicion-pdf-info');
+      if (file && info) {
+        const mb = (file.size / (1024 * 1024)).toFixed(2);
+        info.textContent = `Archivo seleccionado: ${file.name} (${mb} MB)`;
+      }
+    });
+
+    // Delegación para Editar y Borrar
+    document.addEventListener('click', async (e) => {
+      const target = e.target as HTMLElement;
+
+      const editNotId = target.getAttribute('data-edit-noticia');
+      if (editNotId) {
+        const item = cachedNoticias.find((n) => n.id === editNotId);
+        if (!item) return;
+        (document.getElementById('noticia-id') as HTMLInputElement).value = item.id;
+        (document.getElementById('noticia-titular') as HTMLInputElement).value = item.titular || '';
+        (document.getElementById('noticia-categoria') as HTMLSelectElement).value = item.categoria || 'Valle La Leche';
+        (document.getElementById('noticia-autor') as HTMLInputElement).value = item.autor || 'Juan César Cabrejos Becerra';
+        (document.getElementById('noticia-bajada') as HTMLTextAreaElement).value = item.bajada || '';
+        (document.getElementById('noticia-contenido') as HTMLTextAreaElement).value = item.contenido || '';
+        (document.getElementById('noticia-imagen-actual') as HTMLInputElement).value = item.imagen_url || '';
+        (document.getElementById('noticia-destacada') as HTMLInputElement).checked = Boolean(item.destacada);
+        if (item.imagen_url) {
+          (document.getElementById('noticia-foto-preview') as HTMLImageElement).src = item.imagen_url;
+          document.getElementById('noticia-foto-preview-wrap')?.classList.remove('hidden');
+        }
+        const title = document.getElementById('noticia-form-title');
+        const submitBtn = document.getElementById('btn-submit-noticia');
+        if (title) title.textContent = 'Editar noticia';
+        if (submitBtn) submitBtn.textContent = 'Guardar cambios de la noticia';
+        switchView('noticia');
+        return;
+      }
+
+      const delNotId = target.getAttribute('data-delete-noticia');
+      if (delNotId) {
+        const item = cachedNoticias.find((n) => n.id === delNotId);
+        if (!item) return;
+        if (!confirm(`¿Seguro que desea borrar la noticia "${item.titular}"? Esta acción no se puede deshacer.`)) return;
+        const { error } = await client.from('noticias').delete().eq('id', delNotId);
+        if (error) {
+          showToast(`No se pudo borrar: ${error.message}`, true);
+        } else {
+          showToast('Noticia borrada correctamente.');
+          await loadDashboardData();
+        }
+        return;
+      }
+
+      const editEdId = target.getAttribute('data-edit-edicion');
+      if (editEdId) {
+        const item = cachedEdiciones.find((x) => x.id === editEdId);
+        if (!item) return;
+        (document.getElementById('edicion-id') as HTMLInputElement).value = item.id;
+        (document.getElementById('edicion-numero') as HTMLInputElement).value = String(item.numero);
+        (document.getElementById('edicion-fecha-iso') as HTMLInputElement).value = item.fecha_iso || getTodayIso();
+        (document.getElementById('edicion-paginas') as HTMLInputElement).value = String(item.paginas || 12);
+        (document.getElementById('edicion-titular') as HTMLInputElement).value = item.titular || '';
+        (document.getElementById('edicion-bajada') as HTMLTextAreaElement).value = item.bajada || '';
+        (document.getElementById('edicion-secundarios') as HTMLTextAreaElement).value = (item.titulares_secundarios || []).join('\n');
+        (document.getElementById('edicion-pdf-actual') as HTMLInputElement).value = item.archivo_pdf_url || '';
+        (document.getElementById('edicion-portada-actual') as HTMLInputElement).value = item.portada_img_url || '';
+        (document.getElementById('edicion-peso-actual') as HTMLInputElement).value = item.peso || '';
+        const pdfInfo = document.getElementById('edicion-pdf-info');
+        if (pdfInfo) pdfInfo.textContent = item.archivo_pdf_url ? 'Ya tiene un PDF cargado (solo elija otro si desea reemplazarlo).' : '';
+        if (item.portada_img_url) {
+          (document.getElementById('edicion-portada-preview') as HTMLImageElement).src = item.portada_img_url;
+          document.getElementById('edicion-portada-preview-wrap')?.classList.remove('hidden');
+        }
+        const title = document.getElementById('edicion-form-title');
+        const submitBtn = document.getElementById('btn-submit-edicion');
+        if (title) title.textContent = `Editar Edición N.° ${item.numero}`;
+        if (submitBtn) submitBtn.textContent = 'Guardar cambios de la edición';
+        switchView('edicion');
+        return;
+      }
+
+      const delEdId = target.getAttribute('data-delete-edicion');
+      if (delEdId) {
+        const item = cachedEdiciones.find((x) => x.id === delEdId);
+        if (!item) return;
+        if (!confirm(`¿Seguro que desea borrar la Edición N.° ${item.numero}? Esta acción no se puede deshacer.`)) return;
+        const { error } = await client.from('ediciones').delete().eq('id', delEdId);
+        if (error) {
+          showToast(`No se pudo borrar: ${error.message}`, true);
+        } else {
+          showToast(`Edición N.° ${item.numero} borrada correctamente.`);
+          await loadDashboardData();
+        }
+      }
+    });
+
+    // Guardar Noticia
+    document.getElementById('form-noticia')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const statusEl = document.getElementById('noticia-status');
+      const submitBtn = document.getElementById('btn-submit-noticia') as HTMLButtonElement;
+
+      const setStatus = (msg: string, isError = false) => {
+        if (!statusEl) return;
+        statusEl.textContent = msg;
+        statusEl.className = isError
+          ? 'p-4 rounded-lg bg-burgundy-soft text-burgundy border border-burgundy text-base font-semibold'
+          : 'p-4 rounded-lg bg-surface text-ink border border-line text-base font-semibold';
+        statusEl.classList.remove('hidden');
+      };
+
+      try {
+        submitBtn.disabled = true;
+        const id = (document.getElementById('noticia-id') as HTMLInputElement).value;
+        const titular = (document.getElementById('noticia-titular') as HTMLInputElement).value.trim();
+        const categoria = (document.getElementById('noticia-categoria') as HTMLSelectElement).value;
+        const autor = (document.getElementById('noticia-autor') as HTMLInputElement).value.trim() || 'Juan César Cabrejos Becerra';
+        const bajada = (document.getElementById('noticia-bajada') as HTMLTextAreaElement).value.trim();
+        const contenido = (document.getElementById('noticia-contenido') as HTMLTextAreaElement).value.trim();
+        const destacada = (document.getElementById('noticia-destacada') as HTMLInputElement).checked;
+        let imagenUrl = (document.getElementById('noticia-imagen-actual') as HTMLInputElement).value || '/noticias/ultima-noticia.jpg';
+
+        const fotoFile = (document.getElementById('noticia-foto') as HTMLInputElement).files?.[0];
+        if (fotoFile) {
+          setStatus('Subiendo fotografía, por favor espere...');
+          imagenUrl = await uploadFile(fotoFile, 'noticias');
+        }
+
+        setStatus('Guardando noticia en el periódico...');
+
+        if (destacada) {
+          await client.from('noticias').update({ destacada: false }).eq('destacada', true);
+        }
+
+        const todayIso = getTodayIso();
+        const payload = {
+          titular,
+          bajada,
+          contenido,
+          categoria,
+          autor,
+          imagen_url: imagenUrl,
+          alt_imagen: titular,
+          destacada,
+        };
+
+        if (id) {
+          const { error } = await client.from('noticias').update(payload).eq('id', id);
+          if (error) throw error;
+          showToast('¡Cambios guardados! La noticia ya está actualizada en la web.');
+        } else {
+          const slug = `${slugify(titular)}-${Date.now().toString().slice(-4)}`;
+          const { error } = await client.from('noticias').insert({
+            ...payload,
+            slug,
+            fecha_iso: todayIso,
+            fecha_texto: formatFechaLarga(todayIso),
+          });
+          if (error) throw error;
+          showToast('¡Listo! La noticia ya está publicada en Tribuna Mochica.');
+        }
+
+        await loadDashboardData();
+        switchView('dashboard');
+      } catch (err: any) {
+        setStatus(`Ocurrió un problema: ${err.message || 'Intente nuevamente.'}`, true);
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Guardar Edición PDF
+    document.getElementById('form-edicion')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const statusEl = document.getElementById('edicion-status');
+      const submitBtn = document.getElementById('btn-submit-edicion') as HTMLButtonElement;
+
+      const setStatus = (msg: string, isError = false) => {
+        if (!statusEl) return;
+        statusEl.textContent = msg;
+        statusEl.className = isError
+          ? 'p-4 rounded-lg bg-burgundy-soft text-burgundy border border-burgundy text-base font-semibold'
+          : 'p-4 rounded-lg bg-surface text-ink border border-line text-base font-semibold';
+        statusEl.classList.remove('hidden');
+      };
+
+      try {
+        submitBtn.disabled = true;
+        const id = (document.getElementById('edicion-id') as HTMLInputElement).value;
+        const numero = Number((document.getElementById('edicion-numero') as HTMLInputElement).value);
+        const fechaIso = (document.getElementById('edicion-fecha-iso') as HTMLInputElement).value || getTodayIso();
+        const paginas = Number((document.getElementById('edicion-paginas') as HTMLInputElement).value) || 12;
+        const titular = (document.getElementById('edicion-titular') as HTMLInputElement).value.trim();
+        const bajada = (document.getElementById('edicion-bajada') as HTMLTextAreaElement).value.trim();
+        const secundariosRaw = (document.getElementById('edicion-secundarios') as HTMLTextAreaElement).value;
+        const titularesSecundarios = secundariosRaw
+          .split('\n')
+          .map((s) => s.trim())
+          .filter(Boolean);
+
+        let pdfUrl = (document.getElementById('edicion-pdf-actual') as HTMLInputElement).value;
+        let portadaUrl = (document.getElementById('edicion-portada-actual') as HTMLInputElement).value || '/ediciones/portada-placeholder.svg';
+        let peso = (document.getElementById('edicion-peso-actual') as HTMLInputElement).value || '';
+
+        const pdfFile = (document.getElementById('edicion-pdf-file') as HTMLInputElement).files?.[0];
+        const portadaFile = (document.getElementById('edicion-portada-file') as HTMLInputElement).files?.[0];
+
+        if (!pdfFile && !pdfUrl) {
+          setStatus('Por favor seleccione el archivo PDF de la edición antes de publicar.', true);
+          submitBtn.disabled = false;
+          return;
+        }
+
+        if (pdfFile) {
+          setStatus('Subiendo archivo PDF (esto puede tardar unos segundos según su internet)...');
+          pdfUrl = await uploadFile(pdfFile, 'ediciones-pdf');
+          peso = `${(pdfFile.size / (1024 * 1024)).toFixed(2)} MB`;
+        }
+
+        if (portadaFile) {
+          setStatus('Subiendo imagen de portada...');
+          portadaUrl = await uploadFile(portadaFile, 'ediciones-portadas');
+        }
+
+        setStatus('Guardando edición en la hemeroteca...');
+
+        const payload = {
+          numero,
+          fecha_iso: fechaIso,
+          fecha_texto: formatFechaLarga(fechaIso),
+          titular,
+          bajada,
+          titulares_secundarios: titularesSecundarios,
+          paginas,
+          peso,
+          archivo_pdf_url: pdfUrl,
+          portada_img_url: portadaUrl,
+        };
+
+        if (id) {
+          const { error } = await client.from('ediciones').update(payload).eq('id', id);
+          if (error) throw error;
+          showToast(`¡Cambios guardados en la Edición N.° ${numero}!`);
+        } else {
+          const { error } = await client.from('ediciones').insert(payload);
+          if (error) throw error;
+          showToast(`¡Listo! La Edición N.° ${numero} ya está publicada en el diario.`);
+        }
+
+        await loadDashboardData();
+        switchView('dashboard');
+      } catch (err: any) {
+        setStatus(`Ocurrió un problema: ${err.message || 'Verifique que el número de edición no esté repetido.'}`, true);
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Inicializar sesión al entrar
+    (async () => {
+      const { data } = await client.auth.getSession();
+      if (data.session) {
+        await loadDashboardData();
+        switchView('dashboard');
+      } else {
+        switchView('login');
+      }
+    })();
+  }
+</script>

@@ -1,0 +1,64 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import EdicionCard from '../../components/EdicionCard.astro';
+import { getEdiciones } from '../../lib/data';
+
+const ediciones = await getEdiciones();
+---
+<Layout
+  title="Ediciones PDF · Hemeroteca | Tribuna Mochica"
+  description="Explora y descarga todas las ediciones semanales y quincenales en PDF del periódico Tribuna Mochica."
+  activePath="/ediciones"
+>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="pb-5 border-b-2 border-ink mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-1">Hemeroteca Digital</p>
+        <h1 class="font-serif text-3xl sm:text-4xl font-black text-ink">Ediciones en PDF</h1>
+        <p class="mt-2 text-sm text-muted">
+          Lee en pantalla o descarga gratis todas las ediciones de Tribuna Mochica.
+        </p>
+      </div>
+
+      <div class="w-full md:w-80">
+        <label for="buscar-ediciones" class="sr-only">Buscar ediciones</label>
+        <input
+          id="buscar-ediciones"
+          type="search"
+          placeholder="Buscar por número, fecha o titular..."
+          class="w-full px-4 py-2.5 text-sm border border-line focus:border-ink focus:outline-none bg-white"
+        />
+      </div>
+    </div>
+
+    <p id="ediciones-count" class="text-xs text-subtle mb-6">
+      Mostrando {ediciones.length} {ediciones.length === 1 ? 'edición' : 'ediciones'}
+    </p>
+
+    <div id="ediciones-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {ediciones.map((edicion, idx) => (
+        <EdicionCard edicion={edicion} isLatest={idx === 0} />
+      ))}
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const input = document.getElementById('buscar-ediciones') as HTMLInputElement | null;
+  const countEl = document.getElementById('ediciones-count');
+  const cards = Array.from(document.querySelectorAll('[data-edicion-card]')) as HTMLElement[];
+
+  input?.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    let visible = 0;
+    cards.forEach((card) => {
+      const text = card.getAttribute('data-search') || '';
+      const match = !q || text.includes(q);
+      card.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    if (countEl) {
+      countEl.textContent = `Mostrando ${visible} ${visible === 1 ? 'edición' : 'ediciones'}`;
+    }
+  });
+</script>

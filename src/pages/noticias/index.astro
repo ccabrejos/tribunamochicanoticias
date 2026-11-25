@@ -1,0 +1,74 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NoticiaCard from '../../components/NoticiaCard.astro';
+import { CATEGORIAS, getNoticias } from '../../lib/data';
+
+const categoriaActiva = Astro.url.searchParams.get('categoria') || 'Todas';
+const noticias = await getNoticias(categoriaActiva);
+---
+<Layout
+  title={categoriaActiva === 'Todas' ? 'Noticias | Tribuna Mochica' : `${categoriaActiva} | Tribuna Mochica`}
+  description="Todas las noticias y artículos de Tribuna Mochica sobre el Valle La Leche y la región Lambayeque."
+  activePath="/noticias"
+>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="pb-4 border-b-2 border-ink mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-1">Redacción Digital</p>
+        <h1 class="font-serif text-3xl sm:text-4xl font-black text-ink">
+          {categoriaActiva === 'Todas' ? 'Todas las noticias' : categoriaActiva}
+        </h1>
+      </div>
+      <p class="text-sm text-subtle">
+        {noticias.length} {noticias.length === 1 ? 'publicación' : 'publicaciones'}
+      </p>
+    </div>
+
+    <!-- Filtros por categoría -->
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 mb-8">
+      <a
+        href="/noticias"
+        class={`px-3.5 py-1.5 text-sm rounded-full border transition-colors whitespace-nowrap ${
+          categoriaActiva === 'Todas'
+            ? 'bg-ink text-white border-ink font-semibold'
+            : 'bg-white text-muted border-line hover:border-ink hover:text-ink'
+        }`}
+      >
+        Todas
+      </a>
+      {CATEGORIAS.map((cat) => (
+        <a
+          href={`/noticias?categoria=${encodeURIComponent(cat)}`}
+          class={`px-3.5 py-1.5 text-sm rounded-full border transition-colors whitespace-nowrap ${
+            categoriaActiva === cat
+              ? 'bg-burgundy text-white border-burgundy font-semibold'
+              : 'bg-white text-muted border-line hover:border-ink hover:text-ink'
+          }`}
+        >
+          {cat}
+        </a>
+      ))}
+    </div>
+
+    {noticias.length > 0 ? (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
+        {noticias.map((noticia) => (
+          <NoticiaCard noticia={noticia} />
+        ))}
+      </div>
+    ) : (
+      <div class="py-16 px-6 text-center border border-line bg-surface">
+        <p class="font-serif text-xl font-bold text-ink">No hay noticias en esta sección todavía</p>
+        <p class="mt-2 text-sm text-muted">Explora todas las publicaciones o revisa nuestras ediciones completas en PDF.</p>
+        <div class="mt-6 flex justify-center gap-3">
+          <a href="/noticias" class="px-4 py-2 bg-ink text-white text-sm font-semibold hover:bg-burgundy transition-colors">
+            Ver todas las noticias
+          </a>
+          <a href="/ediciones" class="px-4 py-2 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors">
+            Ver ediciones PDF
+          </a>
+        </div>
+      </div>
+    )}
+  </main>
+</Layout>

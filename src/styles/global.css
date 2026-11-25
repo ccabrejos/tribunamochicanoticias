@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-white text-ink font-sans;
+  }
+
+  h1, h2, h3, .font-editorial {
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  }
+}
+
+.double-rule {
+  border-top: 2px solid #111111;
+  border-bottom: 1px solid #111111;
+  height: 5px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

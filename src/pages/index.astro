@@ -1,0 +1,216 @@
+---
+import Layout from '../layouts/Layout.astro';
+import NoticiaCard from '../components/NoticiaCard.astro';
+import EdicionCard from '../components/EdicionCard.astro';
+import { getNoticias, getEdiciones } from '../lib/data';
+
+const [noticias, ediciones] = await Promise.all([getNoticias(), getEdiciones()]);
+
+const noticiaPrincipal = noticias[0] || null;
+const otrasNoticias = noticias.slice(1, 7);
+const ultimaEdicion = ediciones[0] || null;
+const edicionesAnteriores = ediciones.slice(0, 4);
+---
+<Layout
+  title="Tribuna Mochica | La Voz del Valle La Leche"
+  description="Portal de noticias y semanario digital Tribuna Mochica. Dirigido por Juan César Cabrejos Becerra. Noticias de Lambayeque, Valle La Leche, Íllimo, Túcume y Mochumí."
+  image={noticiaPrincipal?.imagen || '/logo.jpg'}
+>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+    <!-- PRIMERA PLANA: Noticia Principal + Edición PDF de la Semana -->
+    <section aria-label="Primera plana" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pb-12 border-b border-line">
+      <!-- Columna Principal (8 cols): Noticia Destacada -->
+      <div class="lg:col-span-8">
+        {noticiaPrincipal ? (
+          <article class="group">
+            <div class="flex items-center gap-2.5 text-xs uppercase tracking-[0.16em] mb-3">
+              <span class="px-2 py-0.5 bg-burgundy text-white font-bold">Portada</span>
+              <span class="font-bold text-burgundy">{noticiaPrincipal.categoria}</span>
+              <span class="text-line">·</span>
+              <time class="text-subtle">{noticiaPrincipal.fecha}</time>
+            </div>
+
+            <h2 class="font-serif text-3xl sm:text-4xl lg:text-[42px] font-black text-ink leading-[1.12] tracking-tight group-hover:text-burgundy transition-colors">
+              <a href={`/noticia/${noticiaPrincipal.slug}`}>
+                {noticiaPrincipal.titular}
+              </a>
+            </h2>
+
+            <p class="mt-4 text-base sm:text-lg text-muted leading-relaxed">
+              {noticiaPrincipal.bajada}
+            </p>
+
+            <a
+              href={`/noticia/${noticiaPrincipal.slug}`}
+              class="block mt-6 overflow-hidden bg-surface border border-line aspect-[16/9]"
+            >
+              <img
+                src={noticiaPrincipal.imagen}
+                onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
+                alt={noticiaPrincipal.altImagen || noticiaPrincipal.titular}
+                class="w-full h-full object-cover group-hover:scale-[1.015] transition-transform duration-300"
+                loading="eager"
+              />
+            </a>
+
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-line/70">
+              <p class="text-xs sm:text-sm text-subtle">
+                Por <span class="text-ink font-semibold">{noticiaPrincipal.autor}</span>
+              </p>
+              <a
+                href={`/noticia/${noticiaPrincipal.slug}`}
+                class="inline-flex items-center gap-1.5 text-sm font-semibold text-burgundy hover:text-burgundy-dark transition-colors"
+              >
+                Leer nota completa
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+        ) : (
+          <div class="p-10 border border-line bg-surface text-center">
+            <p class="text-muted">Aún no hay noticias publicadas.</p>
+          </div>
+        )}
+      </div>
+
+      <!-- Columna Lateral (4 cols): Edición Semanal / Quincenal en PDF -->
+      <aside class="lg:col-span-4 lg:border-l lg:border-line lg:pl-8 flex flex-col justify-between">
+        {ultimaEdicion && (
+          <div>
+            <div class="flex items-center justify-between gap-2 pb-3 border-b-2 border-ink mb-5">
+              <span class="text-xs font-bold uppercase tracking-[0.16em] text-ink">
+                Edición Impresa · PDF
+              </span>
+              <span class="text-xs font-bold text-burgundy">
+                N.° {ultimaEdicion.numero}
+              </span>
+            </div>
+
+            <a
+              href={`/edicion/${ultimaEdicion.numero}`}
+              class="block aspect-[3/4] max-w-[270px] mx-auto bg-surface border border-line overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+            >
+              <img
+                src={ultimaEdicion.portadaImg}
+                onerror="this.onerror=null; this.src='/ediciones/portada-placeholder.svg';"
+                alt={`Portada Edición N.° ${ultimaEdicion.numero}`}
+                class="w-full h-full object-cover"
+                loading="eager"
+              />
+            </a>
+
+            <div class="mt-5">
+              <p class="text-xs text-subtle">{ultimaEdicion.fecha}</p>
+              <h3 class="mt-1 font-serif text-xl font-bold text-ink leading-snug">
+                <a href={`/edicion/${ultimaEdicion.numero}`} class="hover:text-burgundy transition-colors">
+                  {ultimaEdicion.titular}
+                </a>
+              </h3>
+
+              {ultimaEdicion.titularesSecundarios.length > 0 && (
+                <ul class="mt-3 space-y-1.5 text-xs text-muted border-t border-line pt-3">
+                  {ultimaEdicion.titularesSecundarios.slice(0, 3).map((t) => (
+                    <li class="flex items-start gap-2">
+                      <span class="text-burgundy font-bold mt-0.5">•</span>
+                      <span>{t}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <div class="mt-5 flex flex-col sm:flex-row lg:flex-col gap-2.5">
+                <button
+                  type="button"
+                  data-open-pdf
+                  data-pdf={ultimaEdicion.archivoPdf}
+                  data-title={`Edición N.° ${ultimaEdicion.numero} (${ultimaEdicion.fecha})`}
+                  class="w-full py-2.5 px-4 bg-burgundy text-white text-sm font-semibold hover:bg-burgundy-dark transition-colors text-center"
+                >
+                  Leer edición completa
+                </button>
+                <a
+                  href={ultimaEdicion.archivoPdf}
+                  download
+                  class="w-full py-2.5 px-4 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors text-center"
+                >
+                  Descargar PDF {ultimaEdicion.peso ? `(${ultimaEdicion.peso})` : ''}
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+      </aside>
+    </section>
+
+    <!-- MÁS NOTICIAS (aparece cuando haya más de 1 noticia publicada) -->
+    {otrasNoticias.length > 0 && (
+      <section aria-label="Más noticias" class="py-12 border-b border-line">
+        <div class="flex items-end justify-between gap-4 pb-3 border-b-2 border-ink mb-8">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.18em] text-burgundy font-bold">Actualidad Regional</p>
+            <h2 class="font-serif text-2xl sm:text-3xl font-black text-ink">Últimas noticias</h2>
+          </div>
+          <a href="/noticias" class="text-sm font-semibold text-ink hover:text-burgundy transition-colors shrink-0">
+            Ver todas →
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {otrasNoticias.map((noticia) => (
+            <NoticiaCard noticia={noticia} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- HEMEROTECA / EDICIONES ANTERIORES -->
+    <section aria-label="Hemeroteca de ediciones PDF" class="py-12 border-b border-line">
+      <div class="flex items-end justify-between gap-4 pb-3 border-b-2 border-ink mb-8">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.18em] text-burgundy font-bold">Archivo Digital</p>
+          <h2 class="font-serif text-2xl sm:text-3xl font-black text-ink">Ediciones en PDF</h2>
+        </div>
+        <a href="/ediciones" class="text-sm font-semibold text-ink hover:text-burgundy transition-colors shrink-0">
+          Ver archivo completo →
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {edicionesAnteriores.map((edicion, idx) => (
+          <EdicionCard edicion={edicion} isLatest={idx === 0} />
+        ))}
+      </div>
+    </section>
+
+    <!-- FRANJA DE PARTICIPACIÓN CIUDADANA -->
+    <section class="mt-12 bg-surface border border-line p-6 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div class="max-w-2xl">
+        <p class="text-[11px] uppercase tracking-[0.18em] text-burgundy font-bold mb-1">
+          Periodismo Ciudadano
+        </p>
+        <h2 class="font-serif text-2xl sm:text-3xl font-bold text-ink">
+          ¿Tienes una noticia, denuncia o actividad en tu comunidad?
+        </h2>
+        <p class="mt-2 text-sm sm:text-base text-muted">
+          Envía información, fotos o comunicados directamente a la mesa de redacción de Tribuna Mochica.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3 shrink-0">
+        <a
+          href="https://wa.me/51948100794?text=Hola%20Tribuna%20Mochica%2C%20quisiera%20compartir%20una%20noticia."
+          target="_blank"
+          rel="noopener noreferrer"
+          class="px-5 py-3 bg-ink text-white text-sm font-semibold hover:bg-burgundy transition-colors"
+        >
+          Enviar por WhatsApp
+        </a>
+        <a
+          href="/enviar-noticia"
+          class="px-5 py-3 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors"
+        >
+          Ver canales de contacto
+        </a>
+      </div>
+    </section>
+  </main>
+</Layout>
