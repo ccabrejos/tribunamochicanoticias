@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+Disallow: /redaccion
+
+User-agent: GPTBot
+Allow: /
+Disallow: /redaccion
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /redaccion
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /redaccion
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /redaccion
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /redaccion
+
+Sitemap: https://tribunamochica.vercel.app/sitemap.xml
