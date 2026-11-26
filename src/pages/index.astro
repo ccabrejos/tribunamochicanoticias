@@ -7,8 +7,8 @@ import { getNoticias, getEdiciones } from '../lib/data';
 const [noticias, ediciones] = await Promise.all([getNoticias(), getEdiciones()]);
 
 const noticiaPrincipal = noticias[0] || null;
-const otrasNoticias = noticias.slice(1, 7);
-const ultimaEdicion = ediciones[0] || null;
+const ultimasLaterales = noticias.slice(1, 6);
+const masNoticias = noticias.slice(6, 12);
 const edicionesAnteriores = ediciones.slice(0, 4);
 ---
 <Layout
@@ -17,7 +17,7 @@ const edicionesAnteriores = ediciones.slice(0, 4);
   image={noticiaPrincipal?.imagen || '/logo.jpg'}
 >
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-    <!-- PRIMERA PLANA: Noticia Principal + Edición PDF de la Semana -->
+    <!-- PRIMERA PLANA: Noticia Principal + Columna Lateral de Últimas Noticias -->
     <section aria-label="Primera plana" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pb-12 border-b border-line">
       <!-- Columna Principal (8 cols): Noticia Destacada -->
       <div class="lg:col-span-8">
@@ -73,82 +73,67 @@ const edicionesAnteriores = ediciones.slice(0, 4);
         )}
       </div>
 
-      <!-- Columna Lateral (4 cols): Edición Semanal / Quincenal en PDF -->
-      <aside class="lg:col-span-4 lg:border-l lg:border-line lg:pl-8 flex flex-col justify-between">
-        {ultimaEdicion && (
-          <div>
-            <div class="flex items-center justify-between gap-2 pb-3 border-b-2 border-ink mb-5">
-              <span class="text-xs font-bold uppercase tracking-[0.16em] text-ink">
-                Edición Impresa · PDF
-              </span>
-              <span class="text-xs font-bold text-burgundy">
-                N.° {ultimaEdicion.numero}
-              </span>
-            </div>
+      <!-- Columna Lateral (4 cols): Últimas noticias -->
+      <aside class="lg:col-span-4 lg:border-l lg:border-line lg:pl-8 flex flex-col">
+        <div class="flex items-center justify-between gap-2 pb-3 border-b-2 border-ink mb-5">
+          <span class="text-xs font-bold uppercase tracking-[0.16em] text-ink">
+            Últimas noticias
+          </span>
+          <a href="/noticias" class="text-xs font-semibold text-burgundy hover:text-burgundy-dark transition-colors">
+            Ver todas →
+          </a>
+        </div>
 
-            <a
-              href={`/edicion/${ultimaEdicion.numero}`}
-              class="block aspect-[3/4] max-w-[270px] mx-auto bg-surface border border-line overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-            >
-              <img
-                src={ultimaEdicion.portadaImg}
-                onerror="this.onerror=null; this.src='/ediciones/portada-placeholder.svg';"
-                alt={`Portada Edición N.° ${ultimaEdicion.numero}`}
-                class="w-full h-full object-cover"
-                loading="eager"
-              />
-            </a>
-
-            <div class="mt-5">
-              <p class="text-xs text-subtle">{ultimaEdicion.fecha}</p>
-              <h3 class="mt-1 font-serif text-xl font-bold text-ink leading-snug">
-                <a href={`/edicion/${ultimaEdicion.numero}`} class="hover:text-burgundy transition-colors">
-                  {ultimaEdicion.titular}
+        {ultimasLaterales.length > 0 ? (
+          <div class="divide-y divide-line flex-1">
+            {ultimasLaterales.map((item) => (
+              <article class="py-4 first:pt-0 group">
+                <a href={`/noticia/${item.slug}`} class="flex gap-3.5 items-start">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] mb-1">
+                      <span class="font-bold text-burgundy">{item.categoria}</span>
+                      <span class="text-line">·</span>
+                      <time class="text-subtle truncate">{item.fecha}</time>
+                    </div>
+                    <h3 class="font-serif text-base sm:text-lg font-bold text-ink leading-snug group-hover:text-burgundy transition-colors line-clamp-3">
+                      {item.titular}
+                    </h3>
+                  </div>
+                  <img
+                    src={item.imagen}
+                    onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
+                    alt={item.altImagen || item.titular}
+                    class="w-20 h-16 object-cover border border-line bg-surface shrink-0 mt-1"
+                    loading="lazy"
+                  />
                 </a>
-              </h3>
-
-              {ultimaEdicion.titularesSecundarios.length > 0 && (
-                <ul class="mt-3 space-y-1.5 text-xs text-muted border-t border-line pt-3">
-                  {ultimaEdicion.titularesSecundarios.slice(0, 3).map((t) => (
-                    <li class="flex items-start gap-2">
-                      <span class="text-burgundy font-bold mt-0.5">•</span>
-                      <span>{t}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <div class="mt-5 flex flex-col sm:flex-row lg:flex-col gap-2.5">
-                <button
-                  type="button"
-                  data-open-pdf
-                  data-pdf={ultimaEdicion.archivoPdf}
-                  data-title={`Edición N.° ${ultimaEdicion.numero} (${ultimaEdicion.fecha})`}
-                  class="w-full py-2.5 px-4 bg-burgundy text-white text-sm font-semibold hover:bg-burgundy-dark transition-colors text-center"
-                >
-                  Leer edición completa
-                </button>
-                <a
-                  href={ultimaEdicion.archivoPdf}
-                  download
-                  class="w-full py-2.5 px-4 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors text-center"
-                >
-                  Descargar PDF {ultimaEdicion.peso ? `(${ultimaEdicion.peso})` : ''}
-                </a>
-              </div>
-            </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="py-8 text-sm text-muted">
+            Aquí aparecerán automáticamente las próximas noticias que publique la redacción.
           </div>
         )}
+
+        <div class="mt-6 pt-4 border-t border-line">
+          <a
+            href="/noticias"
+            class="block w-full py-2.5 px-4 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors text-center"
+          >
+            Explorar todas las noticias
+          </a>
+        </div>
       </aside>
     </section>
 
-    <!-- MÁS NOTICIAS (aparece cuando haya más de 1 noticia publicada) -->
-    {otrasNoticias.length > 0 && (
+    <!-- MÁS NOTICIAS (aparece automáticamente cuando haya más de 6 noticias) -->
+    {masNoticias.length > 0 && (
       <section aria-label="Más noticias" class="py-12 border-b border-line">
         <div class="flex items-end justify-between gap-4 pb-3 border-b-2 border-ink mb-8">
           <div>
             <p class="text-[11px] uppercase tracking-[0.18em] text-burgundy font-bold">Actualidad Regional</p>
-            <h2 class="font-serif text-2xl sm:text-3xl font-black text-ink">Últimas noticias</h2>
+            <h2 class="font-serif text-2xl sm:text-3xl font-black text-ink">Más noticias</h2>
           </div>
           <a href="/noticias" class="text-sm font-semibold text-ink hover:text-burgundy transition-colors shrink-0">
             Ver todas →
@@ -156,14 +141,14 @@ const edicionesAnteriores = ediciones.slice(0, 4);
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {otrasNoticias.map((noticia) => (
+          {masNoticias.map((noticia) => (
             <NoticiaCard noticia={noticia} />
           ))}
         </div>
       </section>
     )}
 
-    <!-- HEMEROTECA / EDICIONES ANTERIORES -->
+    <!-- HEMEROTECA / EDICIONES EN PDF -->
     <section aria-label="Hemeroteca de ediciones PDF" class="py-12 border-b border-line">
       <div class="flex items-end justify-between gap-4 pb-3 border-b-2 border-ink mb-8">
         <div>
