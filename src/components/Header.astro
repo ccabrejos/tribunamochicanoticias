@@ -41,19 +41,19 @@ const currentCat = Astro.url.searchParams.get('categoria') || '';
   </div>
 
   <!-- Cabecera editorial (Masthead) -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
     <div class="flex flex-col items-center text-center">
-      <a href="/" class="group inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+      <a href="/" class="group inline-flex flex-col sm:flex-row items-center gap-2.5 sm:gap-4">
         <img
           src="/logo.jpg"
           onerror="this.onerror=null; this.src='/logo-mochica.svg';"
           alt="Tribuna Mochica"
-          class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border border-line"
+          class="w-11 h-11 sm:w-14 sm:h-14 rounded-full object-cover border border-line"
           width="56"
           height="56"
         />
         <div class="text-center sm:text-left">
-          <p class="text-[11px] uppercase tracking-[0.22em] text-burgundy font-semibold mb-0.5">
+          <p class="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-burgundy font-semibold mb-0.5">
             La Voz del Valle La Leche
           </p>
           <h1 class="font-serif text-3xl sm:text-5xl font-black tracking-tight text-ink leading-none group-hover:text-burgundy transition-colors">
@@ -61,21 +61,134 @@ const currentCat = Astro.url.searchParams.get('categoria') || '';
           </h1>
         </div>
       </a>
-      <p class="mt-3 text-xs sm:text-sm text-subtle tracking-wide">
-        Director: <span class="text-ink font-medium">Juan César Cabrejos Becerra</span> · Periodismo regional y semanario digital
+      <p class="mt-2.5 sm:mt-3 text-xs sm:text-sm text-subtle tracking-wide">
+        Director: <span class="text-ink font-medium">Juan César Cabrejos Becerra</span>
       </p>
     </div>
   </div>
 
-  <!-- Doble línea clásica de periódico + navegación de secciones -->
+  <!-- Doble línea clásica de periódico -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="double-rule"></div>
   </div>
 
-  <nav aria-label="Secciones del diario" class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
+  <!-- NAVEGACIÓN MÓVIL (sticky con menú desplegable limpio) -->
+  <div class="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
+    <div class="px-4 h-12 flex items-center justify-between gap-3">
+      <button
+        id="mobile-menu-btn"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu-panel"
+        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-line text-sm font-bold text-ink hover:border-ink transition-colors"
+      >
+        <svg id="icon-menu-open" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <svg id="icon-menu-close" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span>Secciones</span>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <a
+          href="/noticias"
+          class={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
+            activePath.startsWith('/noticias')
+              ? 'bg-ink text-white'
+              : 'text-ink bg-surface border border-line'
+          }`}
+        >
+          Noticias
+        </a>
+        <a
+          href="/ediciones"
+          class={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
+            activePath.startsWith('/edicion')
+              ? 'bg-burgundy text-white'
+              : 'bg-burgundy-soft text-burgundy'
+          }`}
+        >
+          Ediciones PDF
+        </a>
+      </div>
+    </div>
+
+    <!-- Panel desplegable para celular -->
+    <div id="mobile-menu-panel" class="hidden border-t border-line bg-white shadow-lg px-4 py-5 space-y-5">
+      <div class="grid grid-cols-2 gap-2.5">
+        <a
+          href="/"
+          class={`px-3.5 py-2.5 rounded-lg text-sm font-semibold border text-center ${
+            activePath === '/' ? 'bg-ink text-white border-ink' : 'border-line text-ink hover:border-ink'
+          }`}
+        >
+          Portada
+        </a>
+        <a
+          href="/noticias"
+          class={`px-3.5 py-2.5 rounded-lg text-sm font-semibold border text-center ${
+            activePath.startsWith('/noticias') && !currentCat ? 'bg-ink text-white border-ink' : 'border-line text-ink hover:border-ink'
+          }`}
+        >
+          Últimas noticias
+        </a>
+      </div>
+
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.18em] text-subtle font-bold mb-2.5">
+          Secciones del diario
+        </p>
+        <div class="grid grid-cols-2 gap-2">
+          {CATEGORIAS.map((cat) => (
+            <a
+              href={`/noticias?categoria=${encodeURIComponent(cat)}`}
+              class={`px-3 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
+                currentCat === cat
+                  ? 'bg-burgundy text-white border-burgundy font-semibold'
+                  : 'border-line text-ink hover:border-ink bg-surface/50'
+              }`}
+            >
+              {cat}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-line space-y-2.5">
+        <a
+          href="/ediciones"
+          class="block w-full py-3 px-4 rounded-lg bg-burgundy text-white text-sm font-bold text-center"
+        >
+          Ver todas las Ediciones en PDF
+        </a>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <a
+            href="/enviar-noticia"
+            class="py-2.5 px-3 rounded-lg border border-line text-ink font-semibold text-center"
+          >
+            Envíanos tu noticia
+          </a>
+          <a
+            href="/redaccion"
+            class="py-2.5 px-3 rounded-lg border border-line text-ink font-semibold text-center"
+          >
+            Acceso Redacción
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVEGACIÓN ESCRITORIO (md en adelante) -->
+  <nav aria-label="Secciones del diario" class="hidden md:block sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between gap-4 overflow-x-auto no-scrollbar py-3">
-        <ul class="flex items-center gap-1 sm:gap-2 text-sm whitespace-nowrap">
+      <div class="flex items-center justify-center gap-2 overflow-x-auto no-scrollbar py-3">
+        <ul class="flex items-center gap-1.5 text-sm whitespace-nowrap">
           <li>
             <a
               href="/"
@@ -131,3 +244,18 @@ const currentCat = Astro.url.searchParams.get('categoria') || '';
     </div>
   </nav>
 </header>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const panel = document.getElementById('mobile-menu-panel');
+  const iconOpen = document.getElementById('icon-menu-open');
+  const iconClose = document.getElementById('icon-menu-close');
+
+  btn?.addEventListener('click', () => {
+    const isHidden = panel?.classList.contains('hidden');
+    panel?.classList.toggle('hidden');
+    iconOpen?.classList.toggle('hidden', isHidden);
+    iconClose?.classList.toggle('hidden', !isHidden);
+    btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+  });
+</script>
