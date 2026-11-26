@@ -1,171 +1,74 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import NoticiaCard from '../../components/NoticiaCard.astro';
-import { getNoticiaBySlug, getNoticias } from '../../lib/data';
+import { CATEGORIAS, getNoticias } from '../../lib/data';
 
-const { id } = Astro.params;
-const noticia = id ? await getNoticiaBySlug(id) : null;
-
-if (!noticia) {
-  return Astro.redirect('/noticias');
-}
-
-const todasNoticias = await getNoticias();
-const relacionadas = todasNoticias.filter((n) => n.slug !== noticia.slug).slice(0, 3);
-const parrafos = noticia.contenido
-  .split(/\n+/)
-  .map((p) => p.trim())
-  .filter(Boolean);
-
-const siteURL = (Astro.site || 'https://tribunamochica.vercel.app').toString().replace(/\/$/, '');
-const shareUrl = `${siteURL}/noticia/${noticia.slug}`;
-const imageUrl = noticia.imagen.startsWith('http') ? noticia.imagen : `${siteURL}${noticia.imagen}`;
-const whatsappHref = `https://wa.me/?text=${encodeURIComponent(`${noticia.titular} — Lee la nota en Tribuna Mochica: ${shareUrl}`)}`;
-
-const articleSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'NewsArticle',
-  headline: noticia.titular,
-  description: noticia.bajada,
-  image: [imageUrl],
-  datePublished: noticia.fechaIso,
-  dateModified: noticia.fechaIso,
-  inLanguage: 'es-PE',
-  articleSection: noticia.categoria,
-  author: {
-    '@type': 'Person',
-    name: noticia.autor,
-  },
-  publisher: {
-    '@type': 'NewsMediaOrganization',
-    name: 'Tribuna Mochica',
-    logo: {
-      '@type': 'ImageObject',
-      url: `${siteURL}/logo.jpg`,
-    },
-  },
-  mainEntityOfPage: {
-    '@type': 'WebPage',
-    '@id': shareUrl,
-  },
-};
+const categoriaActiva = Astro.url.searchParams.get('categoria') || 'Todas';
+const noticias = await getNoticias(categoriaActiva);
 ---
 <Layout
-  title={`${noticia.titular} | Tribuna Mochica`}
-  description={noticia.bajada}
-  image={noticia.imagen}
+  title={categoriaActiva === 'Todas' ? 'Noticias | Tribuna Mochica' : `${categoriaActiva} | Tribuna Mochica`}
+  description="Todas las noticias y artículos de Tribuna Mochica sobre el Valle La Leche y la región Lambayeque."
   activePath="/noticias"
-  ogType="article"
-  publishedTime={noticia.fechaIso}
-  section={noticia.categoria}
-  jsonLd={articleSchema}
 >
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-    <nav class="mb-6 text-xs text-subtle flex items-center gap-2">
-      <a href="/" class="hover:text-burgundy transition-colors">Portada</a>
-      <span>/</span>
-      <a href={`/noticias?categoria=${encodeURIComponent(noticia.categoria)}`} class="text-burgundy font-semibold">
-        {noticia.categoria}
-      </a>
-    </nav>
-
-    <article>
-      <header class="border-b border-line pb-6">
-        <span class="inline-block text-xs font-bold uppercase tracking-[0.18em] text-burgundy mb-3">
-          {noticia.categoria}
-        </span>
-        <h1 class="font-serif text-3xl sm:text-5xl font-black text-ink leading-[1.12] tracking-tight">
-          {noticia.titular}
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="pb-4 border-b-2 border-ink mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-1">Redacción Digital</p>
+        <h1 class="font-serif text-3xl sm:text-4xl font-black text-ink">
+          {categoriaActiva === 'Todas' ? 'Últimas noticias' : categoriaActiva}
         </h1>
-        <p class="mt-4 text-lg sm:text-xl text-muted leading-relaxed">
-          {noticia.bajada}
-        </p>
+      </div>
+      <p class="text-sm text-subtle">
+        {noticias.length} {noticias.length === 1 ? 'publicación' : 'publicaciones'}
+      </p>
+    </div>
 
-        <div class="mt-6 flex flex-wrap items-center justify-between gap-4 text-sm text-subtle">
-          <div>
-            Por <span class="text-ink font-semibold">{noticia.autor}</span>
-            <span class="mx-2 text-line">|</span>
-            <time datetime={noticia.fechaIso}>{noticia.fecha}</time>
-          </div>
-          <div class="flex items-center gap-2">
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold border border-line text-ink hover:border-burgundy hover:text-burgundy transition-colors"
-            >
-              Compartir en WhatsApp
-            </a>
-            <button
-              type="button"
-              id="copy-link-btn"
-              class="px-3.5 py-1.5 text-xs font-semibold border border-line text-ink hover:border-ink transition-colors"
-            >
-              Copiar enlace
-            </button>
-          </div>
-        </div>
-      </header>
+    <!-- Filtros por categoría -->
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 mb-8">
+      <a
+        href="/noticias"
+        class={`px-3.5 py-1.5 text-sm rounded-full border transition-colors whitespace-nowrap ${
+          categoriaActiva === 'Todas'
+            ? 'bg-ink text-white border-ink font-semibold'
+            : 'bg-white text-muted border-line hover:border-ink hover:text-ink'
+        }`}
+      >
+        Todas
+      </a>
+      {CATEGORIAS.map((cat) => (
+        <a
+          href={`/noticias?categoria=${encodeURIComponent(cat)}`}
+          class={`px-3.5 py-1.5 text-sm rounded-full border transition-colors whitespace-nowrap ${
+            categoriaActiva === cat
+              ? 'bg-burgundy text-white border-burgundy font-semibold'
+              : 'bg-white text-muted border-line hover:border-ink hover:text-ink'
+          }`}
+        >
+          {cat}
+        </a>
+      ))}
+    </div>
 
-      <figure class="my-8">
-        <div class="overflow-hidden border border-line bg-surface">
-          <img
-            src={noticia.imagen}
-            onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
-            alt={noticia.altImagen || noticia.titular}
-            class="w-full max-h-[520px] object-cover"
-          />
-        </div>
-        {noticia.altImagen && (
-          <figcaption class="mt-2.5 text-xs text-subtle">
-            {noticia.altImagen}
-          </figcaption>
-        )}
-      </figure>
-
-      <div class="space-y-5 text-base sm:text-lg text-ink/90 leading-[1.85]">
-        {parrafos.map((parrafo) => (
-          <p>{parrafo}</p>
+    {noticias.length > 0 ? (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
+        {noticias.map((noticia) => (
+          <NoticiaCard noticia={noticia} />
         ))}
       </div>
-
-      <div class="mt-10 pt-6 border-t border-line flex flex-wrap items-center justify-between gap-4">
-        <a href="/noticias" class="text-sm font-semibold text-ink hover:text-burgundy transition-colors">
-          ← Volver a todas las noticias
-        </a>
-        <a
-          href={whatsappHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="px-4 py-2 bg-burgundy text-white text-sm font-semibold hover:bg-burgundy-dark transition-colors"
-        >
-          Compartir esta noticia por WhatsApp
-        </a>
-      </div>
-    </article>
-
-    {relacionadas.length > 0 && (
-      <section class="mt-16 pt-10 border-t-2 border-ink">
-        <h2 class="font-serif text-2xl font-black text-ink mb-6">Más en Tribuna Mochica</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {relacionadas.map((item) => (
-            <NoticiaCard noticia={item} />
-          ))}
+    ) : (
+      <div class="py-16 px-6 text-center border border-line bg-surface">
+        <p class="font-serif text-xl font-bold text-ink">No hay noticias en esta sección todavía</p>
+        <p class="mt-2 text-sm text-muted">Explora todas las publicaciones o revisa nuestras ediciones completas en PDF.</p>
+        <div class="mt-6 flex justify-center gap-3">
+          <a href="/noticias" class="px-4 py-2 bg-ink text-white text-sm font-semibold hover:bg-burgundy transition-colors">
+            Ver todas las noticias
+          </a>
+          <a href="/ediciones" class="px-4 py-2 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors">
+            Ver ediciones PDF
+          </a>
         </div>
-      </section>
+      </div>
     )}
   </main>
 </Layout>
-
-<script>
-  const btn = document.getElementById('copy-link-btn');
-  btn?.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      btn.textContent = '¡Enlace copiado!';
-      setTimeout(() => (btn.textContent = 'Copiar enlace'), 2200);
-    } catch {
-      btn.textContent = 'Copiar enlace';
-    }
-  });
-</script>
