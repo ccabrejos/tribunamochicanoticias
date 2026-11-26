@@ -7,8 +7,8 @@ import { getNoticias, getEdiciones } from '../lib/data';
 const [noticias, ediciones] = await Promise.all([getNoticias(), getEdiciones()]);
 
 const noticiaPrincipal = noticias[0] || null;
-const ultimasLaterales = noticias.slice(1, 6);
-const masNoticias = noticias.slice(6, 12);
+const ultimasLaterales = noticias.slice(1, 3);
+const masNoticias = noticias.slice(3, 9);
 const edicionesAnteriores = ediciones.slice(0, 4);
 ---
 <Layout
@@ -16,11 +16,11 @@ const edicionesAnteriores = ediciones.slice(0, 4);
   description="Portal de noticias y semanario digital Tribuna Mochica. Dirigido por Juan César Cabrejos Becerra. Noticias de Lambayeque, Valle La Leche, Íllimo, Túcume y Mochumí."
   image={noticiaPrincipal?.imagen || '/logo.jpg'}
 >
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-    <!-- PRIMERA PLANA: Noticia Principal + Columna Lateral de Últimas Noticias -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+    <!-- PRIMERA PLANA: Noticia Principal + Últimas Noticias en tamaño completo -->
     <section aria-label="Primera plana" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pb-12 border-b border-line">
-      <!-- Columna Principal (8 cols): Noticia Destacada -->
-      <div class="lg:col-span-8">
+      <!-- Columna Principal (7 cols): Noticia Destacada -->
+      <div class="lg:col-span-7">
         {noticiaPrincipal ? (
           <article class="group">
             <div class="flex items-center gap-2.5 text-xs uppercase tracking-[0.16em] mb-3">
@@ -73,9 +73,9 @@ const edicionesAnteriores = ediciones.slice(0, 4);
         )}
       </div>
 
-      <!-- Columna Lateral (4 cols): Últimas noticias -->
-      <aside class="lg:col-span-4 lg:border-l lg:border-line lg:pl-8 flex flex-col">
-        <div class="flex items-center justify-between gap-2 pb-3 border-b-2 border-ink mb-5">
+      <!-- Columna Lateral (5 cols): Últimas noticias en tamaño completo -->
+      <aside class="lg:col-span-5 lg:border-l lg:border-line lg:pl-8 flex flex-col">
+        <div class="flex items-center justify-between gap-2 pb-3 border-b-2 border-ink mb-6">
           <span class="text-xs font-bold uppercase tracking-[0.16em] text-ink">
             Últimas noticias
           </span>
@@ -85,29 +85,11 @@ const edicionesAnteriores = ediciones.slice(0, 4);
         </div>
 
         {ultimasLaterales.length > 0 ? (
-          <div class="divide-y divide-line flex-1">
+          <div class="space-y-8 flex-1">
             {ultimasLaterales.map((item) => (
-              <article class="py-4 first:pt-0 group">
-                <a href={`/noticia/${item.slug}`} class="flex gap-3.5 items-start">
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] mb-1">
-                      <span class="font-bold text-burgundy">{item.categoria}</span>
-                      <span class="text-line">·</span>
-                      <time class="text-subtle truncate">{item.fecha}</time>
-                    </div>
-                    <h3 class="font-serif text-base sm:text-lg font-bold text-ink leading-snug group-hover:text-burgundy transition-colors line-clamp-3">
-                      {item.titular}
-                    </h3>
-                  </div>
-                  <img
-                    src={item.imagen}
-                    onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
-                    alt={item.altImagen || item.titular}
-                    class="w-20 h-16 object-cover border border-line bg-surface shrink-0 mt-1"
-                    loading="lazy"
-                  />
-                </a>
-              </article>
+              <div class="pb-8 border-b border-line last:border-b-0 last:pb-0">
+                <NoticiaCard noticia={item} />
+              </div>
             ))}
           </div>
         ) : (
@@ -121,13 +103,13 @@ const edicionesAnteriores = ediciones.slice(0, 4);
             href="/noticias"
             class="block w-full py-2.5 px-4 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors text-center"
           >
-            Explorar todas las noticias
+            Ver todas las noticias
           </a>
         </div>
       </aside>
     </section>
 
-    <!-- MÁS NOTICIAS (aparece automáticamente cuando haya más de 6 noticias) -->
+    <!-- MÁS NOTICIAS (aparece automáticamente desde la 4.ª noticia en adelante) -->
     {masNoticias.length > 0 && (
       <section aria-label="Más noticias" class="py-12 border-b border-line">
         <div class="flex items-end justify-between gap-4 pb-3 border-b-2 border-ink mb-8">
