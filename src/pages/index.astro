@@ -7,8 +7,9 @@ import { getNoticias, getEdiciones } from '../lib/data';
 const [noticias, ediciones] = await Promise.all([getNoticias(), getEdiciones()]);
 
 const noticiaPrincipal = noticias[0] || null;
-const ultimasLaterales = noticias.slice(1, 3);
-const masNoticias = noticias.slice(3, 9);
+const lateralDestacada = noticias[1] || null;
+const lateralesSecundarias = noticias.slice(2, 4);
+const masNoticias = noticias.slice(4, 10);
 const edicionesAnteriores = ediciones.slice(0, 4);
 ---
 <Layout
@@ -17,8 +18,8 @@ const edicionesAnteriores = ediciones.slice(0, 4);
   image={noticiaPrincipal?.imagen || '/logo.jpg'}
 >
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-    <!-- PRIMERA PLANA: Noticia Principal + Últimas Noticias en tamaño completo -->
-    <section aria-label="Primera plana" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pb-12 border-b border-line">
+    <!-- PRIMERA PLANA EQUILIBRADA: Portada (7 cols) + Últimas noticias (5 cols) -->
+    <section aria-label="Primera plana" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pb-12 border-b border-line items-start">
       <!-- Columna Principal (7 cols): Noticia Destacada -->
       <div class="lg:col-span-7">
         {noticiaPrincipal ? (
@@ -73,9 +74,9 @@ const edicionesAnteriores = ediciones.slice(0, 4);
         )}
       </div>
 
-      <!-- Columna Lateral (5 cols): Últimas noticias en tamaño completo -->
+      <!-- Columna Lateral (5 cols): Últimas noticias equilibradas -->
       <aside class="lg:col-span-5 lg:border-l lg:border-line lg:pl-8 flex flex-col">
-        <div class="flex items-center justify-between gap-2 pb-3 border-b-2 border-ink mb-6">
+        <div class="flex items-center justify-between gap-2 pb-3 border-b-2 border-ink mb-5">
           <span class="text-xs font-bold uppercase tracking-[0.16em] text-ink">
             Últimas noticias
           </span>
@@ -84,21 +85,66 @@ const edicionesAnteriores = ediciones.slice(0, 4);
           </a>
         </div>
 
-        {ultimasLaterales.length > 0 ? (
-          <div class="space-y-8 flex-1">
-            {ultimasLaterales.map((item) => (
-              <div class="pb-8 border-b border-line last:border-b-0 last:pb-0">
-                <NoticiaCard noticia={item} />
-              </div>
-            ))}
-          </div>
+        <!-- 1.ª noticia lateral en tamaño grande -->
+        {lateralDestacada ? (
+          <article class="group pb-5 border-b border-line">
+            <a href={`/noticia/${lateralDestacada.slug}`} class="block overflow-hidden bg-surface aspect-[16/9] mb-3 border border-line/70">
+              <img
+                src={lateralDestacada.imagen}
+                onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
+                alt={lateralDestacada.altImagen || lateralDestacada.titular}
+                class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                loading="eager"
+              />
+            </a>
+            <div class="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] mb-1">
+              <span class="font-bold text-burgundy">{lateralDestacada.categoria}</span>
+              <span class="text-line">·</span>
+              <time class="text-subtle">{lateralDestacada.fecha}</time>
+            </div>
+            <h3 class="font-serif text-xl sm:text-2xl font-bold text-ink leading-snug group-hover:text-burgundy transition-colors">
+              <a href={`/noticia/${lateralDestacada.slug}`}>{lateralDestacada.titular}</a>
+            </h3>
+            <p class="mt-1.5 text-sm text-muted leading-relaxed line-clamp-2">
+              {lateralDestacada.bajada}
+            </p>
+          </article>
         ) : (
           <div class="py-8 text-sm text-muted">
             Aquí aparecerán automáticamente las próximas noticias que publique la redacción.
           </div>
         )}
 
-        <div class="mt-6 pt-4 border-t border-line">
+        <!-- 2.ª y 3.ª noticias laterales en formato horizontal compacto -->
+        {lateralesSecundarias.length > 0 && (
+          <div class="divide-y divide-line">
+            {lateralesSecundarias.map((item) => (
+              <article class="py-4 group">
+                <a href={`/noticia/${item.slug}`} class="flex gap-4 items-center">
+                  <img
+                    src={item.imagen}
+                    onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
+                    alt={item.altImagen || item.titular}
+                    class="w-28 h-20 sm:w-32 sm:h-22 object-cover border border-line bg-surface shrink-0"
+                    loading="lazy"
+                  />
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] mb-1">
+                      <span class="font-bold text-burgundy">{item.categoria}</span>
+                      <span class="text-line">·</span>
+                      <time class="text-subtle truncate">{item.fecha}</time>
+                    </div>
+                    <h3 class="font-serif text-base sm:text-lg font-bold text-ink leading-snug group-hover:text-burgundy transition-colors line-clamp-2">
+                      {item.titular}
+                    </h3>
+                  </div>
+                </a>
+              </article>
+            ))}
+          </div>
+        )}
+
+        <div class="mt-4 pt-4 border-t border-line">
           <a
             href="/noticias"
             class="block w-full py-2.5 px-4 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors text-center"
@@ -109,7 +155,7 @@ const edicionesAnteriores = ediciones.slice(0, 4);
       </aside>
     </section>
 
-    <!-- MÁS NOTICIAS (aparece automáticamente desde la 4.ª noticia en adelante) -->
+    <!-- MÁS NOTICIAS (grilla de 3 columnas desde la 5.ª noticia en adelante) -->
     {masNoticias.length > 0 && (
       <section aria-label="Más noticias" class="py-12 border-b border-line">
         <div class="flex items-end justify-between gap-4 pb-3 border-b-2 border-ink mb-8">
