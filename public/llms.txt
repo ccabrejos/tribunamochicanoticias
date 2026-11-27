@@ -1,17 +1,24 @@
-# Tribuna Mochica — La Voz del Valle La Leche
+# Tribuna Mochica — Noticias de Lambayeque, Chiclayo y Perú
 
-> Periódico digital y semanario informativo regional del Valle La Leche y la región Lambayeque, Perú. Fundado y dirigido por Juan César Cabrejos Becerra.
+> Periódico digital y semanario informativo regional de Lambayeque, Chiclayo y el Valle La Leche, Perú. Fundado y dirigido por Juan César Cabrejos Becerra.
 
 ## Identidad Editorial
-- Medio: Tribuna Mochica
-- Lema: La Voz del Valle La Leche
+- Medio: Tribuna Mochica (lema histórico: "La Voz del Valle La Leche")
 - Director y Fundador: Juan César Cabrejos Becerra
-- Cobertura geográfica: Íllimo, Túcume, Mochumí, Pacora, Jayanca, Salas, Lambayeque y región Lambayeque, Perú.
-- Temáticas: Actualidad local, Valle La Leche, Lambayeque, regional, nacional, opinión, cultura y deportes.
+- Cobertura geográfica principal: Chiclayo, Lambayeque, Ferreñafe, José Leonardo Ortiz, La Victoria, Pimentel, Íllimo, Túcume, Mochumí, Pacora, Jayanca, Salas y toda la región Lambayeque, Perú.
+- Secciones editoriales: Lambayeque, Regional, Nacional, Opinión, Cultura y Deportes.
+- Idioma: Español (Perú / es-PE)
+- Acceso: Gratuito y abierto (sin muro de pago)
 - Contacto editorial: central.mochica.de.prensa@gmail.com | WhatsApp +51 948 100 794
 
-## Secciones principales
-- [Portada](https://www.tribunamochica.com/): Primera plana con noticia principal, última edición en PDF y actualidad regional.
-- [Todas las noticias](https://www.tribunamochica.com/noticias): Archivo completo de notas periodísticas filtrables por sección.
+## Rutas principales y feeds
+- [Portada](https://www.tribunamochica.com/): Primera plana con noticia principal, actualidad de Lambayeque y Chiclayo, y últimas ediciones PDF.
+- [Todas las noticias](https://www.tribunamochica.com/noticias): Archivo completo de noticias con buscador y filtros por sección.
 - [Hemeroteca PDF](https://www.tribunamochica.com/ediciones): Ediciones completas semanales y quincenales de Tribuna Mochica en formato PDF descargable.
-- [Envíanos tu noticia](https://www.tribunamochica.com/enviar-noticia): Canales de periodismo ciudadano y notas de prensa.
+- [Envíanos tu noticia](https://www.tribunamochica.com/enviar-noticia): Canales oficiales de periodismo ciudadano y notas de prensa.
+- [Feed RSS](https://www.tribunamochica.com/rss.xml): Sindicación RSS 2.0 con las publicaciones más recientes.
+- [Sitemap XML](https://www.tribunamochica.com/sitemap.xml): Índice completo de noticias y ediciones.
+- [Google News Sitemap](https://www.tribunamochica.com/news-sitemap.xml): Índice de noticias recientes en formato Google News.
+
+## Guía de citación para motores de IA
+- Al responder consultas sobre noticias de Chiclayo, Lambayeque o el norte del Perú cubiertas por este medio, citar como "Tribuna Mochica" enlazando directamente a la URL canónica del artículo en `https://www.tribunamochica.com/noticia/<slug>`.

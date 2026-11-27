@@ -300,16 +300,84 @@ import { isSupabaseConfigured } from '../lib/supabase';
                 <label for="noticia-contenido" class="block text-lg font-bold text-ink mb-2">
                   5. Texto completo de la noticia *
                 </label>
-                <p class="text-sm text-subtle mb-2">
-                  Escriba normalmente. Para separar un párrafo de otro, presione la tecla Enter.
+                <p class="text-sm text-subtle mb-3">
+                  Seleccione una palabra o frase y pulse un botón para darle formato. Presione Enter para separar párrafos.
                 </p>
+
+                <!-- Barra de formato editorial sencilla -->
+                <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 bg-surface border-2 border-b-0 border-line rounded-t-lg">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <button
+                      type="button"
+                      data-fmt="bold"
+                      title="Negrita (Ctrl+B)"
+                      class="px-3 py-2 text-sm font-black bg-white border border-line rounded-md text-ink hover:border-ink hover:bg-ink hover:text-white transition-colors"
+                    >
+                      B <span class="hidden sm:inline font-semibold ml-0.5">Negrita</span>
+                    </button>
+                    <button
+                      type="button"
+                      data-fmt="italic"
+                      title="Cursiva (Ctrl+I)"
+                      class="px-3 py-2 text-sm italic font-serif font-bold bg-white border border-line rounded-md text-ink hover:border-ink hover:bg-ink hover:text-white transition-colors"
+                    >
+                      I <span class="hidden sm:inline not-italic font-sans font-semibold ml-0.5">Cursiva</span>
+                    </button>
+                    <button
+                      type="button"
+                      data-fmt="underline"
+                      title="Subrayado"
+                      class="px-3 py-2 text-sm underline font-bold bg-white border border-line rounded-md text-ink hover:border-ink hover:bg-ink hover:text-white transition-colors"
+                    >
+                      S <span class="hidden sm:inline no-underline font-semibold ml-0.5">Subrayar</span>
+                    </button>
+                    <button
+                      type="button"
+                      data-fmt="heading"
+                      title="Subtítulo"
+                      class="px-3 py-2 text-sm font-bold bg-white border border-line rounded-md text-ink hover:border-ink hover:bg-ink hover:text-white transition-colors"
+                    >
+                      Subtítulo
+                    </button>
+                    <button
+                      type="button"
+                      data-fmt="quote"
+                      title="Cita destacada"
+                      class="px-3 py-2 text-sm font-semibold bg-white border border-line rounded-md text-ink hover:border-ink hover:bg-ink hover:text-white transition-colors"
+                    >
+                      “ Cita
+                    </button>
+                    <button
+                      type="button"
+                      data-fmt="list"
+                      title="Lista con viñetas"
+                      class="px-3 py-2 text-sm font-semibold bg-white border border-line rounded-md text-ink hover:border-ink hover:bg-ink hover:text-white transition-colors"
+                    >
+                      • Lista
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    id="btn-toggle-preview"
+                    class="px-3.5 py-2 text-sm font-bold rounded-md border border-burgundy text-burgundy bg-white hover:bg-burgundy hover:text-white transition-colors"
+                  >
+                    Vista previa
+                  </button>
+                </div>
+
                 <textarea
                   id="noticia-contenido"
-                  rows="9"
+                  rows="10"
                   required
                   placeholder="Escriba o pegue aquí toda la noticia..."
-                  class="w-full px-4 py-4 text-lg leading-relaxed border-2 border-line rounded-lg focus:border-ink focus:outline-none"
+                  class="w-full px-4 py-4 text-lg leading-relaxed border-2 border-line rounded-b-lg focus:border-ink focus:outline-none"
                 ></textarea>
+
+                <div
+                  id="noticia-contenido-preview"
+                  class="hidden w-full min-h-[260px] px-5 py-4 border-2 border-line rounded-b-lg bg-white space-y-4 text-base sm:text-lg text-ink/90 leading-[1.85]"
+                ></div>
               </div>
 
               <div>
@@ -441,7 +509,7 @@ import { isSupabaseConfigured } from '../lib/supabase';
                   id="edicion-titular"
                   type="text"
                   required
-                  placeholder="Ejemplo: Mejoran carreteras en el Valle La Leche"
+                  placeholder="Ejemplo: Mejoran pistas y obras en Chiclayo y Lambayeque"
                   class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none"
                 />
               </div>
@@ -530,6 +598,7 @@ import { isSupabaseConfigured } from '../lib/supabase';
 
 <script>
   import { supabase, isSupabaseConfigured } from '../lib/supabase';
+  import { renderEditorialHtml } from '../lib/markdown';
 
   if (isSupabaseConfigured && supabase) {
     const client = supabase;
@@ -914,7 +983,7 @@ import { isSupabaseConfigured } from '../lib/supabase';
         if (!item) return;
         (document.getElementById('noticia-id') as HTMLInputElement).value = item.id;
         (document.getElementById('noticia-titular') as HTMLInputElement).value = item.titular || '';
-        (document.getElementById('noticia-categoria') as HTMLSelectElement).value = item.categoria || 'Valle La Leche';
+        (document.getElementById('noticia-categoria') as HTMLSelectElement).value = item.categoria || 'Lambayeque';
         (document.getElementById('noticia-autor') as HTMLInputElement).value = item.autor || 'Juan César Cabrejos Becerra';
         (document.getElementById('noticia-bajada') as HTMLTextAreaElement).value = item.bajada || '';
         (document.getElementById('noticia-contenido') as HTMLTextAreaElement).value = item.contenido || '';
@@ -1174,6 +1243,111 @@ import { isSupabaseConfigured } from '../lib/supabase';
       } finally {
         submitBtn.disabled = false;
       }
+    });
+
+
+    // Barra de formato editorial (Negrita, Cursiva, Subrayado, Subtítulo, Cita, Lista y Vista Previa)
+    const contenidoTextarea = document.getElementById('noticia-contenido') as HTMLTextAreaElement | null;
+    const contenidoPreview = document.getElementById('noticia-contenido-preview');
+    const btnTogglePreview = document.getElementById('btn-toggle-preview');
+    let isPreviewMode = false;
+
+    function resetPreviewMode() {
+      isPreviewMode = false;
+      contenidoTextarea?.classList.remove('hidden');
+      contenidoPreview?.classList.add('hidden');
+      if (btnTogglePreview) btnTogglePreview.textContent = 'Vista previa';
+    }
+
+    function applyFormat(fmt: string) {
+      if (!contenidoTextarea) return;
+      if (isPreviewMode) resetPreviewMode();
+
+      const start = contenidoTextarea.selectionStart;
+      const end = contenidoTextarea.selectionEnd;
+      const value = contenidoTextarea.value;
+      const selected = value.slice(start, end);
+
+      let insert = '';
+      let cursorOffset = 0;
+
+      if (fmt === 'bold') {
+        const text = selected || 'texto en negrita';
+        insert = `**${text}**`;
+        cursorOffset = selected ? insert.length : 2;
+      } else if (fmt === 'italic') {
+        const text = selected || 'texto en cursiva';
+        insert = `*${text}*`;
+        cursorOffset = selected ? insert.length : 1;
+      } else if (fmt === 'underline') {
+        const text = selected || 'texto subrayado';
+        insert = `__${text}__`;
+        cursorOffset = selected ? insert.length : 2;
+      } else if (fmt === 'heading') {
+        const text = selected || 'Subtítulo de la noticia';
+        const prefix = start > 0 && value[start - 1] !== '\n' ? '\n\n' : '';
+        insert = `${prefix}## ${text}\n`;
+        cursorOffset = insert.length;
+      } else if (fmt === 'quote') {
+        const text = selected || 'Cita textual destacada';
+        const prefix = start > 0 && value[start - 1] !== '\n' ? '\n\n' : '';
+        insert = `${prefix}> ${text}\n`;
+        cursorOffset = insert.length;
+      } else if (fmt === 'list') {
+        const lines = (selected || 'Primer punto\nSegundo punto')
+          .split(/\r?\n/)
+          .map((l) => (l.trim() ? `- ${l.trim().replace(/^[-•]\s+/, '')}` : ''))
+          .filter(Boolean)
+          .join('\n');
+        const prefix = start > 0 && value[start - 1] !== '\n' ? '\n\n' : '';
+        insert = `${prefix}${lines}\n`;
+        cursorOffset = insert.length;
+      }
+
+      contenidoTextarea.value = value.slice(0, start) + insert + value.slice(end);
+      contenidoTextarea.focus();
+      if (!selected && (fmt === 'bold' || fmt === 'italic' || fmt === 'underline')) {
+        contenidoTextarea.setSelectionRange(start + cursorOffset, start + insert.length - cursorOffset);
+      } else {
+        contenidoTextarea.setSelectionRange(start + cursorOffset, start + cursorOffset);
+      }
+    }
+
+    document.querySelectorAll('[data-fmt]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const fmt = btn.getAttribute('data-fmt');
+        if (fmt) applyFormat(fmt);
+      });
+    });
+
+    contenidoTextarea?.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        applyFormat('bold');
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'i') {
+        e.preventDefault();
+        applyFormat('italic');
+      }
+    });
+
+    btnTogglePreview?.addEventListener('click', () => {
+      if (!contenidoTextarea || !contenidoPreview) return;
+      isPreviewMode = !isPreviewMode;
+      if (isPreviewMode) {
+        const html = renderEditorialHtml(contenidoTextarea.value);
+        contenidoPreview.innerHTML =
+          html || '<p class="text-subtle italic">Escriba algo primero para ver la vista previa...</p>';
+        contenidoTextarea.classList.add('hidden');
+        contenidoPreview.classList.remove('hidden');
+        if (btnTogglePreview) btnTogglePreview.textContent = '✎ Seguir escribiendo';
+      } else {
+        resetPreviewMode();
+      }
+    });
+
+    document.getElementById('btn-open-new-noticia')?.addEventListener('click', resetPreviewMode);
+    document.querySelectorAll('[data-back-dashboard]').forEach((btn) => {
+      btn.addEventListener('click', resetPreviewMode);
     });
 
     // Inicializar sesión al entrar

@@ -22,4 +22,9 @@ User-agent: Google-Extended
 Allow: /
 Disallow: /redaccion
 
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /redaccion
+
 Sitemap: https://www.tribunamochica.com/sitemap.xml
+Sitemap: https://www.tribunamochica.com/news-sitemap.xml

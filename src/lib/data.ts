@@ -3,7 +3,6 @@ import fallbackNoticias from '../data/noticias.json';
 import fallbackEdiciones from '../data/ediciones.json';
 
 export const CATEGORIAS = [
-  'Valle La Leche',
   'Lambayeque',
   'Regional',
   'Nacional',
@@ -98,7 +97,7 @@ export async function getNoticias(categoria?: string): Promise<Noticia[]> {
           titular: row.titular,
           bajada: row.bajada,
           contenido: row.contenido,
-          categoria: row.categoria || 'Valle La Leche',
+          categoria: row.categoria || 'Lambayeque',
           autor: row.autor || 'Juan César Cabrejos Becerra',
           fecha: row.fecha_texto,
           fechaIso: row.fecha_iso,
@@ -138,7 +137,7 @@ export async function getNoticiaBySlug(slug: string): Promise<Noticia | null> {
           titular: data.titular,
           bajada: data.bajada,
           contenido: data.contenido,
-          categoria: data.categoria || 'Valle La Leche',
+          categoria: data.categoria || 'Lambayeque',
           autor: data.autor || 'Juan César Cabrejos Becerra',
           fecha: data.fecha_texto,
           fechaIso: data.fecha_iso,

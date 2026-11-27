@@ -14,12 +14,12 @@ export interface Props {
   noIndex?: boolean;
   publishedTime?: string;
   section?: string;
-  jsonLd?: Record<string, any> | null;
+  jsonLd?: Record<string, any> | Record<string, any>[] | null;
 }
 
 const {
-  title = 'Tribuna Mochica | La Voz del Valle La Leche',
-  description = 'Portal de noticias y semanario digital Tribuna Mochica. Dirigido por Juan César Cabrejos Becerra. Actualidad de Lambayeque, Valle La Leche, Íllimo, Túcume, Mochumí y la región.',
+  title = 'Tribuna Mochica | Noticias de Lambayeque, Chiclayo y Perú',
+  description = 'Periódico digital y semanario de Lambayeque, Chiclayo y el Valle La Leche, Perú. Dirigido por Juan César Cabrejos Becerra. Actualidad regional, nacional, opinión, cultura, deportes y ediciones PDF.',
   image = '/logo.jpg',
   hideChrome = false,
   activePath = Astro.url.pathname,
@@ -37,9 +37,11 @@ const imageURL = image.startsWith('http') ? image : new URL(image, siteURL).href
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'NewsMediaOrganization',
+  '@id': `${siteURL}/#organization`,
   name: 'Tribuna Mochica',
-  alternateName: 'La Voz del Valle La Leche',
+  alternateName: ['Tribuna Mochica Noticias', 'La Voz del Valle La Leche'],
   url: siteURL,
+  inLanguage: 'es-PE',
   logo: {
     '@type': 'ImageObject',
     url: `${siteURL}/logo.jpg`,
@@ -48,10 +50,20 @@ const orgSchema = {
     '@type': 'Person',
     name: 'Juan César Cabrejos Becerra',
   },
-  areaServed: {
-    '@type': 'AdministrativeArea',
-    name: 'Lambayeque, Perú',
-  },
+  publishingPrinciples: `${siteURL}/enviar-noticia`,
+  areaServed: [
+    { '@type': 'City', name: 'Chiclayo' },
+    { '@type': 'City', name: 'Lambayeque' },
+    { '@type': 'City', name: 'Ferreñafe' },
+    { '@type': 'AdministrativeArea', name: 'Región Lambayeque, Perú' },
+  ],
+  knowsAbout: [
+    'Noticias de Lambayeque',
+    'Actualidad de Chiclayo',
+    'Valle La Leche',
+    'Política y desarrollo regional en Perú',
+    'Cultura y deportes en Lambayeque',
+  ],
   contactPoint: {
     '@type': 'ContactPoint',
     telephone: '+51-948-100-794',
@@ -61,6 +73,28 @@ const orgSchema = {
     availableLanguage: 'es',
   },
 };
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${siteURL}/#website`,
+  name: 'Tribuna Mochica',
+  url: siteURL,
+  inLanguage: 'es-PE',
+  publisher: {
+    '@id': `${siteURL}/#organization`,
+  },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${siteURL}/noticias?q={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const extraSchemas = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 ---
 <!DOCTYPE html>
 <html lang="es-PE">
@@ -70,9 +104,12 @@ const orgSchema = {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="alternate" type="application/rss+xml" title="Tribuna Mochica — RSS Noticias" href={`${siteURL}/rss.xml`} />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content={noIndex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+    <meta name="robots" content={noIndex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
+    <meta name="geo.region" content="PE-LAM" />
+    <meta name="geo.placename" content="Chiclayo, Lambayeque, Perú" />
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph / WhatsApp / Facebook -->
@@ -83,6 +120,7 @@ const orgSchema = {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={imageURL} />
+    <meta property="og:image:alt" content={title} />
     {ogType === 'article' && publishedTime && (
       <meta property="article:published_time" content={publishedTime} />
     )}
@@ -96,13 +134,16 @@ const orgSchema = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageURL} />
 
-    <!-- Datos estructurados JSON-LD (SEO y SEO para IA) -->
+    <!-- Datos estructurados JSON-LD (SEO regional y SEO para IA) -->
     {!noIndex && (
       <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
     )}
-    {!noIndex && jsonLd && (
-      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {!noIndex && (
+      <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
     )}
+    {!noIndex && extraSchemas.map((schema) => (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
 
     <!-- Tipografías editoriales: Playfair Display & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

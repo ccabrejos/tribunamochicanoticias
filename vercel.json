@@ -1,3 +1,16 @@
 {
-  "framework": "astro"
+  "framework": "astro",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "tribunamochica.vercel.app"
+        }
+      ],
+      "destination": "https://www.tribunamochica.com/:path*",
+      "permanent": true
+    }
+  ]
 }

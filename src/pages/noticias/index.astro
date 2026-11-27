@@ -6,12 +6,17 @@ import { CATEGORIAS, getNoticias } from '../../lib/data';
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
 
 const categoriaActiva = Astro.url.searchParams.get('categoria') || 'Todas';
+const queryInicial = Astro.url.searchParams.get('q') || '';
 const noticias = await getNoticias(categoriaActiva);
 const PAGE_SIZE = 12;
 ---
 <Layout
-  title={categoriaActiva === 'Todas' ? 'Noticias | Tribuna Mochica' : `${categoriaActiva} | Tribuna Mochica`}
-  description="Todas las noticias y artículos de Tribuna Mochica sobre el Valle La Leche y la región Lambayeque."
+  title={
+    categoriaActiva === 'Todas'
+      ? 'Noticias de Lambayeque, Chiclayo y Perú | Tribuna Mochica'
+      : `${categoriaActiva} · Noticias de Lambayeque y Chiclayo | Tribuna Mochica`
+  }
+  description="Últimas noticias y reportajes de Tribuna Mochica sobre Chiclayo, Lambayeque, Ferreñafe y todo el Perú."
   activePath="/noticias"
 >
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -28,6 +33,7 @@ const PAGE_SIZE = 12;
         <input
           id="buscar-noticias"
           type="search"
+          value={queryInicial}
           placeholder="Buscar por titular, tema o autor..."
           class="w-full px-4 py-2.5 text-sm border border-line focus:border-ink focus:outline-none bg-white"
         />
@@ -156,4 +162,6 @@ const PAGE_SIZE = 12;
     visibleLimit += PAGE_SIZE;
     updateView();
   });
+
+  if (input?.value) updateView();
 </script>
