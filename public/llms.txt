@@ -11,7 +11,7 @@
 - Contacto editorial: central.mochica.de.prensa@gmail.com | WhatsApp +51 948 100 794
 
 ## Secciones principales
-- [Portada](https://tribunamochica.vercel.app/): Primera plana con noticia principal, última edición en PDF y actualidad regional.
-- [Todas las noticias](https://tribunamochica.vercel.app/noticias): Archivo completo de notas periodísticas filtrables por sección.
-- [Hemeroteca PDF](https://tribunamochica.vercel.app/ediciones): Ediciones completas semanales y quincenales de Tribuna Mochica en formato PDF descargable.
-- [Envíanos tu noticia](https://tribunamochica.vercel.app/enviar-noticia): Canales de periodismo ciudadano y notas de prensa.
+- [Portada](https://www.tribunamochica.com/): Primera plana con noticia principal, última edición en PDF y actualidad regional.
+- [Todas las noticias](https://www.tribunamochica.com/noticias): Archivo completo de notas periodísticas filtrables por sección.
+- [Hemeroteca PDF](https://www.tribunamochica.com/ediciones): Ediciones completas semanales y quincenales de Tribuna Mochica en formato PDF descargable.
+- [Envíanos tu noticia](https://www.tribunamochica.com/enviar-noticia): Canales de periodismo ciudadano y notas de prensa.

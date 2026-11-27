@@ -7,6 +7,7 @@ import { isSupabaseConfigured } from '../lib/supabase';
   title="Redacción · Panel del Director | Tribuna Mochica"
   description="Acceso privado de publicación para Tribuna Mochica."
   hideChrome={true}
+  noIndex={true}
 >
   <div class="min-h-screen bg-surface text-ink">
     <!-- Barra superior del panel -->
@@ -76,7 +77,7 @@ import { isSupabaseConfigured } from '../lib/supabase';
               <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-1">Acceso Privado</p>
               <h2 class="font-serif text-3xl font-black text-ink">Redacción</h2>
               <p class="mt-2 text-base text-muted">
-                Escriba su correo.
+                Escriba su correo y contraseña para ingresar.
               </p>
             </div>
 
@@ -131,8 +132,13 @@ import { isSupabaseConfigured } from '../lib/supabase';
           </section>
 
           <!-- MENSAJE DE ÉXITO / AVISO GLOBAL -->
-          <div id="toast-banner" class="hidden mb-6 p-5 rounded-xl border-2 text-lg font-semibold flex items-center justify-between gap-4">
-            <span id="toast-message"></span>
+          <div id="toast-banner" class="hidden mb-6 p-5 rounded-xl border-2 text-lg font-semibold flex flex-wrap items-center justify-between gap-4">
+            <div class="flex flex-wrap items-center gap-3">
+              <span id="toast-message"></span>
+              <a id="toast-link" href="#" target="_blank" rel="noopener noreferrer" class="hidden px-3.5 py-1.5 rounded-lg bg-green-800 text-white text-sm font-bold hover:bg-green-900 transition-colors">
+                Ver en la web ↗
+              </a>
+            </div>
             <button id="toast-close" type="button" class="text-sm font-bold underline shrink-0">Cerrar</button>
           </div>
 
@@ -321,6 +327,18 @@ import { isSupabaseConfigured } from '../lib/supabase';
                     <img id="noticia-foto-preview" src="" alt="Vista previa" class="max-h-56 mx-auto rounded-lg border border-line object-cover" />
                   </div>
                 </div>
+              </div>
+
+              <div>
+                <label for="noticia-alt" class="block text-lg font-bold text-ink mb-2">
+                  7. Pie de foto o crédito (opcional)
+                </label>
+                <input
+                  id="noticia-alt"
+                  type="text"
+                  placeholder="Ejemplo: Foto: Prensa Regional / Plaza de Armas de Íllimo"
+                  class="w-full px-4 py-4 text-lg border-2 border-line rounded-lg focus:border-ink focus:outline-none"
+                />
               </div>
 
               <label class="flex items-center gap-3 p-4 border-2 border-line rounded-xl bg-surface cursor-pointer">
@@ -527,17 +545,26 @@ import { isSupabaseConfigured } from '../lib/supabase';
     // Toast
     const toastBanner = document.getElementById('toast-banner');
     const toastMessage = document.getElementById('toast-message');
+    const toastLink = document.getElementById('toast-link') as HTMLAnchorElement | null;
     const toastClose = document.getElementById('toast-close');
 
     let cachedNoticias: any[] = [];
     let cachedEdiciones: any[] = [];
 
-    function showToast(msg: string, isError = false) {
+    function showToast(msg: string, isError = false, linkUrl = '') {
       if (!toastBanner || !toastMessage) return;
       toastMessage.textContent = msg;
+      if (toastLink) {
+        if (linkUrl && !isError) {
+          toastLink.href = linkUrl;
+          toastLink.classList.remove('hidden');
+        } else {
+          toastLink.classList.add('hidden');
+        }
+      }
       toastBanner.className = isError
-        ? 'mb-6 p-5 rounded-xl border-2 border-burgundy bg-burgundy-soft text-burgundy text-lg font-semibold flex items-center justify-between gap-4'
-        : 'mb-6 p-5 rounded-xl border-2 border-green-700 bg-green-50 text-green-900 text-lg font-semibold flex items-center justify-between gap-4';
+        ? 'mb-6 p-5 rounded-xl border-2 border-burgundy bg-burgundy-soft text-burgundy text-lg font-semibold flex flex-wrap items-center justify-between gap-4'
+        : 'mb-6 p-5 rounded-xl border-2 border-green-700 bg-green-50 text-green-900 text-lg font-semibold flex flex-wrap items-center justify-between gap-4';
       toastBanner.classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -586,6 +613,43 @@ import { isSupabaseConfigured } from '../lib/supabase';
       const m = String(now.getMonth() + 1).padStart(2, '0');
       const d = String(now.getDate()).padStart(2, '0');
       return `${y}-${m}-${d}`;
+    }
+
+    async function compressImage(file: File, maxWidth = 1400, quality = 0.82): Promise<File> {
+      if (!file.type.startsWith('image/') || file.type === 'image/svg+xml' || file.type === 'image/gif') {
+        return file;
+      }
+      try {
+        const bitmap = await createImageBitmap(file);
+        const scale = bitmap.width > maxWidth ? maxWidth / bitmap.width : 1;
+        const width = Math.round(bitmap.width * scale);
+        const height = Math.round(bitmap.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return file;
+        ctx.drawImage(bitmap, 0, 0, width, height);
+        bitmap.close();
+        const blob: Blob | null = await new Promise((resolve) =>
+          canvas.toBlob(resolve, 'image/jpeg', quality)
+        );
+        if (!blob || blob.size >= file.size) return file;
+        const baseName = file.name.replace(/\.[^.]+$/, '');
+        return new File([blob], `${baseName}.jpg`, { type: 'image/jpeg' });
+      } catch {
+        return file;
+      }
+    }
+
+    async function removeStorageUrl(url: string | null | undefined) {
+      if (!url || !url.includes('/tribuna-media/')) return;
+      try {
+        const path = decodeURIComponent(url.split('/tribuna-media/')[1].split('?')[0]);
+        if (path) await client.storage.from('tribuna-media').remove([path]);
+      } catch {
+        // Limpieza best-effort
+      }
     }
 
     async function uploadFile(file: File, folder: string): Promise<string> {
@@ -695,6 +759,9 @@ import { isSupabaseConfigured } from '../lib/supabase';
               </div>
             </div>
             <div class="flex items-center gap-2 shrink-0">
+              <a href="/noticia/${encodeURIComponent(n.slug)}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 text-sm font-bold border border-line rounded-lg text-ink hover:border-ink transition-colors">
+                Ver ↗
+              </a>
               <button type="button" data-edit-noticia="${escapeHtml(n.id)}" class="px-4 py-2.5 text-sm font-bold border border-ink rounded-lg text-ink hover:bg-ink hover:text-white transition-colors">
                 Editar
               </button>
@@ -728,6 +795,9 @@ import { isSupabaseConfigured } from '../lib/supabase';
               </div>
             </div>
             <div class="flex items-center gap-2 shrink-0">
+              <a href="/edicion/${encodeURIComponent(String(e.numero))}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 text-sm font-bold border border-line rounded-lg text-ink hover:border-ink transition-colors">
+                Ver ↗
+              </a>
               <button type="button" data-edit-edicion="${escapeHtml(e.id)}" class="px-4 py-2.5 text-sm font-bold border border-ink rounded-lg text-ink hover:bg-ink hover:text-white transition-colors">
                 Editar
               </button>
@@ -849,6 +919,13 @@ import { isSupabaseConfigured } from '../lib/supabase';
         (document.getElementById('noticia-bajada') as HTMLTextAreaElement).value = item.bajada || '';
         (document.getElementById('noticia-contenido') as HTMLTextAreaElement).value = item.contenido || '';
         (document.getElementById('noticia-imagen-actual') as HTMLInputElement).value = item.imagen_url || '';
+        const altInput = document.getElementById('noticia-alt') as HTMLInputElement | null;
+        if (altInput) {
+          altInput.value =
+            item.alt_imagen && item.alt_imagen.trim() !== (item.titular || '').trim()
+              ? item.alt_imagen
+              : '';
+        }
         (document.getElementById('noticia-destacada') as HTMLInputElement).checked = Boolean(item.destacada);
         if (item.imagen_url) {
           (document.getElementById('noticia-foto-preview') as HTMLImageElement).src = item.imagen_url;
@@ -871,6 +948,7 @@ import { isSupabaseConfigured } from '../lib/supabase';
         if (error) {
           showToast(`No se pudo borrar: ${error.message}`, true);
         } else {
+          await removeStorageUrl(item.imagen_url);
           showToast('Noticia borrada correctamente.');
           await loadDashboardData();
         }
@@ -914,6 +992,10 @@ import { isSupabaseConfigured } from '../lib/supabase';
         if (error) {
           showToast(`No se pudo borrar: ${error.message}`, true);
         } else {
+          await Promise.all([
+            removeStorageUrl(item.archivo_pdf_url),
+            removeStorageUrl(item.portada_img_url),
+          ]);
           showToast(`Edición N.° ${item.numero} borrada correctamente.`);
           await loadDashboardData();
         }
@@ -946,10 +1028,12 @@ import { isSupabaseConfigured } from '../lib/supabase';
         const destacada = (document.getElementById('noticia-destacada') as HTMLInputElement).checked;
         let imagenUrl = (document.getElementById('noticia-imagen-actual') as HTMLInputElement).value || '/noticias/ultima-noticia.jpg';
 
+        const altCustom = (document.getElementById('noticia-alt') as HTMLInputElement | null)?.value.trim() || '';
         const fotoFile = (document.getElementById('noticia-foto') as HTMLInputElement).files?.[0];
         if (fotoFile) {
-          setStatus('Subiendo fotografía, por favor espere...');
-          imagenUrl = await uploadFile(fotoFile, 'noticias');
+          setStatus('Optimizando y subiendo fotografía, por favor espere...');
+          const optimizedFoto = await compressImage(fotoFile, 1400, 0.82);
+          imagenUrl = await uploadFile(optimizedFoto, 'noticias');
         }
 
         setStatus('Guardando noticia en el periódico...');
@@ -966,14 +1050,19 @@ import { isSupabaseConfigured } from '../lib/supabase';
           categoria,
           autor,
           imagen_url: imagenUrl,
-          alt_imagen: titular,
+          alt_imagen: altCustom || titular,
           destacada,
         };
 
         if (id) {
+          const existing = cachedNoticias.find((n) => n.id === id);
           const { error } = await client.from('noticias').update(payload).eq('id', id);
           if (error) throw error;
-          showToast('¡Cambios guardados! La noticia ya está actualizada en la web.');
+          showToast(
+            '¡Cambios guardados! La noticia ya está actualizada en la web.',
+            false,
+            existing?.slug ? `/noticia/${existing.slug}` : ''
+          );
         } else {
           const slug = `${slugify(titular)}-${Date.now().toString().slice(-4)}`;
           const { error } = await client.from('noticias').insert({
@@ -983,7 +1072,11 @@ import { isSupabaseConfigured } from '../lib/supabase';
             fecha_texto: formatFechaLarga(todayIso),
           });
           if (error) throw error;
-          showToast('¡Listo! La noticia ya está publicada en Tribuna Mochica.');
+          showToast(
+            '¡Listo! La noticia ya está publicada en Tribuna Mochica.',
+            false,
+            `/noticia/${slug}`
+          );
         }
 
         await loadDashboardData();
@@ -1044,8 +1137,9 @@ import { isSupabaseConfigured } from '../lib/supabase';
         }
 
         if (portadaFile) {
-          setStatus('Subiendo imagen de portada...');
-          portadaUrl = await uploadFile(portadaFile, 'ediciones-portadas');
+          setStatus('Optimizando y subiendo imagen de portada...');
+          const optimizedPortada = await compressImage(portadaFile, 1000, 0.82);
+          portadaUrl = await uploadFile(optimizedPortada, 'ediciones-portadas');
         }
 
         setStatus('Guardando edición en la hemeroteca...');
@@ -1066,11 +1160,11 @@ import { isSupabaseConfigured } from '../lib/supabase';
         if (id) {
           const { error } = await client.from('ediciones').update(payload).eq('id', id);
           if (error) throw error;
-          showToast(`¡Cambios guardados en la Edición N.° ${numero}!`);
+          showToast(`¡Cambios guardados en la Edición N.° ${numero}!`, false, `/edicion/${numero}`);
         } else {
           const { error } = await client.from('ediciones').insert(payload);
           if (error) throw error;
-          showToast(`¡Listo! La Edición N.° ${numero} ya está publicada en el diario.`);
+          showToast(`¡Listo! La Edición N.° ${numero} ya está publicada en el diario.`, false, `/edicion/${numero}`);
         }
 
         await loadDashboardData();

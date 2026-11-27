@@ -8,6 +8,7 @@ interface Props {
 const { activePath = '/' } = Astro.props;
 const fechaHoy = formatFechaHoyEs();
 const currentCat = Astro.url.searchParams.get('categoria') || '';
+const isHome = activePath === '/';
 ---
 <header class="bg-white border-b border-line">
   <!-- Franja superior minimalista -->
@@ -56,9 +57,15 @@ const currentCat = Astro.url.searchParams.get('categoria') || '';
           <p class="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-burgundy font-semibold mb-0.5">
             La Voz del Valle La Leche
           </p>
-          <h1 class="font-serif text-3xl sm:text-5xl font-black tracking-tight text-ink leading-none group-hover:text-burgundy transition-colors">
-            TRIBUNA MOCHICA
-          </h1>
+          {isHome ? (
+            <h1 class="font-serif text-3xl sm:text-5xl font-black tracking-tight text-ink leading-none group-hover:text-burgundy transition-colors">
+              TRIBUNA MOCHICA
+            </h1>
+          ) : (
+            <p class="font-serif text-3xl sm:text-5xl font-black tracking-tight text-ink leading-none group-hover:text-burgundy transition-colors">
+              TRIBUNA MOCHICA
+            </p>
+          )}
         </div>
       </a>
       <p class="mt-2.5 sm:mt-3 text-xs sm:text-sm text-subtle tracking-wide">
@@ -184,7 +191,7 @@ const currentCat = Astro.url.searchParams.get('categoria') || '';
     </div>
   </div>
 
-  <!-- NAVEGACIÓN ESCRITORIO (md en adelante) -->
+  <!-- NAVEGACIÓN ESCRITORIO (md en adelante, incluye todas las secciones) -->
   <nav aria-label="Secciones del diario" class="hidden md:block sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-center gap-2 overflow-x-auto no-scrollbar py-3">
@@ -213,7 +220,7 @@ const currentCat = Astro.url.searchParams.get('categoria') || '';
               Últimas noticias
             </a>
           </li>
-          {CATEGORIAS.slice(0, 5).map((cat) => (
+          {CATEGORIAS.map((cat) => (
             <li>
               <a
                 href={`/noticias?categoria=${encodeURIComponent(cat)}`}

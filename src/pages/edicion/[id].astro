@@ -6,97 +6,147 @@ const { id } = Astro.params;
 const edicion = id ? await getEdicionById(id) : null;
 
 if (!edicion) {
-  return Astro.redirect('/ediciones');
+  Astro.response.status = 404;
+} else {
+  Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
 }
 
-const shareUrl = `https://tribunamochica.vercel.app/edicion/${edicion.numero}`;
-const whatsappHref = `https://wa.me/?text=${encodeURIComponent(`Lee la Edición N.° ${edicion.numero} de Tribuna Mochica (${edicion.fecha}): ${shareUrl}`)}`;
+const siteURL = (Astro.site || 'https://www.tribunamochica.com').toString().replace(/\/$/, '');
+const shareUrl = edicion ? `${siteURL}/edicion/${edicion.numero}` : `${siteURL}/ediciones`;
+const whatsappHref = edicion
+  ? `https://wa.me/?text=${encodeURIComponent(`Lee la Edición N.° ${edicion.numero} de Tribuna Mochica (${edicion.fecha}): ${shareUrl}`)}`
+  : '';
+
+const coverAbsUrl = edicion
+  ? (edicion.portadaImg.startsWith('http') ? edicion.portadaImg : `${siteURL}${edicion.portadaImg}`)
+  : `${siteURL}/logo.jpg`;
+
+const issueJsonLd = edicion
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'PublicationIssue',
+      issueNumber: String(edicion.numero),
+      name: `Edición N.° ${edicion.numero} — ${edicion.titular}`,
+      description: edicion.bajada || edicion.titular,
+      datePublished: edicion.fechaIso,
+      image: coverAbsUrl,
+      url: shareUrl,
+      inLanguage: 'es-PE',
+      isPartOf: {
+        '@type': 'Periodical',
+        name: 'Tribuna Mochica',
+        url: siteURL,
+      },
+    }
+  : null;
 ---
 <Layout
-  title={`Edición N.° ${edicion.numero} | Tribuna Mochica`}
-  description={`${edicion.titular}. ${edicion.bajada}`}
-  image={edicion.portadaImg}
+  title={edicion ? `Edición N.° ${edicion.numero} | Tribuna Mochica` : 'Edición no encontrada | Tribuna Mochica'}
+  description={edicion ? `${edicion.titular}. ${edicion.bajada}` : 'La edición solicitada no está disponible en la hemeroteca de Tribuna Mochica.'}
+  image={edicion ? edicion.portadaImg : '/logo.jpg'}
   activePath="/ediciones"
+  noIndex={!edicion}
+  jsonLd={issueJsonLd}
 >
   <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <a href="/ediciones" class="inline-block text-sm font-semibold text-subtle hover:text-burgundy mb-6 transition-colors">
-      ← Volver a todas las ediciones
-    </a>
-
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start">
-      <div class="md:col-span-5">
-        <div class="border border-line bg-surface overflow-hidden shadow-sm">
-          <img
-            src={edicion.portadaImg}
-            onerror="this.onerror=null; this.src='/ediciones/portada-placeholder.svg';"
-            alt={`Portada Edición N.° ${edicion.numero}`}
-            class="w-full h-auto object-cover"
-          />
-        </div>
-        <p class="mt-3 text-xs text-subtle text-center">
-          Formato PDF original · {edicion.paginas} páginas {edicion.peso ? `· ${edicion.peso}` : ''}
+    {!edicion ? (
+      <section class="py-12 text-center border border-line bg-surface px-6">
+        <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-2">Error 404</p>
+        <h1 class="font-serif text-3xl sm:text-4xl font-black text-ink">Edición no encontrada</h1>
+        <p class="mt-3 text-base text-muted max-w-lg mx-auto">
+          No encontramos esa edición en nuestra hemeroteca. Revisa todas las ediciones disponibles en PDF.
         </p>
-      </div>
-
-      <div class="md:col-span-7">
-        <div class="flex items-center gap-2 text-xs uppercase tracking-[0.16em] mb-3">
-          <span class="px-2.5 py-1 bg-ink text-white font-bold">Edición N.° {edicion.numero}</span>
-          <span class="text-subtle">{edicion.fecha}</span>
+        <div class="mt-6 flex flex-wrap justify-center gap-3">
+          <a href="/ediciones" class="px-5 py-2.5 bg-burgundy text-white text-sm font-semibold hover:bg-burgundy-dark transition-colors">
+            Ver todas las ediciones
+          </a>
+          <a href="/" class="px-5 py-2.5 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors">
+            Ir a la portada
+          </a>
         </div>
+      </section>
+    ) : (
+      <>
+        <a href="/ediciones" class="inline-block text-sm font-semibold text-subtle hover:text-burgundy mb-6 transition-colors">
+          ← Volver a todas las ediciones
+        </a>
 
-        <h1 class="font-serif text-3xl sm:text-4xl font-black text-ink leading-tight">
-          {edicion.titular}
-        </h1>
-
-        {edicion.bajada && (
-          <p class="mt-4 text-base sm:text-lg text-muted leading-relaxed">
-            {edicion.bajada}
-          </p>
-        )}
-
-        {edicion.titularesSecundarios.length > 0 && (
-          <div class="mt-6 pt-5 border-t border-line">
-            <h2 class="font-sans text-xs font-bold uppercase tracking-[0.16em] text-ink mb-3">
-              En esta edición también encontrarás
-            </h2>
-            <ul class="space-y-2 text-sm text-muted">
-              {edicion.titularesSecundarios.map((t) => (
-                <li class="flex items-start gap-2.5">
-                  <span class="text-burgundy font-bold">•</span>
-                  <span>{t}</span>
-                </li>
-              ))}
-            </ul>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start">
+          <div class="md:col-span-5">
+            <div class="border border-line bg-surface overflow-hidden shadow-sm">
+              <img
+                src={edicion.portadaImg}
+                onerror="this.onerror=null; this.src='/ediciones/portada-placeholder.svg';"
+                alt={`Portada Edición N.° ${edicion.numero}`}
+                class="w-full h-auto object-cover"
+              />
+            </div>
+            <p class="mt-3 text-xs text-subtle text-center">
+              Formato PDF original · {edicion.paginas} páginas {edicion.peso ? `· ${edicion.peso}` : ''}
+            </p>
           </div>
-        )}
 
-        <div class="mt-8 flex flex-wrap gap-3">
-          <button
-            type="button"
-            data-open-pdf
-            data-pdf={edicion.archivoPdf}
-            data-title={`Edición N.° ${edicion.numero} (${edicion.fecha})`}
-            class="px-6 py-3 bg-burgundy text-white text-sm font-semibold hover:bg-burgundy-dark transition-colors"
-          >
-            Leer edición en pantalla
-          </button>
-          <a
-            href={edicion.archivoPdf}
-            download
-            class="px-6 py-3 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors"
-          >
-            Descargar PDF
-          </a>
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="px-5 py-3 border border-line text-ink text-sm font-semibold hover:border-burgundy hover:text-burgundy transition-colors"
-          >
-            Compartir por WhatsApp
-          </a>
+          <div class="md:col-span-7">
+            <div class="flex items-center gap-2 text-xs uppercase tracking-[0.16em] mb-3">
+              <span class="px-2.5 py-1 bg-ink text-white font-bold">Edición N.° {edicion.numero}</span>
+              <span class="text-subtle">{edicion.fecha}</span>
+            </div>
+
+            <h1 class="font-serif text-3xl sm:text-4xl font-black text-ink leading-tight">
+              {edicion.titular}
+            </h1>
+
+            {edicion.bajada && (
+              <p class="mt-4 text-base sm:text-lg text-muted leading-relaxed">
+                {edicion.bajada}
+              </p>
+            )}
+
+            {edicion.titularesSecundarios.length > 0 && (
+              <div class="mt-6 pt-5 border-t border-line">
+                <h2 class="font-sans text-xs font-bold uppercase tracking-[0.16em] text-ink mb-3">
+                  En esta edición también encontrarás
+                </h2>
+                <ul class="space-y-2 text-sm text-muted">
+                  {edicion.titularesSecundarios.map((t) => (
+                    <li class="flex items-start gap-2.5">
+                      <span class="text-burgundy font-bold">•</span>
+                      <span>{t}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div class="mt-8 flex flex-wrap gap-3">
+              <button
+                type="button"
+                data-open-pdf
+                data-pdf={edicion.archivoPdf}
+                data-title={`Edición N.° ${edicion.numero} (${edicion.fecha})`}
+                class="px-6 py-3 bg-burgundy text-white text-sm font-semibold hover:bg-burgundy-dark transition-colors"
+              >
+                Leer edición en pantalla
+              </button>
+              <a
+                href={edicion.archivoPdf}
+                download
+                class="px-6 py-3 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors"
+              >
+                Descargar PDF
+              </a>
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-5 py-3 border border-line text-ink text-sm font-semibold hover:border-burgundy hover:text-burgundy transition-colors"
+              >
+                Compartir por WhatsApp
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </>
+    )}
   </main>
 </Layout>

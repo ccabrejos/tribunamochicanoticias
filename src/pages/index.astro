@@ -4,6 +4,8 @@ import NoticiaCard from '../components/NoticiaCard.astro';
 import EdicionCard from '../components/EdicionCard.astro';
 import { getNoticias, getEdiciones } from '../lib/data';
 
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+
 const [noticias, ediciones] = await Promise.all([getNoticias(), getEdiciones()]);
 
 const noticiaPrincipal = noticias[0] || null;
@@ -16,6 +18,7 @@ const edicionesAnteriores = ediciones.slice(0, 4);
   title="Tribuna Mochica | La Voz del Valle La Leche"
   description="Portal de noticias y semanario digital Tribuna Mochica. Dirigido por Juan César Cabrejos Becerra. Noticias de Lambayeque, Valle La Leche, Íllimo, Túcume y Mochumí."
   image={noticiaPrincipal?.imagen || '/logo.jpg'}
+  activePath="/"
 >
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
     <!-- PRIMERA PLANA EQUILIBRADA: Portada (7 cols) + Últimas noticias (5 cols) -->

@@ -11,7 +11,7 @@ function escapeXml(str: string): string {
 }
 
 export const GET: APIRoute = async ({ site }) => {
-  const baseUrl = (site ? site.toString() : 'https://tribunamochica.vercel.app').replace(/\/$/, '');
+  const baseUrl = (site ? site.toString() : 'https://www.tribunamochica.com').replace(/\/$/, '');
   const [noticias, ediciones] = await Promise.all([getNoticias(), getEdiciones()]);
 
   const staticPages = [
@@ -53,7 +53,7 @@ ${allUrls
   return new Response(xml, {
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=1800',
+      'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=3600',
     },
   });
 };

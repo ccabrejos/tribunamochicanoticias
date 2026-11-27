@@ -7,108 +7,183 @@ const { id } = Astro.params;
 const noticia = id ? await getNoticiaBySlug(id) : null;
 
 if (!noticia) {
-  return Astro.redirect('/noticias');
+  Astro.response.status = 404;
+} else {
+  Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
 }
 
 const todasNoticias = await getNoticias();
-const relacionadas = todasNoticias.filter((n) => n.slug !== noticia.slug).slice(0, 3);
-const parrafos = noticia.contenido
-  .split(/\n+/)
-  .map((p) => p.trim())
-  .filter(Boolean);
+const relacionadas = noticia
+  ? todasNoticias.filter((n) => n.slug !== noticia.slug).slice(0, 3)
+  : todasNoticias.slice(0, 3);
 
-const shareUrl = `https://tribunamochica.vercel.app/noticia/${noticia.slug}`;
-const whatsappHref = `https://wa.me/?text=${encodeURIComponent(`${noticia.titular} — Lee la nota en Tribuna Mochica: ${shareUrl}`)}`;
+const parrafos = noticia
+  ? noticia.contenido
+      .split(/\n+/)
+      .map((p) => p.trim())
+      .filter(Boolean)
+  : [];
+
+const siteURL = (Astro.site || 'https://www.tribunamochica.com').toString().replace(/\/$/, '');
+const shareUrl = noticia ? `${siteURL}/noticia/${noticia.slug}` : `${siteURL}/noticias`;
+const whatsappHref = noticia
+  ? `https://wa.me/?text=${encodeURIComponent(`${noticia.titular} — Lee la nota en Tribuna Mochica: ${shareUrl}`)}`
+  : '';
+
+const imageAbsUrl = noticia
+  ? (noticia.imagen.startsWith('http') ? noticia.imagen : `${siteURL}${noticia.imagen}`)
+  : `${siteURL}/logo.jpg`;
+
+const showCaption = Boolean(
+  noticia?.altImagen &&
+  noticia.altImagen.trim().toLowerCase() !== noticia.titular.trim().toLowerCase()
+);
+
+const articleJsonLd = noticia
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'NewsArticle',
+      headline: noticia.titular,
+      description: noticia.bajada,
+      image: [imageAbsUrl],
+      datePublished: noticia.fechaIso,
+      dateModified: noticia.fechaIso,
+      articleSection: noticia.categoria,
+      inLanguage: 'es-PE',
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': shareUrl,
+      },
+      author: {
+        '@type': 'Person',
+        name: noticia.autor,
+      },
+      publisher: {
+        '@type': 'NewsMediaOrganization',
+        name: 'Tribuna Mochica',
+        url: siteURL,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${siteURL}/logo.jpg`,
+        },
+      },
+    }
+  : null;
 ---
 <Layout
-  title={`${noticia.titular} | Tribuna Mochica`}
-  description={noticia.bajada}
-  image={noticia.imagen}
+  title={noticia ? `${noticia.titular} | Tribuna Mochica` : 'Noticia no encontrada | Tribuna Mochica'}
+  description={noticia ? noticia.bajada : 'La noticia que buscas no está disponible en Tribuna Mochica.'}
+  image={noticia ? noticia.imagen : '/logo.jpg'}
   activePath="/noticias"
+  ogType={noticia ? 'article' : 'website'}
+  noIndex={!noticia}
+  publishedTime={noticia?.fechaIso}
+  section={noticia?.categoria}
+  jsonLd={articleJsonLd}
 >
   <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-    <nav class="mb-6 text-xs text-subtle flex items-center gap-2">
-      <a href="/" class="hover:text-burgundy transition-colors">Portada</a>
-      <span>/</span>
-      <a href={`/noticias?categoria=${encodeURIComponent(noticia.categoria)}`} class="text-burgundy font-semibold">
-        {noticia.categoria}
-      </a>
-    </nav>
-
-    <article>
-      <header class="border-b border-line pb-6">
-        <span class="inline-block text-xs font-bold uppercase tracking-[0.18em] text-burgundy mb-3">
-          {noticia.categoria}
-        </span>
-        <h1 class="font-serif text-3xl sm:text-5xl font-black text-ink leading-[1.12] tracking-tight">
-          {noticia.titular}
-        </h1>
-        <p class="mt-4 text-lg sm:text-xl text-muted leading-relaxed">
-          {noticia.bajada}
+    {!noticia ? (
+      <section class="py-12 text-center border border-line bg-surface px-6">
+        <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-2">Error 404</p>
+        <h1 class="font-serif text-3xl sm:text-4xl font-black text-ink">Noticia no encontrada</h1>
+        <p class="mt-3 text-base text-muted max-w-lg mx-auto">
+          El enlace puede haber cambiado o la publicación fue retirada. Explora nuestras últimas notas en portada.
         </p>
+        <div class="mt-6 flex flex-wrap justify-center gap-3">
+          <a href="/" class="px-5 py-2.5 bg-ink text-white text-sm font-semibold hover:bg-burgundy transition-colors">
+            Ir a la portada
+          </a>
+          <a href="/noticias" class="px-5 py-2.5 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors">
+            Ver todas las noticias
+          </a>
+        </div>
+      </section>
+    ) : (
+      <>
+        <nav class="mb-6 text-xs text-subtle flex items-center gap-2">
+          <a href="/" class="hover:text-burgundy transition-colors">Portada</a>
+          <span>/</span>
+          <a href={`/noticias?categoria=${encodeURIComponent(noticia.categoria)}`} class="text-burgundy font-semibold">
+            {noticia.categoria}
+          </a>
+        </nav>
 
-        <div class="mt-6 flex flex-wrap items-center justify-between gap-4 text-sm text-subtle">
-          <div>
-            Por <span class="text-ink font-semibold">{noticia.autor}</span>
-            <span class="mx-2 text-line">|</span>
-            <time>{noticia.fecha}</time>
+        <article>
+          <header class="border-b border-line pb-6">
+            <span class="inline-block text-xs font-bold uppercase tracking-[0.18em] text-burgundy mb-3">
+              {noticia.categoria}
+            </span>
+            <h1 class="font-serif text-3xl sm:text-5xl font-black text-ink leading-[1.12] tracking-tight">
+              {noticia.titular}
+            </h1>
+            <p class="mt-4 text-lg sm:text-xl text-muted leading-relaxed">
+              {noticia.bajada}
+            </p>
+
+            <div class="mt-6 flex flex-wrap items-center justify-between gap-4 text-sm text-subtle">
+              <div>
+                Por <span class="text-ink font-semibold">{noticia.autor}</span>
+                <span class="mx-2 text-line">|</span>
+                <time datetime={noticia.fechaIso}>{noticia.fecha}</time>
+              </div>
+              <div class="flex items-center gap-2">
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold border border-line text-ink hover:border-burgundy hover:text-burgundy transition-colors"
+                >
+                  Compartir en WhatsApp
+                </a>
+                <button
+                  type="button"
+                  id="copy-link-btn"
+                  class="px-3.5 py-1.5 text-xs font-semibold border border-line text-ink hover:border-ink transition-colors"
+                >
+                  Copiar enlace
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <figure class="my-8">
+            <div class="overflow-hidden border border-line bg-surface">
+              <img
+                src={noticia.imagen}
+                onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
+                alt={noticia.altImagen || noticia.titular}
+                class="w-full max-h-[520px] object-cover"
+              />
+            </div>
+            {showCaption && (
+              <figcaption class="mt-2.5 text-xs text-subtle">
+                {noticia.altImagen}
+              </figcaption>
+            )}
+          </figure>
+
+          <div class="space-y-5 text-base sm:text-lg text-ink/90 leading-[1.85]">
+            {parrafos.map((parrafo) => (
+              <p>{parrafo}</p>
+            ))}
           </div>
-          <div class="flex items-center gap-2">
+
+          <div class="mt-10 pt-6 border-t border-line flex flex-wrap items-center justify-between gap-4">
+            <a href="/noticias" class="text-sm font-semibold text-ink hover:text-burgundy transition-colors">
+              ← Volver a todas las noticias
+            </a>
             <a
               href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold border border-line text-ink hover:border-burgundy hover:text-burgundy transition-colors"
+              class="px-4 py-2 bg-burgundy text-white text-sm font-semibold hover:bg-burgundy-dark transition-colors"
             >
-              Compartir en WhatsApp
+              Compartir esta noticia por WhatsApp
             </a>
-            <button
-              type="button"
-              id="copy-link-btn"
-              class="px-3.5 py-1.5 text-xs font-semibold border border-line text-ink hover:border-ink transition-colors"
-            >
-              Copiar enlace
-            </button>
           </div>
-        </div>
-      </header>
-
-      <figure class="my-8">
-        <div class="overflow-hidden border border-line bg-surface">
-          <img
-            src={noticia.imagen}
-            onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
-            alt={noticia.altImagen || noticia.titular}
-            class="w-full max-h-[520px] object-cover"
-          />
-        </div>
-        {noticia.altImagen && (
-          <figcaption class="mt-2.5 text-xs text-subtle">
-            {noticia.altImagen}
-          </figcaption>
-        )}
-      </figure>
-
-      <div class="space-y-5 text-base sm:text-lg text-ink/90 leading-[1.85]">
-        {parrafos.map((parrafo) => (
-          <p>{parrafo}</p>
-        ))}
-      </div>
-
-      <div class="mt-10 pt-6 border-t border-line flex flex-wrap items-center justify-between gap-4">
-        <a href="/noticias" class="text-sm font-semibold text-ink hover:text-burgundy transition-colors">
-          ← Volver a todas las noticias
-        </a>
-        <a
-          href={whatsappHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="px-4 py-2 bg-burgundy text-white text-sm font-semibold hover:bg-burgundy-dark transition-colors"
-        >
-          Compartir esta noticia por WhatsApp
-        </a>
-      </div>
-    </article>
+        </article>
+      </>
+    )}
 
     {relacionadas.length > 0 && (
       <section class="mt-16 pt-10 border-t-2 border-ink">

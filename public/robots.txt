@@ -22,4 +22,4 @@ User-agent: Google-Extended
 Allow: /
 Disallow: /redaccion
 
-Sitemap: https://tribunamochica.vercel.app/sitemap.xml
+Sitemap: https://www.tribunamochica.com/sitemap.xml

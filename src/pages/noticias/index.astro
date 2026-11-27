@@ -3,8 +3,11 @@ import Layout from '../../layouts/Layout.astro';
 import NoticiaCard from '../../components/NoticiaCard.astro';
 import { CATEGORIAS, getNoticias } from '../../lib/data';
 
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+
 const categoriaActiva = Astro.url.searchParams.get('categoria') || 'Todas';
 const noticias = await getNoticias(categoriaActiva);
+const PAGE_SIZE = 12;
 ---
 <Layout
   title={categoriaActiva === 'Todas' ? 'Noticias | Tribuna Mochica' : `${categoriaActiva} | Tribuna Mochica`}
@@ -12,20 +15,27 @@ const noticias = await getNoticias(categoriaActiva);
   activePath="/noticias"
 >
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <div class="pb-4 border-b-2 border-ink mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div class="pb-5 border-b-2 border-ink mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
         <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-1">Redacción Digital</p>
         <h1 class="font-serif text-3xl sm:text-4xl font-black text-ink">
           {categoriaActiva === 'Todas' ? 'Últimas noticias' : categoriaActiva}
         </h1>
       </div>
-      <p class="text-sm text-subtle">
-        {noticias.length} {noticias.length === 1 ? 'publicación' : 'publicaciones'}
-      </p>
+
+      <div class="w-full md:w-80">
+        <label for="buscar-noticias" class="sr-only">Buscar noticias</label>
+        <input
+          id="buscar-noticias"
+          type="search"
+          placeholder="Buscar por titular, tema o autor..."
+          class="w-full px-4 py-2.5 text-sm border border-line focus:border-ink focus:outline-none bg-white"
+        />
+      </div>
     </div>
 
     <!-- Filtros por categoría -->
-    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 mb-8">
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 mb-6">
       <a
         href="/noticias"
         class={`px-3.5 py-1.5 text-sm rounded-full border transition-colors whitespace-nowrap ${
@@ -50,12 +60,41 @@ const noticias = await getNoticias(categoriaActiva);
       ))}
     </div>
 
+    <p id="noticias-count" class="text-xs text-subtle mb-6">
+      Mostrando {Math.min(noticias.length, PAGE_SIZE)} de {noticias.length} {noticias.length === 1 ? 'publicación' : 'publicaciones'}
+    </p>
+
     {noticias.length > 0 ? (
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
-        {noticias.map((noticia) => (
-          <NoticiaCard noticia={noticia} />
-        ))}
-      </div>
+      <>
+        <div id="noticias-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
+          {noticias.map((noticia, idx) => (
+            <div
+              data-noticia-item
+              data-search={`${noticia.titular} ${noticia.bajada} ${noticia.categoria} ${noticia.autor} ${noticia.fecha}`.toLowerCase()}
+              class={idx >= PAGE_SIZE ? 'hidden' : ''}
+            >
+              <NoticiaCard noticia={noticia} />
+            </div>
+          ))}
+        </div>
+
+        <div id="noticias-empty-search" class="hidden py-14 px-6 text-center border border-line bg-surface">
+          <p class="font-serif text-xl font-bold text-ink">No encontramos noticias con ese término</p>
+          <p class="mt-2 text-sm text-muted">Intenta con otra palabra clave o borra el buscador para ver todas.</p>
+        </div>
+
+        {noticias.length > PAGE_SIZE && (
+          <div id="load-more-wrap" class="mt-10 text-center">
+            <button
+              id="btn-load-more"
+              type="button"
+              class="px-6 py-3 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors"
+            >
+              Cargar más noticias
+            </button>
+          </div>
+        )}
+      </>
     ) : (
       <div class="py-16 px-6 text-center border border-line bg-surface">
         <p class="font-serif text-xl font-bold text-ink">No hay noticias en esta sección todavía</p>
@@ -72,3 +111,49 @@ const noticias = await getNoticias(categoriaActiva);
     )}
   </main>
 </Layout>
+
+<script>
+  const PAGE_SIZE = 12;
+  const input = document.getElementById('buscar-noticias') as HTMLInputElement | null;
+  const countEl = document.getElementById('noticias-count');
+  const emptyEl = document.getElementById('noticias-empty-search');
+  const loadMoreWrap = document.getElementById('load-more-wrap');
+  const loadMoreBtn = document.getElementById('btn-load-more');
+  const items = Array.from(document.querySelectorAll('[data-noticia-item]')) as HTMLElement[];
+
+  let visibleLimit = PAGE_SIZE;
+
+  function updateView() {
+    const q = (input?.value || '').trim().toLowerCase();
+    const matched = items.filter((el) => {
+      const text = el.getAttribute('data-search') || '';
+      return !q || text.includes(q);
+    });
+
+    items.forEach((el) => el.classList.add('hidden'));
+
+    const limit = q ? matched.length : visibleLimit;
+    matched.slice(0, limit).forEach((el) => el.classList.remove('hidden'));
+
+    const shown = Math.min(matched.length, limit);
+    if (countEl) {
+      countEl.textContent = q
+        ? `Mostrando ${matched.length} ${matched.length === 1 ? 'resultado' : 'resultados'}`
+        : `Mostrando ${shown} de ${items.length} ${items.length === 1 ? 'publicación' : 'publicaciones'}`;
+    }
+
+    if (emptyEl) {
+      emptyEl.classList.toggle('hidden', matched.length > 0 || items.length === 0);
+    }
+
+    if (loadMoreWrap) {
+      loadMoreWrap.classList.toggle('hidden', Boolean(q) || shown >= matched.length);
+    }
+  }
+
+  input?.addEventListener('input', updateView);
+  loadMoreBtn?.addEventListener('click', () => {
+    visibleLimit += PAGE_SIZE;
+    updateView();
+  });
+</script>

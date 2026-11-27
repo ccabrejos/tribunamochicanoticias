@@ -3,7 +3,7 @@ import tailwind from '@astrojs/tailwind';
 import vercel from '@astrojs/vercel';
 
 export default defineConfig({
-  site: 'https://tribunamochica.vercel.app',
+  site: 'https://www.tribunamochica.com',
   output: 'server',
   adapter: vercel(),
   integrations: [tailwind()],

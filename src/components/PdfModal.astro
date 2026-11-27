@@ -1,5 +1,5 @@
 ---
-// Lector Modal de PDF limpio y adaptable a escritorio y móvil
+// Lector Modal de PDF adaptable: visor embebido en escritorio y apertura nativa fluida en celulares
 ---
 <div
   id="pdf-modal"
@@ -22,7 +22,7 @@
           href="#"
           target="_blank"
           rel="noopener noreferrer"
-          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold border border-line rounded-md text-ink hover:bg-surface transition-colors"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold border border-line rounded-md text-ink hover:bg-surface transition-colors"
         >
           Abrir aparte ↗
         </a>
@@ -32,7 +32,7 @@
           download
           class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-burgundy text-white hover:bg-burgundy-dark transition-colors"
         >
-          Descargar PDF
+          Descargar
         </a>
         <button
           id="pdf-modal-close"
@@ -45,13 +45,50 @@
       </div>
     </div>
 
-    <div class="flex-1 bg-surface relative">
+    <div class="flex-1 bg-surface relative overflow-hidden">
       <iframe
         id="pdf-modal-frame"
         src=""
         title="Visor de periódico PDF"
         class="w-full h-full border-0"
       ></iframe>
+
+      <!-- Respaldo limpio para celulares si el navegador bloquea la pestaña automática -->
+      <div
+        id="pdf-mobile-fallback"
+        class="hidden absolute inset-0 bg-surface flex-col items-center justify-center p-6 text-center"
+      >
+        <div class="max-w-sm bg-white border border-line rounded-xl p-6 shadow-sm">
+          <p class="text-xs uppercase tracking-[0.16em] text-burgundy font-bold mb-2">
+            Lectura en celular
+          </p>
+          <h4 id="pdf-mobile-title" class="font-serif text-xl font-black text-ink mb-2">
+            Edición PDF lista
+          </h4>
+          <p class="text-sm text-muted mb-6">
+            Para leer todas las páginas con zoom cómodo en tu teléfono, ábrela en pantalla completa o descárgala.
+          </p>
+          <div class="flex flex-col gap-3">
+            <a
+              id="pdf-mobile-open"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-full py-3 px-4 rounded-lg bg-burgundy text-white text-sm font-bold hover:bg-burgundy-dark transition-colors"
+            >
+              Abrir PDF en pantalla completa ↗
+            </a>
+            <a
+              id="pdf-mobile-download"
+              href="#"
+              download
+              class="w-full py-3 px-4 rounded-lg border border-ink text-ink text-sm font-bold hover:bg-ink hover:text-white transition-colors"
+            >
+              Descargar PDF
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -59,14 +96,49 @@
 <script>
   const modal = document.getElementById('pdf-modal');
   const frame = document.getElementById('pdf-modal-frame') as HTMLIFrameElement | null;
+  const mobileFallback = document.getElementById('pdf-mobile-fallback');
+  const mobileTitle = document.getElementById('pdf-mobile-title');
+  const mobileOpen = document.getElementById('pdf-mobile-open') as HTMLAnchorElement | null;
+  const mobileDownload = document.getElementById('pdf-mobile-download') as HTMLAnchorElement | null;
   const titleEl = document.getElementById('pdf-modal-title');
   const downloadEl = document.getElementById('pdf-modal-download') as HTMLAnchorElement | null;
   const openEl = document.getElementById('pdf-modal-open') as HTMLAnchorElement | null;
   const closeBtn = document.getElementById('pdf-modal-close');
 
+  function isMobileDevice() {
+    return (
+      window.matchMedia('(max-width: 768px)').matches ||
+      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+    );
+  }
+
   function openPdfModal(pdfUrl: string, title: string) {
     if (!modal || !frame) return;
-    frame.src = pdfUrl;
+
+    // En celulares, los iframes de PDF suelen fallar o mostrar solo 1 página: abrir directo en visor nativo
+    if (isMobileDevice()) {
+      const opened = window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+      if (opened) return;
+
+      // Si el navegador bloqueó la ventana emergente, mostrar tarjeta clara dentro del modal
+      frame.src = '';
+      frame.classList.add('hidden');
+      if (mobileFallback) {
+        mobileFallback.classList.remove('hidden');
+        mobileFallback.classList.add('flex');
+      }
+      if (mobileTitle) mobileTitle.textContent = title || 'Edición PDF';
+      if (mobileOpen) mobileOpen.href = pdfUrl;
+      if (mobileDownload) mobileDownload.href = pdfUrl;
+    } else {
+      frame.classList.remove('hidden');
+      if (mobileFallback) {
+        mobileFallback.classList.add('hidden');
+        mobileFallback.classList.remove('flex');
+      }
+      frame.src = pdfUrl;
+    }
+
     if (titleEl) titleEl.textContent = title || 'Edición PDF';
     if (downloadEl) downloadEl.href = pdfUrl;
     if (openEl) openEl.href = pdfUrl;

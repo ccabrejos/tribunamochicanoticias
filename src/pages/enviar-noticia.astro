@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
 ---
 <Layout
   title="Envíanos tu noticia | Tribuna Mochica"

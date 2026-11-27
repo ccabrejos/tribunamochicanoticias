@@ -30,7 +30,7 @@ const {
   jsonLd = null,
 } = Astro.props;
 
-const siteURL = (Astro.site || 'https://tribunamochica.vercel.app').toString().replace(/\/$/, '');
+const siteURL = (Astro.site || 'https://www.tribunamochica.com').toString().replace(/\/$/, '');
 const canonicalURL = new URL(Astro.url.pathname, siteURL).href;
 const imageURL = image.startsWith('http') ? image : new URL(image, siteURL).href;
 
@@ -67,7 +67,9 @@ const orgSchema = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content={noIndex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
