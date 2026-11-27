@@ -392,6 +392,7 @@ import { isSupabaseConfigured } from '../lib/supabase';
                     class="block w-full text-base text-muted file:mr-4 file:py-3 file:px-5 file:rounded-lg file:border-0 file:text-base file:font-bold file:bg-ink file:text-white hover:file:bg-burgundy cursor-pointer"
                   />
                   <div id="noticia-foto-preview-wrap" class="hidden mt-4">
+                    <p id="noticia-foto-label" class="text-sm font-semibold text-subtle mb-2">Foto actual de esta noticia</p>
                     <img id="noticia-foto-preview" src="" alt="Vista previa" class="max-h-56 mx-auto rounded-lg border border-line object-cover" />
                   </div>
                 </div>
@@ -565,6 +566,7 @@ import { isSupabaseConfigured } from '../lib/supabase';
                     class="block w-full text-base text-muted file:mr-4 file:py-3 file:px-4 file:rounded-lg file:border-0 file:text-base file:font-bold file:bg-ink file:text-white hover:file:bg-burgundy cursor-pointer"
                   />
                   <div id="edicion-portada-preview-wrap" class="hidden mt-4">
+                    <p id="edicion-portada-label" class="text-sm font-semibold text-subtle mb-2">Portada actual de esta edición</p>
                     <img id="edicion-portada-preview" src="" alt="Vista previa portada" class="max-h-48 mx-auto rounded-lg border border-line object-cover" />
                   </div>
                 </div>
@@ -943,13 +945,23 @@ import { isSupabaseConfigured } from '../lib/supabase';
       switchView('edicion');
     });
 
-    // Vistas previas de archivos
+    // Vistas previas de archivos (limpiando URLs temporales previas)
+    let lastNoticiaBlobUrl = '';
+    let lastEdicionBlobUrl = '';
+
     document.getElementById('noticia-foto')?.addEventListener('change', (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       const img = document.getElementById('noticia-foto-preview') as HTMLImageElement | null;
       const wrap = document.getElementById('noticia-foto-preview-wrap');
+      const label = document.getElementById('noticia-foto-label');
+      if (lastNoticiaBlobUrl) {
+        URL.revokeObjectURL(lastNoticiaBlobUrl);
+        lastNoticiaBlobUrl = '';
+      }
       if (file && img && wrap) {
-        img.src = URL.createObjectURL(file);
+        lastNoticiaBlobUrl = URL.createObjectURL(file);
+        img.src = lastNoticiaBlobUrl;
+        if (label) label.textContent = `Nueva foto seleccionada: ${file.name}`;
         wrap.classList.remove('hidden');
       }
     });
@@ -958,8 +970,15 @@ import { isSupabaseConfigured } from '../lib/supabase';
       const file = (e.target as HTMLInputElement).files?.[0];
       const img = document.getElementById('edicion-portada-preview') as HTMLImageElement | null;
       const wrap = document.getElementById('edicion-portada-preview-wrap');
+      const label = document.getElementById('edicion-portada-label');
+      if (lastEdicionBlobUrl) {
+        URL.revokeObjectURL(lastEdicionBlobUrl);
+        lastEdicionBlobUrl = '';
+      }
       if (file && img && wrap) {
-        img.src = URL.createObjectURL(file);
+        lastEdicionBlobUrl = URL.createObjectURL(file);
+        img.src = lastEdicionBlobUrl;
+        if (label) label.textContent = `Nueva portada seleccionada: ${file.name}`;
         wrap.classList.remove('hidden');
       }
     });
@@ -981,9 +1000,24 @@ import { isSupabaseConfigured } from '../lib/supabase';
       if (editNotId) {
         const item = cachedNoticias.find((n) => n.id === editNotId);
         if (!item) return;
+
+        // Limpiar por completo el formulario y el archivo seleccionado anteriormente
+        const formNot = document.getElementById('form-noticia') as HTMLFormElement;
+        formNot.reset();
+        const fotoInput = document.getElementById('noticia-foto') as HTMLInputElement | null;
+        if (fotoInput) fotoInput.value = '';
+        if (lastNoticiaBlobUrl) {
+          URL.revokeObjectURL(lastNoticiaBlobUrl);
+          lastNoticiaBlobUrl = '';
+        }
+        resetPreviewMode();
+        document.getElementById('noticia-status')?.classList.add('hidden');
+
         (document.getElementById('noticia-id') as HTMLInputElement).value = item.id;
         (document.getElementById('noticia-titular') as HTMLInputElement).value = item.titular || '';
-        (document.getElementById('noticia-categoria') as HTMLSelectElement).value = item.categoria || 'Lambayeque';
+        const catSelect = document.getElementById('noticia-categoria') as HTMLSelectElement;
+        const validCats = Array.from(catSelect.options).map((o) => o.value);
+        catSelect.value = validCats.includes(item.categoria) ? item.categoria : 'Lambayeque';
         (document.getElementById('noticia-autor') as HTMLInputElement).value = item.autor || 'Juan César Cabrejos Becerra';
         (document.getElementById('noticia-bajada') as HTMLTextAreaElement).value = item.bajada || '';
         (document.getElementById('noticia-contenido') as HTMLTextAreaElement).value = item.contenido || '';
@@ -996,10 +1030,19 @@ import { isSupabaseConfigured } from '../lib/supabase';
               : '';
         }
         (document.getElementById('noticia-destacada') as HTMLInputElement).checked = Boolean(item.destacada);
-        if (item.imagen_url) {
-          (document.getElementById('noticia-foto-preview') as HTMLImageElement).src = item.imagen_url;
-          document.getElementById('noticia-foto-preview-wrap')?.classList.remove('hidden');
+
+        const previewImg = document.getElementById('noticia-foto-preview') as HTMLImageElement | null;
+        const previewWrap = document.getElementById('noticia-foto-preview-wrap');
+        const previewLabel = document.getElementById('noticia-foto-label');
+        if (item.imagen_url && previewImg && previewWrap) {
+          previewImg.src = item.imagen_url;
+          if (previewLabel) previewLabel.textContent = 'Foto actual de esta noticia (solo elija otra si desea cambiarla)';
+          previewWrap.classList.remove('hidden');
+        } else if (previewImg && previewWrap) {
+          previewImg.src = '';
+          previewWrap.classList.add('hidden');
         }
+
         const title = document.getElementById('noticia-form-title');
         const submitBtn = document.getElementById('btn-submit-noticia');
         if (title) title.textContent = 'Editar noticia';
@@ -1028,6 +1071,20 @@ import { isSupabaseConfigured } from '../lib/supabase';
       if (editEdId) {
         const item = cachedEdiciones.find((x) => x.id === editEdId);
         if (!item) return;
+
+        // Limpiar por completo el formulario y archivos seleccionados anteriormente
+        const formEd = document.getElementById('form-edicion') as HTMLFormElement;
+        formEd.reset();
+        const pdfInput = document.getElementById('edicion-pdf-file') as HTMLInputElement | null;
+        const portadaInput = document.getElementById('edicion-portada-file') as HTMLInputElement | null;
+        if (pdfInput) pdfInput.value = '';
+        if (portadaInput) portadaInput.value = '';
+        if (lastEdicionBlobUrl) {
+          URL.revokeObjectURL(lastEdicionBlobUrl);
+          lastEdicionBlobUrl = '';
+        }
+        document.getElementById('edicion-status')?.classList.add('hidden');
+
         (document.getElementById('edicion-id') as HTMLInputElement).value = item.id;
         (document.getElementById('edicion-numero') as HTMLInputElement).value = String(item.numero);
         (document.getElementById('edicion-fecha-iso') as HTMLInputElement).value = item.fecha_iso || getTodayIso();
@@ -1040,10 +1097,19 @@ import { isSupabaseConfigured } from '../lib/supabase';
         (document.getElementById('edicion-peso-actual') as HTMLInputElement).value = item.peso || '';
         const pdfInfo = document.getElementById('edicion-pdf-info');
         if (pdfInfo) pdfInfo.textContent = item.archivo_pdf_url ? 'Ya tiene un PDF cargado (solo elija otro si desea reemplazarlo).' : '';
-        if (item.portada_img_url) {
-          (document.getElementById('edicion-portada-preview') as HTMLImageElement).src = item.portada_img_url;
-          document.getElementById('edicion-portada-preview-wrap')?.classList.remove('hidden');
+
+        const previewImg = document.getElementById('edicion-portada-preview') as HTMLImageElement | null;
+        const previewWrap = document.getElementById('edicion-portada-preview-wrap');
+        const previewLabel = document.getElementById('edicion-portada-label');
+        if (item.portada_img_url && previewImg && previewWrap) {
+          previewImg.src = item.portada_img_url;
+          if (previewLabel) previewLabel.textContent = 'Portada actual de esta edición (solo elija otra si desea cambiarla)';
+          previewWrap.classList.remove('hidden');
+        } else if (previewImg && previewWrap) {
+          previewImg.src = '';
+          previewWrap.classList.add('hidden');
         }
+
         const title = document.getElementById('edicion-form-title');
         const submitBtn = document.getElementById('btn-submit-edicion');
         if (title) title.textContent = `Editar Edición N.° ${item.numero}`;
@@ -1148,6 +1214,8 @@ import { isSupabaseConfigured } from '../lib/supabase';
           );
         }
 
+        (document.getElementById('form-noticia') as HTMLFormElement)?.reset();
+        resetPreviewMode();
         await loadDashboardData();
         switchView('dashboard');
       } catch (err: any) {
@@ -1236,6 +1304,7 @@ import { isSupabaseConfigured } from '../lib/supabase';
           showToast(`¡Listo! La Edición N.° ${numero} ya está publicada en el diario.`, false, `/edicion/${numero}`);
         }
 
+        (document.getElementById('form-edicion') as HTMLFormElement)?.reset();
         await loadDashboardData();
         switchView('dashboard');
       } catch (err: any) {
