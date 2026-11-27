@@ -47,7 +47,7 @@ export const GET: APIRoute = async ({ site }) => {
     <title>Tribuna Mochica — Noticias de Lambayeque, Chiclayo y Perú</title>
     <link>${baseUrl}/</link>
     <atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml" />
-    <description>Periódico digital y semanario informativo de Lambayeque, Chiclayo y el Valle La Leche, Perú.</description>
+    <description>Periódico digital y semanario informativo de Lambayeque, Chiclayo y Perú.</description>
     <language>es-pe</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 ${itemsXml}

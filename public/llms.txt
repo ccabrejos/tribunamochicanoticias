@@ -1,9 +1,9 @@
 # Tribuna Mochica — Noticias de Lambayeque, Chiclayo y Perú
 
-> Periódico digital y semanario informativo regional de Lambayeque, Chiclayo y el Valle La Leche, Perú. Fundado y dirigido por Juan César Cabrejos Becerra.
+> Periódico digital y semanario informativo regional de Lambayeque, Chiclayo y Perú. Fundado y dirigido por Juan César Cabrejos Becerra.
 
 ## Identidad Editorial
-- Medio: Tribuna Mochica (lema histórico: "La Voz del Valle La Leche")
+- Medio: Tribuna Mochica
 - Director y Fundador: Juan César Cabrejos Becerra
 - Cobertura geográfica principal: Chiclayo, Lambayeque, Ferreñafe, José Leonardo Ortiz, La Victoria, Pimentel, Íllimo, Túcume, Mochumí, Pacora, Jayanca, Salas y toda la región Lambayeque, Perú.
 - Secciones editoriales: Lambayeque, Regional, Nacional, Opinión, Cultura y Deportes.

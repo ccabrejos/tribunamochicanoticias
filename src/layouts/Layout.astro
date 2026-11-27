@@ -19,7 +19,7 @@ export interface Props {
 
 const {
   title = 'Tribuna Mochica | Noticias de Lambayeque, Chiclayo y Perú',
-  description = 'Periódico digital y semanario de Lambayeque, Chiclayo y el Valle La Leche, Perú. Dirigido por Juan César Cabrejos Becerra. Actualidad regional, nacional, opinión, cultura, deportes y ediciones PDF.',
+  description = 'Periódico digital y semanario informativo de Lambayeque, Chiclayo y Perú. Dirigido por Juan César Cabrejos Becerra. Actualidad regional, nacional, opinión, cultura, deportes y ediciones en PDF.',
   image = '/logo.jpg',
   hideChrome = false,
   activePath = Astro.url.pathname,
@@ -39,7 +39,7 @@ const orgSchema = {
   '@type': 'NewsMediaOrganization',
   '@id': `${siteURL}/#organization`,
   name: 'Tribuna Mochica',
-  alternateName: ['Tribuna Mochica Noticias', 'La Voz del Valle La Leche'],
+  alternateName: 'Tribuna Mochica Noticias',
   url: siteURL,
   inLanguage: 'es-PE',
   logo: {
@@ -60,7 +60,6 @@ const orgSchema = {
   knowsAbout: [
     'Noticias de Lambayeque',
     'Actualidad de Chiclayo',
-    'Valle La Leche',
     'Política y desarrollo regional en Perú',
     'Cultura y deportes en Lambayeque',
   ],
