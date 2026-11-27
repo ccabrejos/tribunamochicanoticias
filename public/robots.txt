@@ -10,7 +10,15 @@ User-agent: OAI-SearchBot
 Allow: /
 Disallow: /redaccion
 
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /redaccion
+
 User-agent: ClaudeBot
+Allow: /
+Disallow: /redaccion
+
+User-agent: Claude-SearchBot
 Allow: /
 Disallow: /redaccion
 

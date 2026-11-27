@@ -653,13 +653,16 @@ import { isSupabaseConfigured } from '../lib/supabase';
     }
 
     function slugify(text: string): string {
-      return text
+      const clean = text
         .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '')
-        .slice(0, 70);
+        .replace(/(^-|-$)/g, '');
+      if (clean.length <= 60) return clean;
+      const cut = clean.slice(0, 60);
+      const lastDash = cut.lastIndexOf('-');
+      return (lastDash > 20 ? cut.slice(0, lastDash) : cut).replace(/-+$/g, '');
     }
 
     function formatFechaLarga(isoDate: string): string {
@@ -1199,7 +1202,9 @@ import { isSupabaseConfigured } from '../lib/supabase';
             existing?.slug ? `/noticia/${existing.slug}` : ''
           );
         } else {
-          const slug = `${slugify(titular)}-${Date.now().toString().slice(-4)}`;
+          const baseSlug = slugify(titular);
+          const slugExists = cachedNoticias.some((n) => n.slug === baseSlug);
+          const slug = slugExists ? `${baseSlug}-${Date.now().toString().slice(-4)}` : baseSlug;
           const { error } = await client.from('noticias').insert({
             ...payload,
             slug,

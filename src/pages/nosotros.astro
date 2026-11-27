@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+---
+<Layout
+  title="Quiénes somos y principios editoriales | Tribuna Mochica"
+  description="Conoce la historia, dirección editorial, cobertura regional en Lambayeque y política de rectificaciones de Tribuna Mochica."
+  activePath="/nosotros"
+>
+  <main id="contenido-principal" class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <a href="/" class="inline-block text-sm font-semibold text-subtle hover:text-burgundy mb-6 transition-colors">
+      ← Volver a la portada
+    </a>
+
+    <header class="border-b-2 border-ink pb-6 mb-8">
+      <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-1">Identidad y Transparencia</p>
+      <h1 class="font-serif text-3xl sm:text-4xl font-black text-ink">Quiénes somos</h1>
+      <p class="mt-3 text-base text-muted leading-relaxed">
+        <strong>Tribuna Mochica</strong> (“La Voz del Valle La Leche”) es un periódico digital y semanario informativo independiente dedicado a la actualidad de Chiclayo, Lambayeque, Ferreñafe y todo el Perú.
+      </p>
+    </header>
+
+    <div class="space-y-8 text-base text-ink/90 leading-relaxed">
+      <section>
+        <h2 class="font-serif text-2xl font-bold text-ink mb-2">Dirección Editorial</h2>
+        <p>
+          El medio es fundado y dirigido por <strong>Juan César Cabrejos Becerra</strong>, con enfoque en periodismo local, fiscalización ciudadana, identidad cultural mochica y servicio a las comunidades de la región Lambayeque.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-serif text-2xl font-bold text-ink mb-2">Cobertura Territorial</h2>
+        <p>
+          Cubrimos de manera prioritaria los distritos y provincias de la región Lambayeque: Chiclayo, Lambayeque, Ferreñafe, José Leonardo Ortiz, La Victoria, Pimentel, Íllimo, Túcume, Mochumí, Pacora, Jayanca, Salas, Mórrope y todo el Valle La Leche, además de hechos de impacto regional y nacional.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-serif text-2xl font-bold text-ink mb-2">Principios Editoriales y Política de Rectificaciones</h2>
+        <p>
+          Nuestras publicaciones son de acceso libre y gratuito. Diferenciamos las notas informativas de las columnas de opinión firmadas por sus autores. Si detectas un dato impreciso o deseas ejercer el derecho de rectificación, escríbenos indicando el enlace de la publicación y el sustento correspondiente; las correcciones verificadas se actualizan de manera transparente en el artículo.
+        </p>
+      </section>
+
+      <section class="pt-6 border-t border-line">
+        <h2 class="font-serif text-2xl font-bold text-ink mb-3">Contacto de Redacción</h2>
+        <ul class="space-y-2 text-sm text-muted">
+          <li><strong>Correo editorial:</strong> <a href="mailto:central.mochica.de.prensa@gmail.com" class="text-burgundy underline">central.mochica.de.prensa@gmail.com</a></li>
+          <li><strong>WhatsApp de prensa:</strong> <a href="https://wa.me/51948100794" target="_blank" rel="noopener noreferrer" class="text-burgundy underline">+51 948 100 794</a></li>
+          <li><strong>Ubicación:</strong> Chiclayo, Región Lambayeque, Perú.</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+</Layout>

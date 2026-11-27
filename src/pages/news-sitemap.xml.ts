@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getNoticias } from '../lib/data';
+import { getNoticias, toPeruIsoDateTime } from '../lib/data';
 
 function escapeXml(str: string): string {
   return String(str || '')
@@ -12,12 +12,21 @@ function escapeXml(str: string): string {
 
 export const GET: APIRoute = async ({ site }) => {
   const baseUrl = (site ? site.toString() : 'https://www.tribunamochica.com').replace(/\/$/, '');
-  const noticias = (await getNoticias()).slice(0, 50);
+  const allNoticias = await getNoticias();
+
+  // Google News Sitemap exige artículos publicados únicamente en las últimas 48 horas
+  const cutoffMs = Date.now() - 48 * 60 * 60 * 1000;
+  const recentNoticias = allNoticias
+    .filter((n) => {
+      const pubTime = Date.parse(toPeruIsoDateTime(n.fechaIso, n.updatedAt));
+      return !Number.isNaN(pubTime) && pubTime >= cutoffMs;
+    })
+    .slice(0, 50);
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
-${noticias
+${recentNoticias
   .map(
     (n) => `  <url>
     <loc>${escapeXml(`${baseUrl}/noticia/${n.slug}`)}</loc>
@@ -26,9 +35,8 @@ ${noticias
         <news:name>Tribuna Mochica</news:name>
         <news:language>es</news:language>
       </news:publication>
-      <news:publication_date>${escapeXml(n.fechaIso || new Date().toISOString().slice(0, 10))}</news:publication_date>
+      <news:publication_date>${escapeXml(toPeruIsoDateTime(n.fechaIso, n.updatedAt))}</news:publication_date>
       <news:title>${escapeXml(n.titular)}</news:title>
-      <news:keywords>${escapeXml(`${n.categoria}, Lambayeque, Chiclayo, Perú`)}</news:keywords>
     </news:news>
   </url>`
   )

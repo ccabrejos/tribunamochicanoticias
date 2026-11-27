@@ -11,6 +11,79 @@ export const CATEGORIAS = [
   'Deportes',
 ] as const;
 
+export interface CategoriaMeta {
+  nombre: (typeof CATEGORIAS)[number];
+  slug: string;
+  descripcion: string;
+}
+
+export const CATEGORIAS_META: CategoriaMeta[] = [
+  {
+    nombre: 'Lambayeque',
+    slug: 'lambayeque',
+    descripcion: 'Noticias de última hora de Chiclayo, Lambayeque, Ferreñafe y los distritos del Valle La Leche en Tribuna Mochica.',
+  },
+  {
+    nombre: 'Regional',
+    slug: 'regional',
+    descripcion: 'Actualidad regional, obras, clima, gestión pública y desarrollo del norte peruano en Tribuna Mochica.',
+  },
+  {
+    nombre: 'Nacional',
+    slug: 'nacional',
+    descripcion: 'Cobertura nacional de política, economía, salud, educación y sociedad en el Perú desde Tribuna Mochica.',
+  },
+  {
+    nombre: 'Opinión',
+    slug: 'opinion',
+    descripcion: 'Columnas editoriales, análisis y tribuna ciudadana sobre la realidad de Lambayeque y el Perú.',
+  },
+  {
+    nombre: 'Cultura',
+    slug: 'cultura',
+    descripcion: 'Identidad mochica, historia, arte, educación y agenda cultural de Lambayeque y Chiclayo.',
+  },
+  {
+    nombre: 'Deportes',
+    slug: 'deportes',
+    descripcion: 'Resultados, crónicas y actualidad del deporte en Lambayeque, Chiclayo y todo el Perú.',
+  },
+];
+
+export function getCategoriaSlug(categoria: string): string {
+  const norm = String(categoria || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+  const found = CATEGORIAS_META.find(
+    (c) =>
+      c.slug === norm ||
+      c.nombre
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') === norm
+  );
+  return found ? found.slug : 'lambayeque';
+}
+
+export function getCategoriaBySlug(slug: string): CategoriaMeta | null {
+  const norm = String(slug || '').toLowerCase().trim();
+  return CATEGORIAS_META.find((c) => c.slug === norm) || null;
+}
+
+export function toPeruIsoDateTime(isoDate?: string, fallbackTimestamp?: string): string {
+  if (fallbackTimestamp && fallbackTimestamp.includes('T')) {
+    return fallbackTimestamp;
+  }
+  const clean = String(isoDate || '').trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(clean)) {
+    return `${clean}T12:00:00-05:00`;
+  }
+  if (clean.includes('T')) return clean;
+  return new Date().toISOString();
+}
+
 export interface Noticia {
   id: string;
   slug: string;
@@ -21,6 +94,7 @@ export interface Noticia {
   autor: string;
   fecha: string;
   fechaIso: string;
+  updatedAt?: string;
   imagen: string;
   altImagen: string;
   destacada: boolean;
@@ -52,6 +126,7 @@ function mapFallbackNoticias(): Noticia[] {
     autor: n.autor || 'Redacción Tribuna Mochica',
     fecha: n.fecha,
     fechaIso: n.fechaIso || '2026-09-04',
+    updatedAt: n.fechaIso || '2026-09-04',
     imagen: n.imagen || '/noticias/ultima-noticia.jpg',
     altImagen: n.altImagen || n.titular,
     destacada: idx === 0,
@@ -101,6 +176,7 @@ export async function getNoticias(categoria?: string): Promise<Noticia[]> {
           autor: row.autor || 'Juan César Cabrejos Becerra',
           fecha: row.fecha_texto,
           fechaIso: row.fecha_iso,
+          updatedAt: row.updated_at || row.created_at || row.fecha_iso,
           imagen: row.imagen_url || '/noticias/ultima-noticia.jpg',
           altImagen: row.alt_imagen || row.titular,
           destacada: Boolean(row.destacada),
@@ -141,6 +217,7 @@ export async function getNoticiaBySlug(slug: string): Promise<Noticia | null> {
           autor: data.autor || 'Juan César Cabrejos Becerra',
           fecha: data.fecha_texto,
           fechaIso: data.fecha_iso,
+          updatedAt: data.updated_at || data.created_at || data.fecha_iso,
           imagen: data.imagen_url || '/noticias/ultima-noticia.jpg',
           altImagen: data.alt_imagen || data.titular,
           destacada: Boolean(data.destacada),

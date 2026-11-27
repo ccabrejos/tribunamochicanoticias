@@ -13,14 +13,17 @@ const { noticia } = Astro.props;
       src={noticia.imagen}
       onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
       alt={noticia.altImagen || noticia.titular}
+      width="800"
+      height="500"
       class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
       loading="lazy"
+      decoding="async"
     />
   </a>
-  <div class="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] mb-1.5">
+  <div class="flex items-center gap-2 text-xs uppercase tracking-[0.12em] mb-1.5">
     <span class="font-bold text-burgundy">{noticia.categoria}</span>
     <span class="text-line">·</span>
-    <time class="text-subtle">{noticia.fecha}</time>
+    <time datetime={noticia.fechaIso} class="text-subtle">{noticia.fecha}</time>
   </div>
   <h3 class="font-serif text-xl font-bold text-ink leading-snug group-hover:text-burgundy transition-colors">
     <a href={`/noticia/${noticia.slug}`}>{noticia.titular}</a>

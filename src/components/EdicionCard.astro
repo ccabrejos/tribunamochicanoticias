@@ -18,14 +18,17 @@ const { edicion, isLatest = false } = Astro.props;
       src={edicion.portadaImg}
       onerror="this.onerror=null; this.src='/ediciones/portada-placeholder.svg';"
       alt={`Portada Edición N.° ${edicion.numero}`}
+      width="600"
+      height="800"
       class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
       loading="lazy"
+      decoding="async"
     />
-    <span class="absolute top-3 left-3 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-ink text-white">
+    <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-ink text-white">
       Edición N.° {edicion.numero}
     </span>
     {isLatest && (
-      <span class="absolute top-3 right-3 px-2 py-1 text-[10px] font-bold uppercase tracking-wider bg-burgundy text-white">
+      <span class="absolute top-3 right-3 px-2 py-1 text-xs font-bold uppercase tracking-wider bg-burgundy text-white">
         Reciente
       </span>
     )}

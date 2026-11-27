@@ -6,7 +6,7 @@ export default {
       colors: {
         ink: '#111111',
         muted: '#525252',
-        subtle: '#737373',
+        subtle: '#595959',
         line: '#E5E5E5',
         surface: '#FAFAFA',
         burgundy: {

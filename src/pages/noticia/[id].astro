@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import NoticiaCard from '../../components/NoticiaCard.astro';
-import { getNoticiaBySlug, getNoticias } from '../../lib/data';
+import { getCategoriaSlug, getNoticiaBySlug, getNoticias, toPeruIsoDateTime } from '../../lib/data';
 import { renderEditorialHtml } from '../../lib/markdown';
 
 const { id } = Astro.params;
@@ -15,26 +15,47 @@ if (!noticia) {
 
 const todasNoticias = await getNoticias();
 const relacionadas = noticia
-  ? todasNoticias.filter((n) => n.slug !== noticia.slug).slice(0, 3)
+  ? [
+      ...todasNoticias.filter((n) => n.slug !== noticia.slug && n.categoria === noticia.categoria),
+      ...todasNoticias.filter((n) => n.slug !== noticia.slug && n.categoria !== noticia.categoria),
+    ].slice(0, 3)
   : todasNoticias.slice(0, 3);
 
 const contenidoHtml = noticia ? renderEditorialHtml(noticia.contenido) : '';
 const wordCount = noticia ? noticia.contenido.trim().split(/\s+/).filter(Boolean).length : 0;
+const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
 
 const siteURL = (Astro.site || 'https://www.tribunamochica.com').toString().replace(/\/$/, '');
 const shareUrl = noticia ? `${siteURL}/noticia/${noticia.slug}` : `${siteURL}/noticias`;
+const categoriaSlug = noticia ? getCategoriaSlug(noticia.categoria) : 'lambayeque';
 const whatsappHref = noticia
   ? `https://wa.me/?text=${encodeURIComponent(`${noticia.titular} — Lee la nota en Tribuna Mochica: ${shareUrl}`)}`
+  : '';
+const facebookHref = noticia
+  ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`
   : '';
 
 const imageAbsUrl = noticia
   ? (noticia.imagen.startsWith('http') ? noticia.imagen : `${siteURL}${noticia.imagen}`)
-  : `${siteURL}/logo.jpg`;
+  : `${siteURL}/og-default.jpg`;
 
 const showCaption = Boolean(
   noticia?.altImagen &&
   noticia.altImagen.trim().toLowerCase() !== noticia.titular.trim().toLowerCase()
 );
+
+const publishedIso = noticia ? toPeruIsoDateTime(noticia.fechaIso) : undefined;
+const modifiedIso = noticia ? toPeruIsoDateTime(noticia.fechaIso, noticia.updatedAt) : undefined;
+
+const isOrgAuthor = noticia
+  ? /(redacci[oó]n|central|tribuna|prensa)/i.test(noticia.autor)
+  : false;
+
+const pageTitle = noticia
+  ? noticia.titular.length > 62
+    ? `${noticia.titular.slice(0, 59).replace(/\s+\S*$/, '')}… | Tribuna Mochica`
+    : `${noticia.titular} | Tribuna Mochica`
+  : 'Noticia no encontrada | Tribuna Mochica';
 
 const schemas = noticia
   ? [
@@ -44,13 +65,13 @@ const schemas = noticia
         headline: noticia.titular,
         description: noticia.bajada,
         image: [imageAbsUrl],
-        datePublished: noticia.fechaIso,
-        dateModified: noticia.fechaIso,
+        datePublished: publishedIso,
+        dateModified: modifiedIso,
         articleSection: noticia.categoria,
         inLanguage: 'es-PE',
         isAccessibleForFree: true,
         wordCount,
-        keywords: [noticia.categoria, 'Lambayeque', 'Chiclayo', 'Perú', 'Tribuna Mochica'],
+        keywords: Array.from(new Set([noticia.categoria, 'Lambayeque', 'Chiclayo', 'Perú', 'Tribuna Mochica'])),
         contentLocation: {
           '@type': 'Place',
           name: 'Lambayeque, Perú',
@@ -60,8 +81,9 @@ const schemas = noticia
           '@id': shareUrl,
         },
         author: {
-          '@type': 'Person',
+          '@type': isOrgAuthor ? 'Organization' : 'Person',
           name: noticia.autor,
+          url: `${siteURL}/nosotros`,
         },
         publisher: {
           '@id': `${siteURL}/#organization`,
@@ -81,7 +103,7 @@ const schemas = noticia
             '@type': 'ListItem',
             position: 2,
             name: noticia.categoria,
-            item: `${siteURL}/noticias?categoria=${encodeURIComponent(noticia.categoria)}`,
+            item: `${siteURL}/seccion/${categoriaSlug}`,
           },
           {
             '@type': 'ListItem',
@@ -95,17 +117,18 @@ const schemas = noticia
   : null;
 ---
 <Layout
-  title={noticia ? `${noticia.titular} | Tribuna Mochica` : 'Noticia no encontrada | Tribuna Mochica'}
+  title={pageTitle}
   description={noticia ? noticia.bajada : 'La noticia que buscas no está disponible en Tribuna Mochica.'}
-  image={noticia ? noticia.imagen : '/logo.jpg'}
-  activePath="/noticias"
+  image={noticia ? noticia.imagen : '/og-default.jpg'}
+  activePath={noticia ? `/seccion/${categoriaSlug}` : '/noticias'}
   ogType={noticia ? 'article' : 'website'}
   noIndex={!noticia}
-  publishedTime={noticia?.fechaIso}
+  publishedTime={publishedIso}
+  modifiedTime={modifiedIso}
   section={noticia?.categoria}
   jsonLd={schemas}
 >
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+  <main id="contenido-principal" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
     {!noticia ? (
       <section class="py-12 text-center border border-line bg-surface px-6">
         <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-2">Error 404</p>
@@ -124,10 +147,10 @@ const schemas = noticia
       </section>
     ) : (
       <>
-        <nav class="mb-6 text-xs text-subtle flex items-center gap-2">
+        <nav aria-label="Ruta de navegación" class="mb-6 text-xs text-subtle flex items-center gap-2">
           <a href="/" class="hover:text-burgundy transition-colors">Portada</a>
           <span>/</span>
-          <a href={`/noticias?categoria=${encodeURIComponent(noticia.categoria)}`} class="text-burgundy font-semibold">
+          <a href={`/seccion/${categoriaSlug}`} class="text-burgundy font-semibold hover:underline">
             {noticia.categoria}
           </a>
         </nav>
@@ -148,16 +171,26 @@ const schemas = noticia
               <div>
                 Por <span class="text-ink font-semibold">{noticia.autor}</span>
                 <span class="mx-2 text-line">|</span>
-                <time datetime={noticia.fechaIso}>{noticia.fecha}</time>
+                <time datetime={publishedIso}>{noticia.fecha}</time>
+                <span class="mx-2 text-line">·</span>
+                <span>{readingMinutes} min de lectura</span>
               </div>
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-2">
                 <a
                   href={whatsappHref}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold border border-line text-ink hover:border-burgundy hover:text-burgundy transition-colors"
                 >
-                  Compartir en WhatsApp
+                  WhatsApp
+                </a>
+                <a
+                  href={facebookHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold border border-line text-ink hover:border-ink transition-colors"
+                >
+                  Facebook
                 </a>
                 <button
                   type="button"
@@ -176,6 +209,10 @@ const schemas = noticia
                 src={noticia.imagen}
                 onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
                 alt={noticia.altImagen || noticia.titular}
+                width="1200"
+                height="675"
+                fetchpriority="high"
+                decoding="sync"
                 class="w-full max-h-[520px] object-cover"
               />
             </div>
@@ -192,17 +229,27 @@ const schemas = noticia
           />
 
           <div class="mt-10 pt-6 border-t border-line flex flex-wrap items-center justify-between gap-4">
-            <a href="/noticias" class="text-sm font-semibold text-ink hover:text-burgundy transition-colors">
-              ← Volver a todas las noticias
+            <a href={`/seccion/${categoriaSlug}`} class="text-sm font-semibold text-ink hover:text-burgundy transition-colors">
+              ← Más noticias de {noticia.categoria}
             </a>
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="px-4 py-2 bg-burgundy text-white text-sm font-semibold hover:bg-burgundy-dark transition-colors"
-            >
-              Compartir esta noticia por WhatsApp
-            </a>
+            <div class="flex flex-wrap gap-2">
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-4 py-2 bg-burgundy text-white text-sm font-semibold hover:bg-burgundy-dark transition-colors"
+              >
+                Compartir por WhatsApp
+              </a>
+              <a
+                href={facebookHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-4 py-2 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors"
+              >
+                Compartir en Facebook
+              </a>
+            </div>
           </div>
         </article>
       </>

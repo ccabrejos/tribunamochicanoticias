@@ -19,7 +19,11 @@ const whatsappHref = edicion
 
 const coverAbsUrl = edicion
   ? (edicion.portadaImg.startsWith('http') ? edicion.portadaImg : `${siteURL}${edicion.portadaImg}`)
-  : `${siteURL}/logo.jpg`;
+  : `${siteURL}/og-default.jpg`;
+
+const edicionTitle = edicion
+  ? `Edición N.° ${edicion.numero}: ${edicion.titular.length > 44 ? `${edicion.titular.slice(0, 41).replace(/\s+\S*$/, '')}…` : edicion.titular} | Tribuna Mochica`
+  : 'Edición no encontrada | Tribuna Mochica';
 
 const issueJsonLd = edicion
   ? {
@@ -41,14 +45,14 @@ const issueJsonLd = edicion
   : null;
 ---
 <Layout
-  title={edicion ? `Edición N.° ${edicion.numero} | Tribuna Mochica` : 'Edición no encontrada | Tribuna Mochica'}
+  title={edicionTitle}
   description={edicion ? `${edicion.titular}. ${edicion.bajada}` : 'La edición solicitada no está disponible en la hemeroteca de Tribuna Mochica.'}
-  image={edicion ? edicion.portadaImg : '/logo.jpg'}
+  image={edicion ? edicion.portadaImg : '/og-default.jpg'}
   activePath="/ediciones"
   noIndex={!edicion}
   jsonLd={issueJsonLd}
 >
-  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <main id="contenido-principal" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     {!edicion ? (
       <section class="py-12 text-center border border-line bg-surface px-6">
         <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-2">Error 404</p>
@@ -78,6 +82,9 @@ const issueJsonLd = edicion
                 src={edicion.portadaImg}
                 onerror="this.onerror=null; this.src='/ediciones/portada-placeholder.svg';"
                 alt={`Portada Edición N.° ${edicion.numero}`}
+                width="900"
+                height="1272"
+                fetchpriority="high"
                 class="w-full h-auto object-cover"
               />
             </div>

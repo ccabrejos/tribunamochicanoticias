@@ -16,22 +16,22 @@ const edicionesAnteriores = ediciones.slice(0, 4);
 ---
 <Layout
   title="Tribuna Mochica | Noticias de Lambayeque, Chiclayo y Perú"
-  description="Periódico digital y semanario informativo de Lambayeque, Chiclayo y Perú. Dirigido por Juan César Cabrejos Becerra. Actualidad regional, nacional, opinión, cultura, deportes y ediciones en PDF."
-  image="/logo.jpg"
+  description="Periódico digital de Lambayeque, Chiclayo y Perú dirigido por Juan César Cabrejos Becerra. Actualidad regional, nacional, opinión y ediciones PDF."
+  image="/og-default.jpg"
   activePath="/"
 >
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+  <main id="contenido-principal" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
     <!-- PRIMERA PLANA EQUILIBRADA: Portada (7 cols) + Últimas noticias (5 cols) -->
     <section aria-label="Primera plana" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pb-12 border-b border-line items-start">
       <!-- Columna Principal (7 cols): Noticia Destacada -->
       <div class="lg:col-span-7">
         {noticiaPrincipal ? (
           <article class="group">
-            <div class="flex items-center gap-2.5 text-xs uppercase tracking-[0.16em] mb-3">
+            <div class="flex items-center gap-2.5 text-xs uppercase tracking-[0.14em] mb-3">
               <span class="px-2 py-0.5 bg-burgundy text-white font-bold">Portada</span>
               <span class="font-bold text-burgundy">{noticiaPrincipal.categoria}</span>
               <span class="text-line">·</span>
-              <time class="text-subtle">{noticiaPrincipal.fecha}</time>
+              <time datetime={noticiaPrincipal.fechaIso} class="text-subtle">{noticiaPrincipal.fecha}</time>
             </div>
 
             <h2 class="font-serif text-3xl sm:text-4xl lg:text-[42px] font-black text-ink leading-[1.12] tracking-tight group-hover:text-burgundy transition-colors">
@@ -52,8 +52,12 @@ const edicionesAnteriores = ediciones.slice(0, 4);
                 src={noticiaPrincipal.imagen}
                 onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
                 alt={noticiaPrincipal.altImagen || noticiaPrincipal.titular}
+                width="1200"
+                height="675"
                 class="w-full h-full object-cover group-hover:scale-[1.015] transition-transform duration-300"
                 loading="eager"
+                fetchpriority="high"
+                decoding="sync"
               />
             </a>
 
@@ -96,14 +100,17 @@ const edicionesAnteriores = ediciones.slice(0, 4);
                 src={lateralDestacada.imagen}
                 onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
                 alt={lateralDestacada.altImagen || lateralDestacada.titular}
+                width="800"
+                height="450"
                 class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
                 loading="eager"
+                decoding="async"
               />
             </a>
-            <div class="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] mb-1">
+            <div class="flex items-center gap-2 text-xs uppercase tracking-[0.12em] mb-1">
               <span class="font-bold text-burgundy">{lateralDestacada.categoria}</span>
               <span class="text-line">·</span>
-              <time class="text-subtle">{lateralDestacada.fecha}</time>
+              <time datetime={lateralDestacada.fechaIso} class="text-subtle">{lateralDestacada.fecha}</time>
             </div>
             <h3 class="font-serif text-xl sm:text-2xl font-bold text-ink leading-snug group-hover:text-burgundy transition-colors">
               <a href={`/noticia/${lateralDestacada.slug}`}>{lateralDestacada.titular}</a>
@@ -128,14 +135,17 @@ const edicionesAnteriores = ediciones.slice(0, 4);
                     src={item.imagen}
                     onerror="this.onerror=null; this.src='/noticias/ultima-noticia.jpg';"
                     alt={item.altImagen || item.titular}
+                    width="128"
+                    height="88"
                     class="w-28 h-20 sm:w-32 sm:h-22 object-cover border border-line bg-surface shrink-0"
                     loading="lazy"
+                    decoding="async"
                   />
                   <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] mb-1">
+                    <div class="flex items-center gap-1.5 text-xs uppercase tracking-[0.1em] mb-1">
                       <span class="font-bold text-burgundy">{item.categoria}</span>
                       <span class="text-line">·</span>
-                      <time class="text-subtle truncate">{item.fecha}</time>
+                      <time datetime={item.fechaIso} class="text-subtle truncate">{item.fecha}</time>
                     </div>
                     <h3 class="font-serif text-base sm:text-lg font-bold text-ink leading-snug group-hover:text-burgundy transition-colors line-clamp-2">
                       {item.titular}
@@ -158,12 +168,12 @@ const edicionesAnteriores = ediciones.slice(0, 4);
       </aside>
     </section>
 
-    <!-- MÁS NOTICIAS (grilla de 3 columnas desde la 5.ª noticia en adelante) -->
+    <!-- MÁS NOTICIAS -->
     {masNoticias.length > 0 && (
       <section aria-label="Más noticias" class="py-12 border-b border-line">
         <div class="flex items-end justify-between gap-4 pb-3 border-b-2 border-ink mb-8">
           <div>
-            <p class="text-[11px] uppercase tracking-[0.18em] text-burgundy font-bold">Actualidad Regional</p>
+            <p class="text-xs uppercase tracking-[0.16em] text-burgundy font-bold">Actualidad Regional</p>
             <h2 class="font-serif text-2xl sm:text-3xl font-black text-ink">Más noticias</h2>
           </div>
           <a href="/noticias" class="text-sm font-semibold text-ink hover:text-burgundy transition-colors shrink-0">
@@ -183,7 +193,7 @@ const edicionesAnteriores = ediciones.slice(0, 4);
     <section aria-label="Hemeroteca de ediciones PDF" class="py-12 border-b border-line">
       <div class="flex items-end justify-between gap-4 pb-3 border-b-2 border-ink mb-8">
         <div>
-          <p class="text-[11px] uppercase tracking-[0.18em] text-burgundy font-bold">Archivo Digital</p>
+          <p class="text-xs uppercase tracking-[0.16em] text-burgundy font-bold">Archivo Digital</p>
           <h2 class="font-serif text-2xl sm:text-3xl font-black text-ink">Ediciones en PDF</h2>
         </div>
         <a href="/ediciones" class="text-sm font-semibold text-ink hover:text-burgundy transition-colors shrink-0">
@@ -201,7 +211,7 @@ const edicionesAnteriores = ediciones.slice(0, 4);
     <!-- FRANJA DE PARTICIPACIÓN CIUDADANA -->
     <section class="mt-12 bg-surface border border-line p-6 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
       <div class="max-w-2xl">
-        <p class="text-[11px] uppercase tracking-[0.18em] text-burgundy font-bold mb-1">
+        <p class="text-xs uppercase tracking-[0.16em] text-burgundy font-bold mb-1">
           Periodismo Ciudadano
         </p>
         <h2 class="font-serif text-2xl sm:text-3xl font-bold text-ink">

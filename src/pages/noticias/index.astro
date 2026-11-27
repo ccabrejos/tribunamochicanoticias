@@ -1,31 +1,29 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import NoticiaCard from '../../components/NoticiaCard.astro';
-import { CATEGORIAS, getNoticias } from '../../lib/data';
+import { CATEGORIAS, getCategoriaSlug, getNoticias } from '../../lib/data';
+
+const categoriaParam = Astro.url.searchParams.get('categoria');
+if (categoriaParam && categoriaParam !== 'Todas') {
+  return Astro.redirect(`/seccion/${getCategoriaSlug(categoriaParam)}`, 301);
+}
 
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
 
-const categoriaActiva = Astro.url.searchParams.get('categoria') || 'Todas';
 const queryInicial = Astro.url.searchParams.get('q') || '';
-const noticias = await getNoticias(categoriaActiva);
+const noticias = await getNoticias();
 const PAGE_SIZE = 12;
 ---
 <Layout
-  title={
-    categoriaActiva === 'Todas'
-      ? 'Noticias de Lambayeque, Chiclayo y Perú | Tribuna Mochica'
-      : `${categoriaActiva} · Noticias de Lambayeque y Chiclayo | Tribuna Mochica`
-  }
+  title="Noticias de Lambayeque, Chiclayo y Perú | Tribuna Mochica"
   description="Últimas noticias y reportajes de Tribuna Mochica sobre Chiclayo, Lambayeque, Ferreñafe y todo el Perú."
   activePath="/noticias"
 >
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <main id="contenido-principal" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <div class="pb-5 border-b-2 border-ink mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
         <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-1">Redacción Digital</p>
-        <h1 class="font-serif text-3xl sm:text-4xl font-black text-ink">
-          {categoriaActiva === 'Todas' ? 'Últimas noticias' : categoriaActiva}
-        </h1>
+        <h1 class="font-serif text-3xl sm:text-4xl font-black text-ink">Últimas noticias</h1>
       </div>
 
       <div class="w-full md:w-80">
@@ -40,26 +38,18 @@ const PAGE_SIZE = 12;
       </div>
     </div>
 
-    <!-- Filtros por categoría -->
+    <!-- Filtros por categoría (rutas limpias indexables) -->
     <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 mb-6">
       <a
         href="/noticias"
-        class={`px-3.5 py-1.5 text-sm rounded-full border transition-colors whitespace-nowrap ${
-          categoriaActiva === 'Todas'
-            ? 'bg-ink text-white border-ink font-semibold'
-            : 'bg-white text-muted border-line hover:border-ink hover:text-ink'
-        }`}
+        class="px-3.5 py-1.5 text-sm rounded-full border transition-colors whitespace-nowrap bg-ink text-white border-ink font-semibold"
       >
         Todas
       </a>
       {CATEGORIAS.map((cat) => (
         <a
-          href={`/noticias?categoria=${encodeURIComponent(cat)}`}
-          class={`px-3.5 py-1.5 text-sm rounded-full border transition-colors whitespace-nowrap ${
-            categoriaActiva === cat
-              ? 'bg-burgundy text-white border-burgundy font-semibold'
-              : 'bg-white text-muted border-line hover:border-ink hover:text-ink'
-          }`}
+          href={`/seccion/${getCategoriaSlug(cat)}`}
+          class="px-3.5 py-1.5 text-sm rounded-full border transition-colors whitespace-nowrap bg-white text-muted border-line hover:border-ink hover:text-ink"
         >
           {cat}
         </a>
@@ -103,16 +93,8 @@ const PAGE_SIZE = 12;
       </>
     ) : (
       <div class="py-16 px-6 text-center border border-line bg-surface">
-        <p class="font-serif text-xl font-bold text-ink">No hay noticias en esta sección todavía</p>
-        <p class="mt-2 text-sm text-muted">Explora todas las publicaciones o revisa nuestras ediciones completas en PDF.</p>
-        <div class="mt-6 flex justify-center gap-3">
-          <a href="/noticias" class="px-4 py-2 bg-ink text-white text-sm font-semibold hover:bg-burgundy transition-colors">
-            Ver todas las noticias
-          </a>
-          <a href="/ediciones" class="px-4 py-2 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors">
-            Ver ediciones PDF
-          </a>
-        </div>
+        <p class="font-serif text-xl font-bold text-ink">Aún no hay noticias publicadas</p>
+        <p class="mt-2 text-sm text-muted">Revisa nuestras ediciones completas en PDF en la hemeroteca.</p>
       </div>
     )}
   </main>

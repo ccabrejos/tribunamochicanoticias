@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout
+  title="Página no encontrada (404) | Tribuna Mochica"
+  description="La página que buscas no existe o fue movida en Tribuna Mochica."
+  noIndex={true}
+>
+  <main id="contenido-principal" class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+    <p class="text-xs uppercase tracking-[0.18em] text-burgundy font-bold mb-2">Error 404</p>
+    <h1 class="font-serif text-4xl sm:text-5xl font-black text-ink">Página no encontrada</h1>
+    <p class="mt-4 text-base text-muted max-w-lg mx-auto leading-relaxed">
+      El enlace puede estar desactualizado o mal escrito. Vuelve a la portada o revisa nuestras últimas publicaciones de Lambayeque y Chiclayo.
+    </p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a href="/" class="px-5 py-2.5 bg-ink text-white text-sm font-semibold hover:bg-burgundy transition-colors">
+        Ir a la portada
+      </a>
+      <a href="/noticias" class="px-5 py-2.5 border border-ink text-ink text-sm font-semibold hover:bg-ink hover:text-white transition-colors">
+        Últimas noticias
+      </a>
+      <a href="/ediciones" class="px-5 py-2.5 border border-line text-ink text-sm font-semibold hover:border-ink transition-colors">
+        Ediciones PDF
+      </a>
+    </div>
+  </main>
+</Layout>

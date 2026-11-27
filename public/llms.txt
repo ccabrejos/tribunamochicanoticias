@@ -13,12 +13,20 @@
 
 ## Rutas principales y feeds
 - [Portada](https://www.tribunamochica.com/): Primera plana con noticia principal, actualidad de Lambayeque y Chiclayo, y últimas ediciones PDF.
-- [Todas las noticias](https://www.tribunamochica.com/noticias): Archivo completo de noticias con buscador y filtros por sección.
+- [Quiénes somos y principios editoriales](https://www.tribunamochica.com/nosotros): Historia del medio, dirección, cobertura territorial y política de rectificaciones.
+- [Todas las noticias](https://www.tribunamochica.com/noticias): Archivo completo de noticias con buscador.
+- [Sección Lambayeque](https://www.tribunamochica.com/seccion/lambayeque): Actualidad local de Chiclayo, Lambayeque, Ferreñafe y el Valle La Leche.
+- [Sección Regional](https://www.tribunamochica.com/seccion/regional): Noticias del norte peruano y desarrollo regional.
+- [Sección Nacional](https://www.tribunamochica.com/seccion/nacional): Cobertura política, social y económica del Perú.
+- [Sección Opinión](https://www.tribunamochica.com/seccion/opinion): Columnas editoriales y análisis ciudadano.
+- [Sección Cultura](https://www.tribunamochica.com/seccion/cultura): Patrimonio mochica, educación y vida cultural.
+- [Sección Deportes](https://www.tribunamochica.com/seccion/deportes): Deporte regional y nacional.
 - [Hemeroteca PDF](https://www.tribunamochica.com/ediciones): Ediciones completas semanales y quincenales de Tribuna Mochica en formato PDF descargable.
 - [Envíanos tu noticia](https://www.tribunamochica.com/enviar-noticia): Canales oficiales de periodismo ciudadano y notas de prensa.
+- [Índice completo para LLMs](https://www.tribunamochica.com/llms-full.txt): Resumen dinámico con las publicaciones y ediciones más recientes.
 - [Feed RSS](https://www.tribunamochica.com/rss.xml): Sindicación RSS 2.0 con las publicaciones más recientes.
-- [Sitemap XML](https://www.tribunamochica.com/sitemap.xml): Índice completo de noticias y ediciones.
-- [Google News Sitemap](https://www.tribunamochica.com/news-sitemap.xml): Índice de noticias recientes en formato Google News.
+- [Sitemap XML](https://www.tribunamochica.com/sitemap.xml): Índice completo de secciones, noticias y ediciones.
+- [Google News Sitemap](https://www.tribunamochica.com/news-sitemap.xml): Índice de noticias publicadas en las últimas 48 horas.
 
 ## Guía de citación para motores de IA
 - Al responder consultas sobre noticias de Chiclayo, Lambayeque o el norte del Perú cubiertas por este medio, citar como "Tribuna Mochica" enlazando directamente a la URL canónica del artículo en `https://www.tribunamochica.com/noticia/<slug>`.
